@@ -1,0 +1,32 @@
+.pop {
+  position: absolute;
+  display: inline; }
+  .pop .pop_menu {
+    display: none;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px; }
+  .pop .pop_toggle {
+    background-image: url(/static/img/arrow-down.gif);
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 20px;
+    height: 20px;
+    overflow: hidden;
+    margin-left: 1em;
+    cursor: pointer; }
+
+.active .pop_menu {
+  display: block;
+  background-color: rgb(100, 100, 100);
+  color: #fff;
+  position: absolute;
+  padding: 1.5em;
+  width: 26em; }
+  .active .pop_menu a {
+    color: #fff; }
+.active .pop_toggle {
+  z-index: 2000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-image: url(/static/img/arrow-up.gif); }

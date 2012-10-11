@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% include "ytdl/navbar.html" %}
+
+<table class="table table-striped table-hover table-condensed" id="videos">
+  <thead>
+    <th>Title</th>
+  </thead>
+  {% for chan in channels %}
+  <tr>
+    <td><a href="{% url ytdl.views.view_channel chan.chanid %}">{{ chan.chanid }}</a></td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}
