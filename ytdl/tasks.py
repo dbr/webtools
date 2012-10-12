@@ -12,7 +12,7 @@ def grab_video(videoid, force=False):
     video = Video.objects.get(id=videoid)
 
     # Validation
-    grabbable = video.status in [Video.STATE_NEW, Video.STATE_GRAB_ERROR]
+    grabbable = video.status in [Video.STATE_NEW, Video.STATE_GRAB_ERROR, Video.STATE_QUEUED]
 
     if not grabbable and not force:
         emsg = "%s status not NEW or GRAB_ERROR, and force was %s" % (
