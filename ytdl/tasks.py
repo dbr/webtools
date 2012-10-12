@@ -27,13 +27,10 @@ def grab_video(videoid, force=False):
     video.status = Video.STATE_DOWNLOADING
     video.save()
 
-    try:
-        orig_cwd = os.getcwd()
-        os.chdir(os.path.expanduser("~/Downloads"))
-        p = subprocess.Popen(
-            ["youtube-dl", "--title", video.url])
-    finally:
-        os.chdir(orig_cwd)
+    cwd = os.path.expanduser("~/Downloads")
+    p = subprocess.Popen(
+        ["youtube-dl", "--title", video.url],
+        cwd = cwd)
 
     p.communicate()
 
