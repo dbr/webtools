@@ -136,5 +136,19 @@ class Video(models.Model):
         return classmap.get(self.status, "error")
 
     @property
+    def status_str(self):
+        #FIXME: Doesn't even remotely belong here
+        classmap = {
+            self.STATE_NEW: 'New',
+            self.STATE_QUEUED: 'Queued',
+            self.STATE_DOWNLOADING: 'Pending',
+            self.STATE_GRABBED: 'Grabbed',
+            self.STATE_GRAB_ERROR: 'Grab error',
+            self.STATE_IGNORE: 'Ignored',
+            }
+
+        return classmap.get(self.status, "error")
+
+    @property
     def img(self):
         return self._thumbnails.split("  ")
