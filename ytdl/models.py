@@ -69,7 +69,7 @@ class Channel(models.Model):
     def __unicode__(self):
         return self.chanid
 
-    def grab(self, limit=10):
+    def grab(self, limit=1000):
         chan = YoutubeApi(str(self.chanid))
         for vid in chan.videos_for_user(limit=limit):
             exists = Video.objects.filter(videoid = vid['id']).count() > 0
