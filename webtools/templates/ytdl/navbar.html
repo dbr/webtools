@@ -3,8 +3,11 @@
     <ul class="nav">
       <li class="active"><a href="{% url ytdl.views.index %}">YTDL</a></li>
       <li><a href="../../">Channels</a></li>
-      <form class="navbar-search pull-right">
-        <input type="text" class="search-query" placeholder="Search" id="filter" value="{{ query }}">
+      <form class="navbar-search pull-right" action="#" method="GET">
+        <input type="text" class="search-query" name="search" placeholder="Search" id="filter" value="{{ query }}">
+        <button type="submit" class="btn btn-small">
+          <i class="icon-user icon-white"></i> Search
+        </button>
       </form>
     </ul>
   </div>
