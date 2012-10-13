@@ -1,5 +1,5 @@
 from ytdl.models import Video, Channel
-from ytdl.tasks import grab_video
+import ytdl.tasks
 
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
@@ -47,7 +47,7 @@ def grab(request, videoid):
 
     video.status = Video.STATE_QUEUED
     video.save()
-    grab_video.delay(video.id, force=force)
+    ytdl.tasks.grab_video.delay(video.id, force=force)
     return HttpResponse("ok" + " (force)"*(int(force)))
 
 
@@ -55,5 +55,12 @@ def mark_viewed(request, videoid):
     video = get_object_or_404(Video, id=videoid)
     video.status = Video.STATE_GRABBED
     video.save()
+
+    return HttpResponse("ok")
+
+
+def refresh_channel(request, chanid):
+    channel = get_object_or_404(Channel, id=chanid)
+    ytdl.tasks.refresh_channel.delay(id=channel.id)
 
     return HttpResponse("ok")

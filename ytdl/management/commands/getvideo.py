@@ -1,5 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 
+from ytdl.tasks import refresh_channel
+
 
 class Command(BaseCommand):
     help = "Check for new videos"
@@ -14,7 +16,8 @@ class Command(BaseCommand):
         try:
             chan = ytdl.models.Channel.objects.get(chanid=args[0])
         except ytdl.models.Channel.DoesNotExist:
+            print "New channel %s" % args[0]
             chan = ytdl.models.Channel(chanid=args[0])
             chan.save()
 
-        chan.grab(limit=1000)
+        refresh_channel.delay(chan.id)

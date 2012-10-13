@@ -3,7 +3,7 @@ import subprocess
 from celery import task
 
 
-from ytdl.models import Video
+from ytdl.models import Video, Channel
 
 
 @task
@@ -37,3 +37,9 @@ def grab_video(videoid, force=False):
     video.status = Video.STATE_GRABBED
     video.save()
     print "Done: %s" % video
+
+
+@task
+def refresh_channel(id):
+    channel = Channel.objects.get(id=id)
+    channel.grab()

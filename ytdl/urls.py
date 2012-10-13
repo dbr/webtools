@@ -7,5 +7,7 @@ urlpatterns = patterns(
     url(r'^$', 'index'),
     url(r'^channel/(?P<chanid>.+)', 'view_channel'),
     url(r'^grab/(?P<videoid>\d+)', 'grab'),
-    url(r'^viewed/(?P<videoid>\d+)', 'mark_viewed'),)
+    url(r'^viewed/(?P<videoid>\d+)', 'mark_viewed'),
+    url(r'^refresh/(?P<chanid>\d+)', 'refresh_channel'),
+)
 

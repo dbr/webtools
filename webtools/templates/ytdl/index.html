@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
+{% block head %}
+<link href="/static/css/pop.css" media="all" rel="stylesheet" type="text/css"/>
+<script language="javascript" src="/static/js/jquery.pop.js" type="text/javascript"></script>
+<script language="javascript" src="/static/js/jquery.timeago.js" type="text/javascript"></script>
+{% endblock %}
+
 {% block content %}
 
 {% include "ytdl/navbar.html" %}
@@ -10,9 +16,27 @@
   </thead>
   {% for chan in channels %}
   <tr>
-    <td><a href="{% url ytdl.views.view_channel chan.chanid %}">{{ chan.chanid }}</a></td>
+    <td><a href="{% url ytdl.views.refresh_channel chan.id %}" class="async"><i class="icon-refresh"></i></a> <a href="{% url ytdl.views.view_channel chan.chanid %}">{{ chan.chanid }}</a></td>
   </tr>
   {% endfor %}
 </table>
+
+
+<script type="text/javascript">
+  $(function(){
+  
+    <!-- Download links -->
+    $("a.async").each(function(i, ahref){
+      $(ahref).click(function(evt){
+        $.ajax(ahref.href);
+        return false;
+      });
+    });
+
+    <!-- Time ago -->
+    $("abbr.timeago").timeago();
+
+  });
+</script>
 
 {% endblock %}
