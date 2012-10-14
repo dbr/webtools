@@ -34,9 +34,15 @@ def grab_video(videoid, force=False):
 
     p.communicate()
 
-    video.status = Video.STATE_GRABBED
-    video.save()
-    print "Done: %s" % video
+    if p.returncode != 0:
+        video.status = Video.STATE_GRAB_ERROR
+        video.save()
+        print "Error grabbing %s" % video
+
+    else:
+        video.status = Video.STATE_GRABBED
+        video.save()
+        print "Done: %s" % video
 
 
 @task
