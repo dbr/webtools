@@ -25,6 +25,8 @@
             <a href="?page={{ videos.previous_page_number }}&search={{query}}">Previous.</a>
         {% endif %}
 
+        <br>
+        <a href="{% url ytdl.views.refresh_channel channel.id %}" class="async"><i class="icon-refresh"></i></a>
     </span>
 </div>
 

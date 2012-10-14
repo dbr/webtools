@@ -31,7 +31,10 @@ def view_channel(request, chanid):
     except EmptyPage:
         videos = paginator.page(paginator.num_pages)
 
-    return render_to_response('ytdl/view_channel.html', {"videos": videos, "query": query})
+    return render_to_response('ytdl/view_channel.html',
+                              {"channel": channel,
+                               "videos": videos,
+                               "query": query})
 
 
 def grab(request, videoid):
