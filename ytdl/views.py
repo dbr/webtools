@@ -8,7 +8,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def index(request):
     channels = Channel.objects.all()
-    return render_to_response('ytdl/index.html', {"channels": channels})
+    return render_to_response('ytdl/list_channels.html', {"channels": channels})
 
 
 def view_channel(request, channame):
