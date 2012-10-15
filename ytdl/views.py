@@ -11,8 +11,8 @@ def index(request):
     return render_to_response('ytdl/index.html', {"channels": channels})
 
 
-def view_channel(request, chanid):
-    channel = get_object_or_404(Channel, chanid=chanid)
+def view_channel(request, channame):
+    channel = get_object_or_404(Channel, chanid=channame)
 
     all_videos = Video.objects.order_by('publishdate').reverse().all()
     all_videos = all_videos.filter(channel=channel)
@@ -69,15 +69,19 @@ def refresh_channel(request, chanid):
     return HttpResponse("ok")
 
 
-def add_channel(request, chanid):
+def add_channel(request, channame):
+    # Ensure channel doesn't exist yet
     try:
-        channel = Channel.objects.get(chanid=chanid)
+        Channel.objects.get(chanid=channame)
     except Channel.DoesNotExist:
         pass
     else:
         return HttpResponse("exists", status=500)
 
-    channel = Channel(chanid=chanid)
+    # Create new channel
+    channel = Channel(chanid=channame)
     channel.save()
+
+    # Trigger refresh
     ytdl.tasks.refresh_channel.delay(id=channel.id)
     return HttpResponse("ok")
