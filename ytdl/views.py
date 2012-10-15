@@ -67,3 +67,17 @@ def refresh_channel(request, chanid):
     ytdl.tasks.refresh_channel.delay(id=channel.id)
 
     return HttpResponse("ok")
+
+
+def add_channel(request, chanid):
+    try:
+        channel = Channel.objects.get(chanid=chanid)
+    except Channel.DoesNotExist:
+        pass
+    else:
+        return HttpResponse("exists", status=500)
+
+    channel = Channel(chanid=chanid)
+    channel.save()
+    ytdl.tasks.refresh_channel.delay(id=channel.id)
+    return HttpResponse("ok")
