@@ -28,8 +28,9 @@ def grab_video(videoid, force=False):
     video.save()
 
     cwd = os.path.expanduser("~/Downloads")
+
     p = subprocess.Popen(
-        ["youtube-dl", "--title", video.url],
+        ["youtube-dl", "--output", "%(upload_date)s_%(stitle)s_%(id)s.%(ext)s", video.url],
         cwd = cwd)
 
     p.communicate()
