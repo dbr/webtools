@@ -22,6 +22,15 @@
 </table>
 
 
+<h2>Recent videos</h2>
+<table class="table table-striped table-hover table-condensed" id="videos">
+{% for v in recent %}
+<tr>
+  <td><a href="{% url ytdl.views.view_channel v.channel %}">{{ v.title }}</a></td>
+</tr>
+{% endfor %}
+</table>
+
 <script type="text/javascript">
   $(function(){
   

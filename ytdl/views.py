@@ -8,7 +8,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def index(request):
     channels = Channel.objects.all()
-    return render_to_response('ytdl/list_channels.html', {"channels": channels})
+    recent = Video.objects.all().order_by('publishdate').reverse().filter(status=Video.STATE_NEW)[:5]
+    return render_to_response(
+        'ytdl/list_channels.html',
+        {"channels": channels, "recent": recent})
 
 
 def view_channel(request, channame):
