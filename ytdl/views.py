@@ -24,7 +24,14 @@ def view_channel(request, channame):
     if len(query) > 0:
         all_videos = all_videos.filter(title__icontains=query)
 
-    paginator = Paginator(all_videos, 25)
+    # Filtering by status
+    # FIXME: Expose/retain this in webUI
+    status = request.GET.get('status', "")
+    if len(status) > 0:
+        all_videos = all_videos.filter(status=status)
+
+    # 25 videos per page, with no less than 5 per page
+    paginator = Paginator(all_videos, per_page=25, orphans=5)
 
     page = request.GET.get('page')
     try:
