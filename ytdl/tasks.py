@@ -39,6 +39,7 @@ def grab_video(videoid, force=False):
         video.status = Video.STATE_GRAB_ERROR
         video.save()
         print "Error grabbing %s" % video
+        return
 
     else:
         video.status = Video.STATE_GRABBED

@@ -12,4 +12,3 @@ urlpatterns = patterns(
     url(r'^viewed/(?P<videoid>\d+)', 'mark_viewed'),
     url(r'^refresh/(?P<chanid>\d+)', 'refresh_channel'),
 )
-
