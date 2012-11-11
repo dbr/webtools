@@ -26,9 +26,9 @@
         {% endif %}
 
         <br>
-        <a href="{% url ytdl.views.refresh_channel channel.id %}" class="async"><i class="icon-refresh"></i></a>
     </span>
 </div>
+<hr />
 
 
 <table class="table table-striped table-hover table-condensed" id="videos">
@@ -68,6 +68,9 @@
     {% endfor %}
 </table>
 
+<p>
+  <a href="{% url ytdl.views.refresh_channel channel.id %}" class="async"><i class="icon-refresh"></i>Refresh channel</a>
+</p>
 <script type="text/javascript">
   $(function(){
   
