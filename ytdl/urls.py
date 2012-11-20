@@ -11,4 +11,5 @@ urlpatterns = patterns(
     url(r'^grab/(?P<videoid>\d+)', 'grab'),
     url(r'^viewed/(?P<videoid>\d+)', 'mark_viewed'),
     url(r'^refresh/(?P<chanid>\d+)', 'refresh_channel'),
+    url(r'^refresh_all', 'refresh_all'),
 )

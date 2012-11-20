@@ -72,6 +72,14 @@ def mark_viewed(request, videoid):
     return HttpResponse("ok")
 
 
+def refresh_all(request):
+    channels = Channel.objects.all()
+    for c in channels:
+        ytdl.tasks.refresh_channel.delay(id=c.id)
+
+    return HttpResponse("ok")
+
+
 def refresh_channel(request, chanid):
     channel = get_object_or_404(Channel, id=chanid)
     ytdl.tasks.refresh_channel.delay(id=channel.id)

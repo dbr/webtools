@@ -11,14 +11,25 @@
 {% include "ytdl/navbar.html" %}
 
 <table class="table table-striped table-hover table-condensed" id="videos">
+  <colgroup>
+    <col width="20px"></col>
+    <col></col>
+  </colgroup>
   <thead>
+    <th></th>
     <th>Title</th>
   </thead>
   {% for chan in channels %}
   <tr>
-    <td><a href="{% url ytdl.views.refresh_channel chan.id %}" class="async"><i class="icon-refresh"></i></a> <a href="{% url ytdl.views.view_channel chan.chanid %}">{{ chan.chanid }}</a></td>
+    <td><a href="{% url ytdl.views.refresh_channel chan.id %}" class="async"><i class="icon-refresh"></i></a></td>
+    <td><a href="{% url ytdl.views.view_channel chan.chanid %}">{{ chan.chanid }}</a></td>
   </tr>
   {% endfor %}
+
+  <tr>
+    <td></td>
+    <td><a href="{% url ytdl.views.refresh_all %}" class="async">Refresh all <i class="icon-refresh"></i></a></td>
+  </tr>
 </table>
 
 
