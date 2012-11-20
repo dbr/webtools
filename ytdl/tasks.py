@@ -29,6 +29,23 @@ def grab_video(videoid, force=False):
 
     cwd = os.path.expanduser("~/Downloads")
 
+    # Get output filename
+    output_format = "%(upload_date)s_%(stitle)s%(ext)s_%(id)s"
+    p = subprocess.Popen(
+        ["youtube-dl", "--output", output_format, video.url, "--get-filename"],
+        cwd = cwd,
+        stdout = subprocess.PIPE)
+    so, _se = p.communicate()
+
+    if p.returncode != 0:
+        video.status = Video.STATE_GRAB_ERROR
+        video.save()
+        print "Error grabbing video %s" % video
+        return
+
+    # FIXME: Store this in DB
+    filename = os.path.join(cwd, so.strip())
+
     p = subprocess.Popen(
         ["youtube-dl", "--output", "%(upload_date)s_%(stitle)s_%(id)s.%(ext)s", video.url],
         cwd = cwd)
