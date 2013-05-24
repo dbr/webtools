@@ -2,23 +2,31 @@ from ytdl.models import Video, Channel
 import ytdl.tasks
 
 from django.http import HttpResponse
+from django.db.models import Q
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def index(request):
-    channels = Channel.objects.all()
+    from django.db.models import Count
+    channels = Channel.objects.all().annotate(num_videos = Count('video'))
     recent = Video.objects.all().order_by('publishdate').reverse().filter(status=Video.STATE_NEW)[:5]
+
+    # Show "active" videos (downloading, errored, queued)
+    downloads = Video.objects.filter(Q(status=Video.STATE_DOWNLOADING) | Q(status=Video.STATE_QUEUED) | Q(status=Video.STATE_GRAB_ERROR)).reverse().all()
+
     return render_to_response(
         'ytdl/list_channels.html',
-        {"channels": channels, "recent": recent})
+        {"channels": channels, "recent": recent, "downloads": downloads})
 
 
 def view_channel(request, channame):
-    channel = get_object_or_404(Channel, chanid=channame)
-
     all_videos = Video.objects.order_by('publishdate').reverse().all()
-    all_videos = all_videos.filter(channel=channel)
+    if channame == "_all":
+        pass
+    else:
+        channel = get_object_or_404(Channel, chanid=channame)
+        all_videos = all_videos.filter(channel=channel)
 
     query = request.GET.get('search', "")
     if len(query) > 0:
@@ -33,6 +41,7 @@ def view_channel(request, channame):
     # 25 videos per page, with no less than 5 per page
     paginator = Paginator(all_videos, per_page=25, orphans=5)
 
+
     page = request.GET.get('page')
     try:
         videos = paginator.page(page)
@@ -42,7 +51,7 @@ def view_channel(request, channame):
         videos = paginator.page(paginator.num_pages)
 
     return render_to_response('ytdl/view_channel.html',
-                              {"channel": channel,
+                              {
                                "videos": videos,
                                "query": query})
 
