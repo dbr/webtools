@@ -17,7 +17,7 @@ if [ $? -ne 0 ]; then
     tmux split-window -v -t webtools
     tmux send-keys -t webtools "cd '$(pwd)'" C-m
     tmux send-keys -t webtools "workon youtube" C-m
-    tmux send-keys -t webtools "python manage.py runserver" C-m
+    tmux send-keys -t webtools "python manage.py runserver 0.0.0.0:8001" C-m
 
     # Celery worker
     tmux split-window -v -t webtools
