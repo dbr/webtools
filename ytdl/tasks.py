@@ -27,7 +27,16 @@ def grab_video(videoid, force=False):
     video.status = Video.STATE_DOWNLOADING
     video.save()
 
-    cwd = os.path.expanduser("~/Downloads")
+    cwd = os.path.expanduser("~/Movies/ytdl")
+
+    try:
+        os.makedirs(cwd)
+    except OSError, e:
+        if e.errno == 17:
+            # Ignore errno 17 (File exists)
+            pass
+        else:
+            raise
 
     # Get output filename
     output_format = "%(upload_date)s_%(stitle)s%(ext)s_%(id)s"
