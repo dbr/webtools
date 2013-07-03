@@ -23,7 +23,7 @@ def index(request):
 def view_channel(request, channame):
     all_videos = Video.objects.order_by('publishdate').reverse().all()
     if channame == "_all":
-        pass
+        channel = None
     else:
         channel = get_object_or_404(Channel, chanid=channame)
         all_videos = all_videos.filter(channel=channel)
@@ -51,7 +51,7 @@ def view_channel(request, channame):
         videos = paginator.page(paginator.num_pages)
 
     return render_to_response('ytdl/view_channel.html',
-                              {
+                              {"channel": channel,
                                "videos": videos,
                                "query": query})
 
