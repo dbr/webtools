@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% include "ytdl/navbar.html" %}
+
+<form method="POST" action="#">{% csrf_token %}
+  <label for="channame_input">Channel name</label>
+  <input type="text" id="channame_input" name="channame" value="">
+  <input type="submit" name="go" value="Go" />
+</form>
+{% endblock %}

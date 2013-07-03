@@ -2,8 +2,9 @@ from ytdl.models import Video, Channel
 import ytdl.tasks
 
 from django.http import HttpResponse
+from django.template import RequestContext
 from django.db.models import Q
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
@@ -95,20 +96,32 @@ def refresh_channel(request, chanid):
 
     return HttpResponse("ok")
 
-
-def add_channel(request, channame):
-    # Ensure channel doesn't exist yet
-    try:
-        Channel.objects.get(chanid=channame)
-    except Channel.DoesNotExist:
-        pass
+from django.views.decorators.csrf import csrf_protect
+@csrf_protect
+def add_channel(request):
+    if request.method == "GET":
+        return render_to_response("ytdl/add_channel.html", {},
+                                  context_instance=RequestContext(request))
     else:
-        return HttpResponse("exists", status=500)
+        # Get data form form
+        channame = request.POST['channame']
 
-    # Create new channel
-    channel = Channel(chanid=channame)
-    channel.save()
+        # TODO: Verify channel exists, give useful error
 
-    # Trigger refresh
-    ytdl.tasks.refresh_channel.delay(id=channel.id)
-    return HttpResponse("ok")
+        # Check if channel exists already added
+        try:
+            c = Channel.objects.get(chanid=request.POST['channame'])
+        except Channel.DoesNotExist:
+            pass
+        else:
+            return redirect(c)
+
+        # Create new channel
+        channel = Channel(chanid=channame)
+        channel.save()
+
+        # Trigger initial update
+        ytdl.tasks.refresh_channel.delay(id=channel.id)
+
+        # View newly added channel
+        return redirect(channel)

@@ -91,6 +91,10 @@ class Channel(models.Model):
 
             v.save()
 
+    def get_absolute_url(self):
+        from django.core.urlresolvers import reverse
+        return reverse('ytdl.views.view_channel', args=[self.chanid, ])
+
 
 class Video(models.Model):
     STATE_NEW = 'NE'
