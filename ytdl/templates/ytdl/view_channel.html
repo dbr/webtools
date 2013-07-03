@@ -85,7 +85,16 @@
     <!-- Download links -->
     $("a.async").each(function(i, ahref){
       $(ahref).click(function(evt){
-        $.ajax(ahref.href);
+        $(ahref).parent().parent().removeClass();
+        $.ajax(ahref.href)
+          .done(function(data, textStatus, jqXHR){
+            <!-- Indicate something happened -->
+            <!-- FIXME: This could be done waaaay better -->
+            $(ahref).parent().parent().addClass("pending");})
+          .fail(function(jqXHR, textStatus, errorThrown){
+            <!-- Request failed (e.g already downloaded) -->
+            $(ahref).parent().parent().addClass("error");});
+
         return false;
       });
     });
