@@ -89,7 +89,7 @@
         $.ajax(ahref.href)
           .done(function(data, textStatus, jqXHR){
             <!-- Indicate something happened -->
-            <!-- FIXME: This could be done waaaay better -->
+            <!-- FIXME: This does not update status column, incorrect colours when marking as read etc. Awful. -->
             $(ahref).parent().parent().addClass("pending");})
           .fail(function(jqXHR, textStatus, errorThrown){
             <!-- Request failed (e.g already downloaded) -->
