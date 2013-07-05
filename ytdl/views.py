@@ -74,9 +74,18 @@ def grab(request, videoid):
     return HttpResponse("ok" + " (force)"*(int(force)))
 
 
+# TODO: Refactor mark_ into generic give-video-this-status
 def mark_viewed(request, videoid):
     video = get_object_or_404(Video, id=videoid)
     video.status = Video.STATE_GRABBED
+    video.save()
+
+    return HttpResponse("ok")
+
+
+def mark_ignored(request, videoid):
+    video = get_object_or_404(Video, id=videoid)
+    video.status = Video.STATE_IGNORE
     video.save()
 
     return HttpResponse("ok")
