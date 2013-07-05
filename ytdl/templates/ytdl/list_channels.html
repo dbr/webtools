@@ -26,7 +26,7 @@
   {% for chan in channels %}
   <tr>
     <td><a href="{% url ytdl.views.refresh_channel chan.id %}" class="async"><i class="icon-refresh"></i></a></td>
-    <td><a href="{% url ytdl.views.view_channel chan.chanid %}">{{ chan.chanid }}</a> ({{chan.num_videos}})</td>
+    <td><a href="{% url ytdl.views.view_channel chan.chanid %}">{{ chan.chanid }}</a> ({{chan.num_unviewed}})</td>
   </tr>
   {% endfor %}
 

@@ -95,6 +95,9 @@ class Channel(models.Model):
         from django.core.urlresolvers import reverse
         return reverse('ytdl.views.view_channel', args=[self.chanid, ])
 
+    def num_unviewed(self):
+        return Video.objects.all().filter(channel=self).filter(status=Video.STATE_NEW).count()
+
 
 class Video(models.Model):
     STATE_NEW = 'NE'
