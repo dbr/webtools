@@ -1,6 +1,7 @@
 from ytdl.models import Video, Channel
 import ytdl.tasks
 
+from django.core.cache import cache
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.db.models import Q
@@ -55,6 +56,19 @@ def view_channel(request, channame):
                               {"channel": channel,
                                "videos": videos,
                                "query": query})
+
+
+def channel_icon(self, channame):
+    cache_key = "ytdl_channel_icon_%s" % channame
+
+    url = cache.get(cache_key)
+    if url is None:
+        # Cache miss
+        from .models import YoutubeApi
+        url = YoutubeApi(channame).icon()
+        cache.set(cache_key, url)
+
+    return redirect(url, permanent=False)
 
 
 def grab(request, videoid):

@@ -62,6 +62,13 @@ class YoutubeApi(object):
             print "No more!\n\n\n\n"
         return ret
 
+    def icon(self):
+        yt_service = gdata.youtube.service.YouTubeService()
+        uri = 'http://gdata.youtube.com/feeds/api/users/%s?fields=yt:username,media:thumbnail' % (
+            self.chanid)
+        user = yt_service.GetYouTubeUserEntry(uri)
+        return user.thumbnail.url
+
 
 class Channel(models.Model):
     chanid = models.CharField(max_length=256, unique=True)
