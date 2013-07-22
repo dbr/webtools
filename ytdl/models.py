@@ -102,6 +102,13 @@ class Channel(models.Model):
         from django.core.urlresolvers import reverse
         return reverse('ytdl.views.view_channel', args=[self.chanid, ])
 
+    def num_unviewed_recently(self):
+        import datetime
+        now = datetime.datetime.now()
+        range = datetime.timedelta(days=7)
+        newer_than = now - range
+        return Video.objects.all().filter(channel=self).filter(status=Video.STATE_NEW).filter(publishdate__gt=newer_than).count()
+
     def num_unviewed(self):
         return Video.objects.all().filter(channel=self).filter(status=Video.STATE_NEW).count()
 

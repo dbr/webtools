@@ -13,15 +13,21 @@
 <table class="table table-striped table-hover table-condensed" id="videos">
   <colgroup>
     <col width="20px"></col>
+    <col width="200px"></col>
+    <col width="80px"></col>
     <col></col>
   </colgroup>
   <thead>
     <th></th>
     <th>Title</th>
+    <th>Recent</th>
+    <th>Total unviewed</th>
   </thead>
   <tr>
     <td></td>
     <td><a href="{% url ytdl.views.view_channel '_all' %}">All channels</a></td>
+    <td>0</td>
+    <td>0</td>
   </tr>
   {% for chan in channels %}
   <tr>
@@ -30,7 +36,9 @@
       <a href="{% url ytdl.views.view_channel chan.chanid %}">
         <img width="12px" src="{% url ytdl.views.channel_icon chan.chanid %}"> {{ chan.chanid }}
       </a>
-      ({{chan.num_unviewed}})</td>
+    </td>
+    <td>{{chan.num_unviewed_recently}}</td>
+    <td>{{chan.num_unviewed}}</td>
   </tr>
   {% endfor %}
 
