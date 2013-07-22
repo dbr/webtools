@@ -11,7 +11,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def index(request):
     from django.db.models import Count
-    channels = Channel.objects.all().annotate(num_videos = Count('video'))
+    channels = Channel.objects.order_by('chanid').all().annotate(num_videos = Count('video'))
     recent = Video.objects.all().order_by('publishdate').reverse().filter(status=Video.STATE_NEW)[:5]
 
     # Show "active" videos (downloading, errored, queued)
