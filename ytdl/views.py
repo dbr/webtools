@@ -14,6 +14,10 @@ def index(request):
     channels = Channel.objects.order_by('chanid').all().annotate(num_videos = Count('video'))
     recent = Video.objects.all().order_by('publishdate').reverse().filter(status=Video.STATE_NEW)[:5]
 
+    # Sort channels based on lower-case ID (easier and just as
+    # quick to do this in non-QuerySet manner)
+    channels = sorted(channels, key = lambda c: c.chanid.lower())
+
     # Show "active" videos (downloading, errored, queued)
     downloads = Video.objects.filter(Q(status=Video.STATE_DOWNLOADING) | Q(status=Video.STATE_QUEUED) | Q(status=Video.STATE_GRAB_ERROR)).reverse().all()
 
