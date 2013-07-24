@@ -8,5 +8,6 @@ gdata==2.0.17
 kombu==2.4.7
 python-dateutil==2.1
 redis==2.7.1
+requests==1.2.3
 six==1.2.0
 wsgiref==0.1.2

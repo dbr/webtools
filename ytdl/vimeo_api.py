@@ -1,5 +1,6 @@
 import datetime
 import requests
+# For some reason, Vimeo ignores the "?page=2" parameter when requested by urllib/urllib2, but is okay with requests
 
 
 class VimeoApi(object):
