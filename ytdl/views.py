@@ -68,8 +68,9 @@ def channel_icon(self, channame):
     url = cache.get(cache_key)
     if url is None:
         # Cache miss
-        from .models import YoutubeApi
-        url = YoutubeApi(channame).icon()
+        chan = get_object_or_404(ytdl.models.Channel, chanid=channame)
+        api = chan.get_api()
+        url = api.icon()
         cache.set(cache_key, url)
 
     return redirect(url, permanent=False)

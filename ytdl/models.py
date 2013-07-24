@@ -1,83 +1,33 @@
 from django.db import models
 
-import gdata.youtube.service
+from .youtube_api import YoutubeApi
+from .vimeo_api import VimeoApi
 
 
-class YoutubeApi(object):
-    def __init__(self, chanid):
-        self.chanid = chanid
 
-    def videos_for_user(self, limit=10):
-        results = 50
-
-        print limit,"limit"
-        for offset_i in range(limit):
-            offset = 1 + offset_i*results
-            print "offset", offset
-            new = self._videos_for_user(offset=offset, results=results)
-
-            for cur in new:
-                yield cur
-
-            if len(new) < results:
-                raise StopIteration("No more videos on next page")
-
-        else:
-            print "Giving up at page %s" % offset_i
-
-    def _videos_for_user(self, offset, results=50):
-        yt_service = gdata.youtube.service.YouTubeService()
-        uri = 'http://gdata.youtube.com/feeds/api/users/%s/uploads?start-index=%d&max-results=%d' % (
-            self.chanid,
-            offset,
-            results)
-
-        print uri
-        feed = yt_service.GetYouTubeVideoFeed(uri)
-    
-        ret = []
-        for item in feed.entry:
-            id = item.id.text
-            title = item.media.title.text
-            url = item.media.player.url
-            descr = item.media.description.text
-            thumbs = [thumbnail.url for thumbnail in item.media.thumbnail]
-            published = item.published.text
-            import time
-            from datetime import datetime
-            ts = time.strptime(published.split(".")[0], "%Y-%m-%dT%H:%M:%S")
-            dt = datetime.fromtimestamp(time.mktime(ts))
-    
-            info = {
-                'id': id,
-                'title': title or "Untitled",
-                'url': url,
-                'thumbs': thumbs,
-                'descr': descr,
-                'published': dt,
-                }
-            ret.append(info)
-
-        if len(ret) < results:
-            print "No more!\n\n\n\n"
-        return ret
-
-    def icon(self):
-        yt_service = gdata.youtube.service.YouTubeService()
-        uri = 'http://gdata.youtube.com/feeds/api/users/%s?fields=yt:username,media:thumbnail' % (
-            self.chanid)
-        user = yt_service.GetYouTubeUserEntry(uri)
-        return user.thumbnail.url
-
+YOUTUBE = 'youtube'
+VIMEO = 'vimeo'
 
 class Channel(models.Model):
     chanid = models.CharField(max_length=256, unique=True)
+    service = models.CharField(max_length=256, unique=True)
 
     def __unicode__(self):
         return self.chanid
 
+    def get_api(self):
+        if self.service == YOUTUBE:
+            api = YoutubeApi(str(self.chanid))
+        elif self.service == VIMEO:
+            api = VimeoApi(str(self.chanid))
+        else:
+            raise ValueError("Unknown service %r" % self.service)
+
+        return api
+
     def grab(self, limit=1000):
-        chan = YoutubeApi(str(self.chanid))
+        chan = self.get_api()
+
         for vid in chan.videos_for_user(limit=limit):
             exists = Video.objects.filter(videoid = vid['id']).count() > 0
             if exists:
