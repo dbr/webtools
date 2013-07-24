@@ -2,6 +2,7 @@ from ytdl.models import Video, Channel, ALL_SERVICES
 import ytdl.tasks
 
 from django.core.cache import cache
+from django.views.decorators.cache import cache_page
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.db.models import Q
@@ -62,6 +63,7 @@ def view_channel(request, channame):
                                "query": query})
 
 
+@cache_page(60*60)
 def channel_icon(self, channame):
     cache_key = "ytdl_channel_icon_%s" % channame
 
