@@ -8,6 +8,9 @@ from .vimeo_api import VimeoApi
 YOUTUBE = 'youtube'
 VIMEO = 'vimeo'
 
+ALL_SERVICES = [YOUTUBE, VIMEO]
+
+
 class Channel(models.Model):
     chanid = models.CharField(max_length=256, unique=True)
     service = models.CharField(max_length=256, unique=True)

@@ -1,4 +1,4 @@
-from ytdl.models import Video, Channel
+from ytdl.models import Video, Channel, ALL_SERVICES
 import ytdl.tasks
 
 from django.core.cache import cache
@@ -133,6 +133,13 @@ def add_channel(request):
     else:
         # Get data form form
         channame = request.POST['channame']
+        service = request.POST['service']
+
+        # Check service is valid
+        if service not in ALL_SERVICES:
+            return HttpResponse(
+                "Invalid service selected, should be in %r" % (ALL_SERVICES),
+                status=500)
 
         # TODO: Verify channel exists, give useful error
 
@@ -145,7 +152,7 @@ def add_channel(request):
             return redirect(c)
 
         # Create new channel
-        channel = Channel(chanid=channame)
+        channel = Channel(chanid=channame, service=service)
         channel.save()
 
         # Trigger initial update
