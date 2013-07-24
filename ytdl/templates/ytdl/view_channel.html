@@ -33,8 +33,8 @@
   <thead>
     <th>Actions</th>
     <th>Title</th>
-    <th>Status</th>
-    <th>Released</th>
+    <th width="75px">Status</th>
+    <th width="100px">Released</th>
   </thead>
 
   {% for v in videos %}
@@ -64,7 +64,7 @@
       {{ v.status_str}}
     </td>
     <td>
-      <abbr class="timeago" title="{{ v.publishdate|date:'c' }}">{{ v.publishdate }}</abbr>
+      <abbr style="font-size:0.7em" class="timeago" title="{{ v.publishdate|date:'c' }}">{{ v.publishdate }}</abbr>
     </td>
 
     {% endfor %}
