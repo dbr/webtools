@@ -21,3 +21,13 @@ urlpatterns = patterns('',
     url(r'^$', redirect_to, {'url': 'youtube/'}),
     url(r'^youtube/', include(ytdl.urls))
 )
+
+
+from django.conf import settings
+
+if not settings.DEBUG:
+    # http://stackoverflow.com/questions/9047054/heroku-handling-static-files-in-django-app
+    urlpatterns += patterns(
+        '',
+        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+        )
