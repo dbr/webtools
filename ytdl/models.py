@@ -49,6 +49,7 @@ class Channel(models.Model):
                 publishdate = vid['published'],
                 )
 
+            # TODO: Bulk insertion, https://docs.djangoproject.com/en/dev/topics/db/optimization/#insert-in-bulk
             v.save()
 
     def get_absolute_url(self):
