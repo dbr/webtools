@@ -99,6 +99,7 @@ MIDDLEWARE_CLASSES = (
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     #'ytdl.profiling_middleware.ProfileMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'webtools.urls'
@@ -126,6 +127,8 @@ INSTALLED_APPS = (
     'kombu.transport.django',
 
     'ytdl',
+
+    'debug_toolbar',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -167,3 +170,5 @@ if False:
 else:
     BROKER_URL = 'redis://localhost:6379/4'
     CELERY_RESULT_BACKEND = 'redis://localhost:6379/4'
+
+INTERNAL_IPS = ('127.0.0.1',)
