@@ -89,9 +89,11 @@ class Video(models.Model):
     title = models.CharField(max_length=1024)             # Title of video
     description = models.TextField(blank=True, null=True) # Description of video
     _thumbnails = models.CharField(max_length=1024)       # Thumbnail image URL
-    videoid = models.CharField(max_length=256)
-    publishdate = models.DateTimeField()
+    videoid = models.CharField(max_length=256)            # ID of video on service
+    publishdate = models.DateTimeField(db_index=True)     # When the video was originally published
     status = models.CharField(max_length=2, choices=STATES, default=STATE_NEW)
+
+    # Index on publishdate helps with pagination query (SELECT * FROM ytdl_video ORDER BY publishdate)
 
     def __unicode__(self):
         return "%s (on %s) [%s]" % (self.title, self.channel.chanid, self.status)
