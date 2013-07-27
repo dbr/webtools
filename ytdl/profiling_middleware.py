@@ -18,14 +18,18 @@ group_prefix_re = [
 ]
 
 class ProfileMiddleware(object):
-    """
-    Displays hotshot profiling for any view.
-    http://yoursite.com/yourview/?prof
+    """Profiles the page using cProfile, displays the result as a graph
+    (using gprof2dot and graphviz)
 
     Add the "prof" key to query string by appending ?prof (or &prof=)
-    and you'll see the profiling results in your browser.
+    and you'll see the profiling results in your browser:
+
+    http://yoursite.com/yourview/?prof
+
     It's set up to only be available in django's debug mode, is available for superuser otherwise,
     but you really shouldn't add this middleware to any production configuration.
+
+    Based of http://gun.io/blog/fast-as-fuck-django-part-1-using-a-profiler/
     """
 
     def process_view(self, request, callback, callback_args, callback_kwargs):
