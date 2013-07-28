@@ -6,6 +6,7 @@ celery==3.0.11
 django-celery==3.0.10
 django-debug-toolbar==0.9.4
 django-debug-toolbar-template-timings==0.4.6
+django-redis-cache==0.10.0
 gdata==2.0.17
 kombu==2.4.7
 python-dateutil==2.1

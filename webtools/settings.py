@@ -163,6 +163,18 @@ LOGGING = {
 }
 
 
+# Caching
+CACHES = {
+    'default': {
+        'BACKEND': 'redis_cache.RedisCache',
+        'LOCATION': 'localhost:6379',
+        'OPTIONS': {
+            'DB': 4,
+        },
+    },
+}
+
+
 # Celery task thingy
 import djcelery
 djcelery.setup_loader()
