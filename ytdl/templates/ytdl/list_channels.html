@@ -33,8 +33,8 @@
   <tr>
     <td><a href="{% url ytdl.views.refresh_channel chan.id %}" class="async"><i class="icon-refresh"></i></a></td>
     <td>
-      <a href="{% url ytdl.views.view_channel chan.chanid %}">
-        <img width="12px" src="{% url ytdl.views.channel_icon chan.chanid %}"> {{ chan.chanid }}
+      <a href="{% url ytdl.views.view_channel chan.id %}">
+        <img width="12px" src="{% url ytdl.views.channel_icon chan.id %}"> {{ chan.chanid }}
       </a>
     </td>
     <td>{{chan.num_unviewed_recently}}</td>

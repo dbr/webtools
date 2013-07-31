@@ -54,7 +54,7 @@ class Channel(models.Model):
 
     def get_absolute_url(self):
         from django.core.urlresolvers import reverse
-        return reverse('ytdl.views.view_channel', args=[self.chanid, ])
+        return reverse('ytdl.views.view_channel', args=[self.id, ])
 
     def num_unviewed_recently(self):
         import datetime

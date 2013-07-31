@@ -27,12 +27,12 @@ def index(request):
         {"channels": channels, "recent": recent, "downloads": downloads})
 
 
-def view_channel(request, channame):
+def view_channel(request, chanid):
     all_videos = Video.objects.order_by('publishdate').reverse().all()
-    if channame == "_all":
+    if chanid == "_all":
         channel = None
     else:
-        channel = get_object_or_404(Channel, chanid=channame)
+        channel = get_object_or_404(Channel, pk=chanid)
         all_videos = all_videos.filter(channel=channel)
 
     query = request.GET.get('search', "")
@@ -64,13 +64,13 @@ def view_channel(request, channame):
 
 
 @cache_page(60*60)
-def channel_icon(self, channame):
-    cache_key = "ytdl_channel_icon_%s" % channame
+def channel_icon(self, chanid):
+    cache_key = "ytdl_channel_icon_%s" % chanid
 
     url = cache.get(cache_key)
     if url is None:
         # Cache miss
-        chan = get_object_or_404(ytdl.models.Channel, chanid=channame)
+        chan = get_object_or_404(ytdl.models.Channel, id=chanid)
         api = chan.get_api()
         url = api.icon()
         cache.set(cache_key, url)
