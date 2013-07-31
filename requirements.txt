@@ -10,6 +10,7 @@ django-redis-cache==0.10.0
 gdata==2.0.17
 kombu==2.4.7
 python-dateutil==2.1
+pytz==2013b
 redis==2.7.1
 requests==1.2.3
 six==1.2.0

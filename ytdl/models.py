@@ -1,5 +1,9 @@
 from django.db import models
 
+import os
+import pytz
+import datetime
+
 from .youtube_api import YoutubeApi
 from .vimeo_api import VimeoApi
 
@@ -57,8 +61,8 @@ class Channel(models.Model):
         return reverse('ytdl.views.view_channel', args=[self.id, ])
 
     def num_unviewed_recently(self):
-        import datetime
-        now = datetime.datetime.now()
+        tz = pytz.timezone(os.getenv("TZ", "Australia/Adelaide"))
+        now = datetime.datetime.utcnow().replace(tzinfo = pytz.utc).astimezone(tz)
         range = datetime.timedelta(days=7)
         newer_than = now - range
         return Video.objects.all().filter(channel=self).filter(status=Video.STATE_NEW).filter(publishdate__gt=newer_than).count()
