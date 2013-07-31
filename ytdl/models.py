@@ -64,10 +64,10 @@ class Channel(models.Model):
         now = django.utils.timezone.now()
         range = datetime.timedelta(days=7)
         newer_than = now - range
-        return Video.objects.all().filter(channel=self).filter(status=Video.STATE_NEW).filter(publishdate__gt=newer_than).count()
+        return Video.objects.filter(channel=self).filter(status=Video.STATE_NEW).filter(publishdate__gt=newer_than).count()
 
     def num_unviewed(self):
-        return Video.objects.all().filter(channel=self).filter(status=Video.STATE_NEW).count()
+        return Video.objects.filter(channel=self).filter(status=Video.STATE_NEW).count()
 
 
 class Video(models.Model):
@@ -94,9 +94,17 @@ class Video(models.Model):
     _thumbnails = models.CharField(max_length=1024)       # Thumbnail image URL
     videoid = models.CharField(max_length=256)            # ID of video on service
     publishdate = models.DateTimeField(db_index=True)     # When the video was originally published
-    status = models.CharField(max_length=2, choices=STATES, default=STATE_NEW)
+    status = models.CharField(max_length=2, choices=STATES, default=STATE_NEW, db_index=True)
 
     # Index on publishdate helps with pagination query (SELECT * FROM ytdl_video ORDER BY publishdate)
+
+    # Index on status helps "Downloads" query (SELECT * FROM ytdl_video WHERE status=DL or status=QU etc)
+
+    # Multi-column index, only works in Django 1.5+
+    index_together = [
+        # For "num_unviewed_recently"
+        ["status", "publishdate"],
+    ]
 
     def __unicode__(self):
         return "%s (on %s) [%s]" % (self.title, self.channel.chanid, self.status)
