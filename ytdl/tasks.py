@@ -2,7 +2,7 @@ import os
 import subprocess
 from celery import task
 
-
+from ytdl import ytdl_settings
 from ytdl.models import Video, Channel
 
 
@@ -27,7 +27,7 @@ def grab_video(videoid, force=False):
     video.status = Video.STATE_DOWNLOADING
     video.save()
 
-    cwd = os.path.expanduser("~/Movies/ytdl")
+    cwd = ytdl_settings.OUTPUT_DIR
 
     try:
         os.makedirs(cwd)
@@ -39,9 +39,8 @@ def grab_video(videoid, force=False):
             raise
 
     # Get output filename
-    output_format = "%(upload_date)s_%(title)s%(ext)s_%(id)s"
     p = subprocess.Popen(
-        ["youtube-dl", "--restrict-filenames", "--output", output_format, video.url, "--get-filename"],
+        ["youtube-dl", "--restrict-filenames", "--output", ytdl_settings.OUTPUT_FORMAT, video.url, "--get-filename"],
         cwd = cwd,
         stdout = subprocess.PIPE)
     so, _se = p.communicate()
@@ -56,7 +55,7 @@ def grab_video(videoid, force=False):
     filename = os.path.join(cwd, so.strip())
 
     p = subprocess.Popen(
-        ["youtube-dl", "--restrict-filenames", "--output", "%(upload_date)s_%(title)s_%(id)s.%(ext)s", video.url],
+        ["youtube-dl", "--restrict-filenames", "--output", ytdl_settings.OUTPUT_FORMAT, video.url],
         cwd = cwd)
 
     p.communicate()
