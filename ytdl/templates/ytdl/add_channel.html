@@ -4,6 +4,10 @@
 
 {% include "ytdl/navbar.html" %}
 
+<div style="padding: 20px"></div>
+
+<div class="well">
+<h2>Add channel</h2>
 <form method="POST" action="#">{% csrf_token %}
   <label for="channame_input">Channel name</label>
   <input type="text" id="channame_input" name="channame" value="">
@@ -16,4 +20,5 @@
   <br>
   <input type="submit" name="go" value="Go" />
 </form>
+</div>
 {% endblock %}
