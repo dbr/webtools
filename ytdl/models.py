@@ -1,8 +1,8 @@
 from django.db import models
 
-import os
 import datetime
 import django.utils.timezone
+from django.core.cache import cache
 
 from .youtube_api import YoutubeApi
 from .vimeo_api import VimeoApi
@@ -60,14 +60,43 @@ class Channel(models.Model):
         from django.core.urlresolvers import reverse
         return reverse('ytdl.views.view_channel', args=[self.id, ])
 
-    def num_unviewed_recently(self):
+    def num_unviewed_recently(self, _clear_cache=False):
+        key = "video__num_unviewed_recently__%s" % self.id
+
+        if _clear_cache:
+            cache.delete(key)
+            return
+
+        cached_val = cache.get(key)
+        if cached_val is not None:
+            return cached_val
+
         now = django.utils.timezone.now()
         range = datetime.timedelta(days=7)
         newer_than = now - range
-        return Video.objects.filter(channel=self).filter(status=Video.STATE_NEW).filter(publishdate__gt=newer_than).count()
+        val = Video.objects.filter(channel=self).filter(status=Video.STATE_NEW).filter(publishdate__gt=newer_than).count()
+        cache.set(key, val)
+        return val
 
-    def num_unviewed(self):
-        return Video.objects.filter(channel=self).filter(status=Video.STATE_NEW).count()
+    def num_unviewed(self, _clear_cache=False):
+        key = "video__num_unviewed__%s" % self.id
+
+        if _clear_cache:
+            cache.delete(key)
+            return
+
+        cached_val = cache.get(key)
+        if cached_val is not None:
+            return cached_val
+
+        val = Video.objects.filter(channel=self).filter(status=Video.STATE_NEW).count()
+        cache.set(key, val)
+        return val
+
+    def video_updated(self):
+        # When video is updated, invalidate cached things like num_unviewed count
+        self.num_unviewed(_clear_cache=True)
+        self.num_unviewed_recently(_clear_cache=True)
 
 
 class Video(models.Model):
@@ -140,3 +169,9 @@ class Video(models.Model):
     @property
     def img(self):
         return self._thumbnails.split("  ")
+
+    def save(self, *args, **kwargs):
+        # Invalidate cached stuff on channel (e.g video totals)
+        self.channel.video_updated()
+
+        super(Video, self).save(*args, **kwargs)
