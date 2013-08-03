@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    help = "Write out channel list"
+    help = "Removes videos with duplicate URL's"
 
     def handle(self, *args, **kwargs):
         kill = '--kill' in args
