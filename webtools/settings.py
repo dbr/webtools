@@ -206,3 +206,12 @@ DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.logger.LoggingPanel',
     'template_timings_panel.panels.TemplateTimings.TemplateTimings',
 )
+
+
+## ytdl settings (note defaults live in ytdl/ytdl_settings.py)
+
+# Download location
+#OUTPUT_DIR = os.path.expanduser("~/Movies/ytdl")
+
+# Value passed to the "youtube-dl --restrict-filenames --output ${OUTPUT_FORMAT}"  argument
+#OUTPUT_FORMAT = "%(upload_date)s_%(title)s_%(id)s.%(ext)s"
