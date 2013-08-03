@@ -32,7 +32,10 @@ class Command(BaseCommand):
             print "Getting videos for %s" % (db_chan)
             db_chan.grab()
 
-            print "Updating statuses"
+            # Restore statuses
+            # TODO: Could maybe speed this up with QuerySet update,
+            # http://stackoverflow.com/a/325066
+            print "Restore statuses"
             for video in channel['videos']:
                 try:
                     v = ytdl.models.Video.objects.get(videoid=video['videoid'])
