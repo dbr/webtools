@@ -43,8 +43,6 @@ class Channel(models.Model):
                 print "%s exists, stopping" % (vid['id'])
                 return # Skip
 
-            from pprint import pprint as pp
-            pp(vid)
             v = Video(
                 title = vid['title'],
                 url = vid['url'],
