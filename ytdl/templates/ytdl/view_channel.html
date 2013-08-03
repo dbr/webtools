@@ -40,13 +40,13 @@
   {% for v in videos %}
   <tr class="{{ v.status_class }}">
     <td>
-      <a href="{% url ytdl.views.grab v.id %}" class="async"><i class="icon-download-alt"></i></a>
-      <a href="{% url ytdl.views.mark_viewed v.id %}" class="async"><i class="icon-ok" title="Mark as viewed"></i></a>
-      <a href="{% url ytdl.views.mark_ignored v.id %}" class="async"><i class="icon-minus" title="Mark video as ignored"></i></a>
+      <a href="{% url 'ytdl.views.grab' v.id %}" class="async"><i class="icon-download-alt"></i></a>
+      <a href="{% url 'ytdl.views.mark_viewed' v.id %}" class="async"><i class="icon-ok" title="Mark as viewed"></i></a>
+      <a href="{% url 'ytdl.views.mark_ignored' v.id %}" class="async"><i class="icon-minus" title="Mark video as ignored"></i></a>
     </td>
     <td>
       {% if not channel %}
-        <a href="{% url ytdl.views.view_channel v.channel.id %}"><img width="12px" src="{% url ytdl.views.channel_icon v.channel.id %}"></a>
+        <a href="{% url 'ytdl.views.view_channel' v.channel.id %}"><img width="12px" src="{% url 'ytdl.views.channel_icon' v.channel.id %}"></a>
       {% endif %}
       <a href="{{ v.url }}">{{ v.title }} {% if not channel %}<small style="color:grey"> [{{ v.channel.chanid }}]{% endif %}</small></a>
 
@@ -72,9 +72,9 @@
 
 <p>
   {% if channel %}
-  <a href="{% url ytdl.views.refresh_channel channel.id %}" class="async"><i class="icon-refresh"></i>Refresh {{channel.chanid}}</a>
+  <a href="{% url 'ytdl.views.refresh_channel' channel.id %}" class="async"><i class="icon-refresh"></i>Refresh {{channel.chanid}}</a>
   {% else %}
-  <a href="{% url ytdl.views.refresh_all %}" class="async"><i class="icon-refresh"></i>Refresh all</a>
+  <a href="{% url 'ytdl.views.refresh_all' %}" class="async"><i class="icon-refresh"></i>Refresh all</a>
   {% endif %}
 </p>
 <script type="text/javascript">
