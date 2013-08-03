@@ -1,5 +1,5 @@
-session="webtools"
-venv_name="youtube2"
+session="webtools" # tmux session name
+venv_name="webtools" # virtualenv name (e.g "workon webtools")
 
 tmux has-session -t ${session} 2>/dev/null
 
