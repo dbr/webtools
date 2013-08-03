@@ -51,7 +51,7 @@ class ProfileMiddleware(object):
             gprof2dot = subprocess.Popen(['gprof2dot', '-f', 'pstats', f], stdout=subprocess.PIPE)
 
             _, pngtmp = tempfile.mkstemp()
-            dot = subprocess.Popen(['/Users/dbr/code/homebrew/bin/dot', '-Tpng', '-o', pngtmp], stdin=gprof2dot.stdout)
+            dot = subprocess.Popen(['dot', '-Tpng', '-o', pngtmp], stdin=gprof2dot.stdout)
             dot.communicate()
 
             response.content_type = "image/png"
