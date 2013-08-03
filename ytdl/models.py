@@ -16,8 +16,10 @@ ALL_SERVICES = [YOUTUBE, VIMEO]
 
 
 class Channel(models.Model):
-    chanid = models.CharField(max_length=256, unique=True)
-    service = models.CharField(max_length=256, unique=True)
+    chanid = models.CharField(max_length=256)
+    service = models.CharField(max_length=256)
+    # TODO: Only a duplicate if another Channel exists with same
+    # chanid *and* service, which "unique=True" doesn't catch
 
     def __unicode__(self):
         return self.chanid
