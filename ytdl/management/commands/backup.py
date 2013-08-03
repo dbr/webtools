@@ -6,7 +6,7 @@ from django.core.management.base import BaseCommand, CommandError
 
 
 class Command(BaseCommand):
-    help = "Write out channel list"
+    help = "Backups the status of videos"
 
     def handle(self, *args, **kwargs):
         if len(args) == 1:
@@ -18,23 +18,28 @@ class Command(BaseCommand):
             raise CommandError("First argument is output file. If unspecified, writes to stdout")
 
 
-        videos = {}
-
         import ytdl.models
-        all_chan = ytdl.models.Channel.objects.all()
-        for c in all_chan:
-            channel_videos = ytdl.models.Video.objects.filter(channel = c)
-            for v in channel_videos:
-                videos.setdefault(c.chanid, []).append(
+
+        channels = []
+        for c in ytdl.models.Channel.objects.all():
+            chaninfo = {'chanid': c.chanid,
+                        'service': c.service,
+                        'videos': []
+                    }
+            for v in ytdl.models.Video.objects.filter(channel = c):
+                chaninfo['videos'].append(
                     {'title': v.title,
                      'url': v.url,
+                     'videoid': v.videoid,
                      'status': v.status,
                      'publishdate': v.status,
+                     'service': c.service,
                  })
 
-        json.dump(videos, f,
-                         sort_keys=True,
-                         indent=1, separators=(',', ': '))
+            channels.append(chaninfo)
+
+        json.dump(channels, f,
+                  sort_keys=True, indent=1, separators=(',', ': '))
         f.write("\n") # Trailing new line in file (or stdout)
 
         if len(args) == 1:
