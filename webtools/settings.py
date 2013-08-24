@@ -99,7 +99,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #'ytdl.profiling_middleware.ProfileMiddleware',
+    'ytdl.profiling_middleware.ProfileMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
