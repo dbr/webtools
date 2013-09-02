@@ -28,7 +28,7 @@ class VimeoApi(object):
                 yield info
 
     def icon(self):
-        data = requests.get("http://vimeo.com/api/v2/cyclocosm/info.json").json()
+        data = requests.get("http://vimeo.com/api/v2/%s/info.json" % self.chanid).json()
         return data['portrait_small']
 
 
