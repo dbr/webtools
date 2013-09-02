@@ -48,12 +48,13 @@ def grab_video(videoid, force=False):
     if p.returncode != 0:
         video.status = Video.STATE_GRAB_ERROR
         video.save()
-        print "Error grabbing video %s" % video
+        print "Error grabbing video name %s" % video
         return
 
     # FIXME: Store this in DB
     filename = os.path.join(cwd, so.strip())
 
+    # Grab video
     p = subprocess.Popen(
         ["youtube-dl", "--restrict-filenames", "--output", ytdl_settings.OUTPUT_FORMAT, video.url],
         cwd = cwd)
