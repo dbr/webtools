@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% include "ytdl/navbar.html" %}
+
+<div style="padding: 20px"></div>
+
+<div class="well">
+<h2>Delete channel</h2>
+<form method="POST" action="#">{% csrf_token %}
+  <label for="service_input">Channel</label>
+  <select name="pk">
+    {% for chan in channels %}
+    <option value="{{chan.pk}}">{{ chan.chanid }} ({{ chan.service }})</a>
+    {% endfor %}
+  </select>
+  <br>
+  <input type="submit" name="go" value="Go" />
+</form>
+</div>
+{% endblock %}

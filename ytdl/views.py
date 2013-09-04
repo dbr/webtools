@@ -162,3 +162,18 @@ def add_channel(request):
 
         # View newly added channel
         return redirect(channel)
+
+
+@csrf_protect
+def channel_delete(request):
+    if request.method == "GET":
+        channels = Channel.objects.all()
+        return render_to_response("ytdl/delete_channel.html", {'channels': channels},
+                                  context_instance=RequestContext(request))
+    else:
+        pk = request.POST['pk']
+        c = get_object_or_404(Channel, pk=pk)
+
+        # Delete channel and videos
+        c.delete()
+        return redirect(index)
