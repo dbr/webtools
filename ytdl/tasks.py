@@ -77,3 +77,10 @@ def grab_video(videoid, force=False):
 def refresh_channel(id):
     channel = Channel.objects.get(id=id)
     channel.grab()
+
+
+@task
+def refresh_all_channels():
+    channels = Channel.objects.all()
+    for c in channels:
+        refresh_channel.delay(id=c.id)

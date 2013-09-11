@@ -185,6 +185,18 @@ else:
     BROKER_URL = 'redis://localhost:6379/4'
     CELERY_RESULT_BACKEND = 'redis://localhost:6379/4'
 
+from datetime import timedelta
+
+CELERYBEAT_SCHEDULE = {
+    'refresh-all-channels': {
+        'task': 'ytdl.tasks.refresh_all_channels',
+        'schedule': timedelta(minutes=20),
+    },
+}
+
+CELERY_TIMEZONE = 'UTC'
+
+
 
 # Debug toolbar
 INTERNAL_IPS = ('127.0.0.1',)
