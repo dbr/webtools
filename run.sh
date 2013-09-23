@@ -26,6 +26,12 @@ if [ $? -ne 0 ]; then
     tmux send-keys -t webtools "workon ${venv_name}" C-m
     tmux send-keys -t webtools "python manage.py celery worker" C-m
 
+	# Celery beat (cronlike thing)
+    tmux split-window -v -t webtools
+    tmux send-keys -t webtools "cd '$(pwd)'" C-m
+    tmux send-keys -t webtools "workon ${venv_name}" C-m
+    tmux send-keys -t webtools "python manage.py celery beat" C-m
+
     tmux select-pane -t webtools:1.0
 fi
 
