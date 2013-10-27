@@ -4,6 +4,7 @@
 
 import os
 import re
+import time
 import tempfile
 import cProfile
 
@@ -40,9 +41,12 @@ class ProfileMiddleware(object):
         if (settings.DEBUG or request.user.is_superuser) and 'prof' in request.GET: 
             self.prof = cProfile.Profile()
             self.prof.enable()
+            self.start = time.time()
 
     def process_response(self, request, response):
         if (settings.DEBUG or request.user.is_superuser) and 'prof' in request.GET:
+            print "request took %.02fms" % ((time.time() - self.start)*1000)
+
             import subprocess
             self.prof.disable()
 
