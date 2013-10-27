@@ -8,3 +8,6 @@ OUTPUT_DIR = getattr(
 OUTPUT_FORMAT = getattr(
     settings,
     "OUTPUT_FORMAT", "%(upload_date)s_%(title)s_%(id)s.%(ext)s")
+YOUTUBE_DL_FLAGS = getattr(
+    settings,
+    "YTDL_YOUTUBE_DL_FLAGS", [])

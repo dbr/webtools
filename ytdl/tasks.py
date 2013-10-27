@@ -55,9 +55,9 @@ def grab_video(videoid, force=False):
     filename = os.path.join(cwd, so.strip())
 
     # Grab video
-    p = subprocess.Popen(
-        ["youtube-dl", "--restrict-filenames", "--output", ytdl_settings.OUTPUT_FORMAT, video.url],
-        cwd = cwd)
+    cmd = ["youtube-dl", "--restrict-filenames", "--output", ytdl_settings.OUTPUT_FORMAT, video.url]
+    cmd.extend(ytdl_settings.YOUTUBE_DL_FLAGS)
+    p = subprocess.Popen(cmd, cwd = cwd)
 
     p.communicate()
 

@@ -227,3 +227,8 @@ DEBUG_TOOLBAR_PANELS = (
 
 # Value passed to the "youtube-dl --restrict-filenames --output ${OUTPUT_FORMAT}"  argument
 #OUTPUT_FORMAT = "%(upload_date)s_%(title)s_%(id)s.%(ext)s"
+
+# Additional youtube-dl flags (see youtube-dl --help)
+YTDL_YOUTUBE_DL_FLAGS = [
+    '--max-quality=22',
+]
