@@ -27,7 +27,16 @@ Potentially a collection of Django apps to do misc stuff
 
 3. Check the settings in `webtools/settings.py`
 
-4. To launch:
+4. Initialise the database.
+
+   The default configuration uses sqlite3 - which while not terribly
+   fast with around 10,000 videos over 35 channels, it's usable and
+   simple to maintain.
+
+        workon webtools
+        python manage.py syncdb
+
+5. To launch:
 
         ./run.sh
 
