@@ -66,3 +66,10 @@ class YoutubeApi(object):
             self.chanid)
         user = yt_service.GetYouTubeUserEntry(uri)
         return user.thumbnail.url
+
+    def title(self):
+        yt_service = gdata.youtube.service.YouTubeService()
+        uri = 'http://gdata.youtube.com/feeds/api/users/%s?fields=title' % (
+            self.chanid)
+        user = yt_service.GetYouTubeUserEntry(uri)
+        return user.title.text

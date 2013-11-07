@@ -31,6 +31,10 @@ class VimeoApi(object):
         data = requests.get("http://vimeo.com/api/v2/%s/info.json" % self.chanid).json()
         return data['portrait_small']
 
+    def title(self):
+        data = requests.get("http://vimeo.com/api/v2/%s/info.json" % self.chanid).json()
+        return data['display_name']
+
 
 if __name__ == '__main__':
     v = VimeoApi("cyclocosm")

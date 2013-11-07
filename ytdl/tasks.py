@@ -76,6 +76,7 @@ def grab_video(videoid, force=False):
 @task
 def refresh_channel(id):
     channel = Channel.objects.get(id=id)
+    channel.refresh_meta()
     channel.grab()
 
 

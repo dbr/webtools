@@ -18,6 +18,8 @@ ALL_SERVICES = [YOUTUBE, VIMEO]
 class Channel(models.Model):
     chanid = models.CharField(max_length=256)
     service = models.CharField(max_length=256)
+    title = models.CharField(max_length=512)
+
     # TODO: Only a duplicate if another Channel exists with same
     # chanid *and* service, which "unique=True" doesn't catch
 
@@ -97,6 +99,12 @@ class Channel(models.Model):
         # When video is updated, invalidate cached things like num_unviewed count
         self.num_unviewed(_clear_cache=True)
         self.num_unviewed_recently(_clear_cache=True)
+
+    def refresh_meta(self):
+        """Get stuff like the channel title
+        """
+        self.title = self.get_api().title()
+        self.save()
 
 
 class Video(models.Model):
