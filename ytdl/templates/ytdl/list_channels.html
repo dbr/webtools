@@ -64,7 +64,11 @@
 <table class="table table-striped table-hover table-condensed" id="videos">
 {% for v in downloads %}
 <tr class="{{ v.status_class }}">
-  <td><a href="{% url 'ytdl.views.view_channel' v.channel.id %}?status={{v.status}}">{{ v.title }}</a></td>
+  <td>
+    <a href="{% url 'ytdl.views.view_channel' v.channel.id %}?status={{v.status}}">{{ v.title }}</a>
+    <a href="{% url 'ytdl.views.grab' v.id %}?force=true" class="async"><i class="icon-download-alt"></i></a>
+
+  </td>
 </tr>
 {% endfor %}
 </table>
