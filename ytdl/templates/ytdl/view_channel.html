@@ -9,6 +9,9 @@
 
 {% include "ytdl/navbar.html" %}
 
+<table width="100%" border="0">
+  <tr>
+    <td>
 <div class="pagination">
     <span class="step-links">
         <span class="current">
@@ -28,6 +31,16 @@
         <br>
     </span>
 </div>
+    </td>
+    <td>
+      {% if channel %}
+      <h2>{{ channel.title }} <small>{{channel.chanid}} (on {{channel.service}})</small></h2>
+      {% else %}
+      <h2>All channels</h2>
+      {% endif %}
+    </td>
+  </tr>
+</table>
 
 <table class="table table-striped table-hover table-condensed" id="videos">
   <thead>
@@ -49,7 +62,7 @@
         <a href="{% url 'ytdl.views.view_channel' v.channel.id %}"><img width="12px" src="{% url 'ytdl.views.channel_icon' v.channel.id %}"></a>
       {% endif %}
       <a href="{{ v.url }}">{{ v.title }} {% if not channel %}</a>
-      <a href="{% url 'ytdl.views.view_channel' v.channel.id %}"><small style="color:grey"> [{{ v.channel.chanid }}]{% endif %}</small></a>
+      <a href="{% url 'ytdl.views.view_channel' v.channel.id %}"><small style="color:grey"> [{{ v.channel.title }}]{% endif %}</small></a>
 
       <div class="pop" style="display:none">
         <p>
@@ -73,7 +86,7 @@
 
 <p>
   {% if channel %}
-  <a href="{% url 'ytdl.views.refresh_channel' channel.id %}" class="async"><i class="icon-refresh"></i>Refresh {{channel.chanid}}</a>
+  <a href="{% url 'ytdl.views.refresh_channel' channel.id %}" class="async"><i class="icon-refresh"></i>Refresh {{channel.title}}</a>
   {% else %}
   <a href="{% url 'ytdl.views.refresh_all' %}" class="async"><i class="icon-refresh"></i>Refresh all</a>
   {% endif %}
