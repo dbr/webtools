@@ -1,8 +1,22 @@
 {% extends "base.html" %}
 {% block head %}
-<link href="/static/css/pop.css" media="all" rel="stylesheet" type="text/css"/>
-<script language="javascript" src="/static/js/jquery.pop.js" type="text/javascript"></script>
-<script language="javascript" src="/static/js/jquery.timeago.js" type="text/javascript"></script>
+<style type="text/css" media="screen">
+  table tr td,
+  table tfoot tr td
+  {
+    padding:     0.3em !important;
+    line-height: 1em !important;
+  }
+  table tr.pending{
+    background-color: rgb() !important;
+  }
+  table tr.info{
+    background-color: rgb(145, 177, 199) !important;
+  }
+  table tr.success{
+    background-color: rgb(200, 250, 180) !important;
+  }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -12,25 +26,28 @@
 <table width="100%" border="0">
   <tr>
     <td>
-<div class="pagination">
-    <span class="step-links">
-        <span class="current">
+
+      <div class="pagination">
+        <span class="step-links">
+          <span class="current">
             Page {{ videos.number }} of {{ videos.paginator.num_pages }}.
+          </span>
+
+          <br>
+
+          {% if videos.has_next %}
+          <a href="?page={{ videos.next_page_number }}&search={{query}}">Next.</a>
+          {% endif %}
+
+          <br>
+          {% if videos.has_previous %}
+          <a href="?page={{ videos.previous_page_number }}&search={{query}}">Previous.</a>
+          {% endif %}
+
+          <br>
         </span>
+      </div>
 
-        <br>
-        {% if videos.has_next %}
-            <a href="?page={{ videos.next_page_number }}&search={{query}}">Next.</a>
-        {% endif %}
-
-        <br>
-        {% if videos.has_previous %}
-            <a href="?page={{ videos.previous_page_number }}&search={{query}}">Previous.</a>
-        {% endif %}
-
-        <br>
-    </span>
-</div>
     </td>
     <td>
       {% if channel %}
@@ -47,15 +64,15 @@
     <th>Actions</th>
     <th>Title</th>
     <th width="75px">Status</th>
-    <th width="100px">Released</th>
+    <th width="160px">Released</th>
   </thead>
 
   {% for v in videos %}
   <tr class="{{ v.status_class }}">
     <td>
-      <a href="{% url 'ytdl.views.grab' v.id %}" class="async"><i class="icon-download-alt"></i></a>
-      <a href="{% url 'ytdl.views.mark_viewed' v.id %}" class="async"><i class="icon-ok" title="Mark as viewed"></i></a>
-      <a href="{% url 'ytdl.views.mark_ignored' v.id %}" class="async"><i class="icon-minus" title="Mark video as ignored"></i></a>
+      <a href="{% url 'ytdl.views.grab' v.id %}" class="async"><i class="fa fa-download"></i></a>
+      <a href="{% url 'ytdl.views.mark_viewed' v.id %}" class="async"><i class="fa fa-check" title="Mark as viewed"></i></a>
+      <a href="{% url 'ytdl.views.mark_ignored' v.id %}" class="async"><i class="fa fa-square-o" title="Mark video as ignored"></i></a>
     </td>
     <td>
       {% if not channel %}
@@ -63,6 +80,19 @@
       {% endif %}
       <a href="{{ v.url }}">{{ v.title }} {% if not channel %}</a>
       <a href="{% url 'ytdl.views.view_channel' v.channel.id %}"><small style="color:grey"> [{{ v.channel.title }}]{% endif %}</small></a>
+
+      <a href="#" data-dropdown="{{ v.id }}"><i class="fa fa-info-circle"></i></a>
+      <div id="{{ v.id }}" class="f-dropdown content medium" data-dropdown-content>
+        <p>
+          {% for img in v.img %}
+          <img src="{{ img }}" width="64">
+          {% endfor %}
+        </p>
+
+        {{ v.description|linebreaks }}
+      </div> 
+
+      </div>
 
       <div class="pop" style="display:none">
         <p>
@@ -91,14 +121,10 @@
   <a href="{% url 'ytdl.views.refresh_all' %}" class="async"><i class="icon-refresh"></i>Refresh all</a>
   {% endif %}
 </p>
+
 <script type="text/javascript">
   $(function(){
   
-    <!-- Popup for descriptions -->
-    $(function(){
-      $.pop();
-    });
-
     <!-- Download links -->
     $("a.async").each(function(i, ahref){
       $(ahref).click(function(evt){
