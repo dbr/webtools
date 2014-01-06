@@ -6,8 +6,8 @@ billiard==3.3.0.13
 celery==3.1.7
 django-celery==3.1.1
 django-debug-toolbar==1.0
-django-debug-toolbar-template-timings==0.4.6
-django-redis-cache==0.10.1
+django-debug-toolbar-template-timings==0.5.5
+django-redis-cache==0.10.2
 gdata==2.0.18
 kombu==3.0.8
 python-dateutil==2.2
