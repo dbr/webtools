@@ -13,7 +13,6 @@ class VimeoApi(object):
             url = "http://vimeo.com/api/v2/{chanid}/videos.json?page={page}".format(
                 chanid = self.chanid,
                 page = page)
-            print url
             data = requests.get(url).json()
             for cur in data:
                 dt = datetime.datetime.strptime(cur['upload_date'], "%Y-%m-%d %H:%M:%S")
@@ -39,5 +38,5 @@ class VimeoApi(object):
 if __name__ == '__main__':
     v = VimeoApi("cyclocosm")
     for video in v.videos_for_user():
-        print video
-    print v.icon()
+        print(video)
+    print(v.icon())

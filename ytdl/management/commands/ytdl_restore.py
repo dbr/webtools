@@ -1,4 +1,3 @@
-import os
 import sys
 import json
 
@@ -24,23 +23,23 @@ class Command(BaseCommand):
             try:
                 db_chan = ytdl.models.Channel.objects.get(chanid=channel['chanid'])
             except ytdl.models.Channel.DoesNotExist:
-                print "Creating %s (service %s)" % (channel['chanid'], channel['service'])
+                print("Creating %s (service %s)" % (channel['chanid'], channel['service']))
                 db_chan = ytdl.models.Channel(chanid = channel['chanid'], service=channel['service'])
                 db_chan.save()
 
             # Get videos form channel
-            print "Getting videos for %s" % (db_chan)
+            print("Getting videos for %s" % (db_chan))
             db_chan.grab()
 
             # Restore statuses
             # TODO: Could maybe speed this up with QuerySet update,
             # http://stackoverflow.com/a/325066
-            print "Restore statuses"
+            print("Restore statuses")
             for video in channel['videos']:
                 try:
                     v = ytdl.models.Video.objects.get(videoid=video['videoid'])
                 except ytdl.models.Video.DoesNotExist:
-                    print "%s does not exist (title: %s)" % (video['videoid'], video['title'])
+                    print("%s does not exist (title: %s)" % (video['videoid'], video['title']))
                     continue # Next video
                 v.status = video['status']
                 v.save()

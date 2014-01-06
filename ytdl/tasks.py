@@ -23,7 +23,7 @@ def grab_video(videoid, force=False):
         raise ValueError("Already downloading")
 
     # Grab video
-    print "Starting to grab %s" % video
+    print("Starting to grab %s" % video)
     video.status = Video.STATE_DOWNLOADING
     video.save()
 
@@ -48,7 +48,7 @@ def grab_video(videoid, force=False):
     if p.returncode != 0:
         video.status = Video.STATE_GRAB_ERROR
         video.save()
-        print "Error grabbing video name %s" % video
+        print("Error grabbing video name %s" % video)
         return
 
     # FIXME: Store this in DB
@@ -64,13 +64,13 @@ def grab_video(videoid, force=False):
     if p.returncode != 0:
         video.status = Video.STATE_GRAB_ERROR
         video.save()
-        print "Error grabbing %s" % video
+        print("Error grabbing %s" % video)
         return
 
     else:
         video.status = Video.STATE_GRABBED
         video.save()
-        print "Done: %s" % video
+        print("Done: %s" % video)
 
 
 @task

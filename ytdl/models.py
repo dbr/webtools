@@ -42,7 +42,7 @@ class Channel(models.Model):
         for vid in chan.videos_for_user(limit=limit):
             exists = Video.objects.filter(videoid = vid['id']).count() > 0
             if exists:
-                print "%s exists, stopping" % (vid['id'])
+                print("%s exists, stopping" % (vid['id']))
                 return # Skip
 
             v = Video(

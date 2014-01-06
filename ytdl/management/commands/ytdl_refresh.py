@@ -16,7 +16,7 @@ class Command(BaseCommand):
         try:
             chan = ytdl.models.Channel.objects.get(chanid=args[0])
         except ytdl.models.Channel.DoesNotExist:
-            print "New channel %s" % args[0]
+            print("New channel %s" % args[0])
             chan = ytdl.models.Channel(chanid=args[0])
             chan.save()
 

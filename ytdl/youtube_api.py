@@ -8,10 +8,8 @@ class YoutubeApi(object):
     def videos_for_user(self, limit=10):
         results = 50
 
-        print limit,"limit"
         for offset_i in range(limit):
             offset = 1 + offset_i*results
-            print "offset", offset
             new = self._videos_for_user(offset=offset, results=results)
 
             for cur in new:
@@ -21,7 +19,7 @@ class YoutubeApi(object):
                 raise StopIteration("No more videos on next page")
 
         else:
-            print "Giving up at page %s" % offset_i
+            print("Giving up at page %s" % offset_i)
 
     def _videos_for_user(self, offset, results=50):
         yt_service = gdata.youtube.service.YouTubeService()
@@ -30,7 +28,6 @@ class YoutubeApi(object):
             offset,
             results)
 
-        print uri
         feed = yt_service.GetYouTubeVideoFeed(uri)
 
         ret = []
@@ -57,7 +54,7 @@ class YoutubeApi(object):
             ret.append(info)
 
         if len(ret) < results:
-            print "No more!\n\n\n\n"
+            print("No more!")
         return ret
 
     def icon(self):
