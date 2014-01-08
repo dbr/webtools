@@ -31,7 +31,7 @@ def grab_video(videoid, force=False):
 
     try:
         os.makedirs(cwd)
-    except OSError, e:
+    except OSError as e:
         if e.errno == 17:
             # Ignore errno 17 (File exists)
             pass

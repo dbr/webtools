@@ -1,6 +1,3 @@
-import gdata.youtube.service
-
-
 class YoutubeApi(object):
     def __init__(self, chanid):
         self.chanid = chanid
@@ -22,6 +19,7 @@ class YoutubeApi(object):
             print("Giving up at page %s" % offset_i)
 
     def _videos_for_user(self, offset, results=50):
+        import gdata.youtube.service
         yt_service = gdata.youtube.service.YouTubeService()
         uri = 'http://gdata.youtube.com/feeds/api/users/%s/uploads?start-index=%d&max-results=%d' % (
             self.chanid,
@@ -58,6 +56,7 @@ class YoutubeApi(object):
         return ret
 
     def icon(self):
+        import gdata.youtube.service
         yt_service = gdata.youtube.service.YouTubeService()
         uri = 'http://gdata.youtube.com/feeds/api/users/%s?fields=yt:username,media:thumbnail' % (
             self.chanid)
@@ -65,6 +64,7 @@ class YoutubeApi(object):
         return user.thumbnail.url
 
     def title(self):
+        import gdata.youtube.service
         yt_service = gdata.youtube.service.YouTubeService()
         uri = 'http://gdata.youtube.com/feeds/api/users/%s?fields=title' % (
             self.chanid)

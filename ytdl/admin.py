@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from models import Video, Channel
+from ytdl.models import Video, Channel
 
 
 class YtdlAdmin(admin.ModelAdmin):
