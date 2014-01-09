@@ -1,5 +1,6 @@
 # Django settings for webtools project.
 import os
+import sys
 
 
 _ROOT = os.path.realpath(os.path.dirname(__file__))
@@ -173,6 +174,10 @@ CACHES = {
         },
     },
 }
+
+if 'test' in sys.argv:
+    # TODO: Not the best way. Should maybe just leave caching enabled?
+    CACHES['default'] = {'BACKEND': 'django.core.cache.backends.dummy.DummyCache',}
 
 
 # Celery task thingy
