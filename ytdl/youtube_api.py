@@ -16,7 +16,7 @@ class YoutubeApi(object):
                 raise StopIteration("No more videos on next page")
 
         else:
-            print("Giving up at page %s" % offset_i)
+            print("Giving up at offset %s" % offset_i)
 
     def _videos_for_user(self, offset, results=50):
         import gdata.youtube.service
