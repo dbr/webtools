@@ -68,5 +68,20 @@ class ChannelRefresh(TestCase):
 
         # Videos
         chan.grab(limit=1)
-        videos = ytdl.models.Video.objects.all()
+        videos = ytdl.models.Video.objects.all().filter(channel = chan)
+        assert videos.count() > 0
+
+    def test_vimeo_refresh(self):
+        import ytdl.models
+
+        chan = ytdl.models.Channel(chanid = 'dbr', service=ytdl.models.VIMEO)
+        chan.save()
+
+        # Check title is updated
+        chan.refresh_meta()
+        assert chan.title == "dbr"
+
+        # Videos
+        chan.grab(limit=1)
+        videos = ytdl.models.Video.objects.all().filter(channel = chan)
         assert videos.count() > 0

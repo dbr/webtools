@@ -1,4 +1,3 @@
-import datetime
 import requests
 # For some reason, Vimeo ignores the "?page=2" parameter when requested by urllib/urllib2, but is okay with requests
 
@@ -8,6 +7,13 @@ class VimeoApi(object):
         self.chanid = chanid
 
     def videos_for_user(self, limit=10):
+        # For some bizarre reason, the API returns timestamps in
+        # Eastern Timezone. WTF? http://vimeo.com/forums/topic:45607
+
+        import dateutil.tz
+        import dateutil.parser
+        tz = dateutil.tz.gettz("US/Eastern")
+
         for page in range(3):
             page = page + 1
             url = "http://vimeo.com/api/v2/{chanid}/videos.json?page={page}".format(
@@ -15,7 +21,8 @@ class VimeoApi(object):
                 page = page)
             data = requests.get(url).json()
             for cur in data:
-                dt = datetime.datetime.strptime(cur['upload_date'], "%Y-%m-%d %H:%M:%S")
+                dt = dateutil.parser.parse(cur['upload_date'])
+                dt = dt.replace(tzinfo=tz)
                 info = {
                     'id': cur['id'],
                     'title': cur['title'] or "Untitled",
