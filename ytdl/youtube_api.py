@@ -36,10 +36,8 @@ class YoutubeApi(object):
             descr = item.media.description.text
             thumbs = [thumbnail.url for thumbnail in item.media.thumbnail]
             published = item.published.text
-            import time
-            from datetime import datetime
-            ts = time.strptime(published.split(".")[0], "%Y-%m-%dT%H:%M:%S")
-            dt = datetime.fromtimestamp(time.mktime(ts))
+            import dateutil.parser
+            dt = dateutil.parser.parse(published)
 
             info = {
                 'id': id,

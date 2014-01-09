@@ -53,3 +53,20 @@ class VimeoTest(TestCase):
     def test_title(self):
         title = self.api.title()
         assert title == "dbr", title
+
+
+class ChannelRefresh(TestCase):
+    def test_youtube_refresh(self):
+        import ytdl.models
+
+        chan = ytdl.models.Channel(chanid = 'roosterteeth', service=ytdl.models.YOUTUBE)
+        chan.save()
+
+        # Check title is updated
+        chan.refresh_meta()
+        assert chan.title == "Rooster Teeth" # TODO: Maybe assert != roosterteeth, since it could change?
+
+        # Videos
+        chan.grab(limit=1)
+        videos = ytdl.models.Video.objects.all()
+        assert videos.count() > 0
