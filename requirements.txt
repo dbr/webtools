@@ -5,7 +5,7 @@ anyjson==0.3.3
 billiard==3.3.0.13
 celery==3.1.7
 django-celery==3.1.1
-django-debug-toolbar==1.0
+django-debug-toolbar==1.0.1
 django-debug-toolbar-template-timings==0.5.5
 django-redis-cache==0.10.2
 gdata==2.0.18
@@ -14,5 +14,5 @@ python-dateutil==2.2
 pytz==2013.9
 redis==2.9.0
 requests==2.1.0
-six==1.5.1
+six==1.5.2
 sqlparse==0.1.10
