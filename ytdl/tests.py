@@ -1,4 +1,9 @@
+import sys
+import unittest
 from django.test import TestCase
+
+
+IS_PY2 = sys.version_info[0] == 2
 
 
 class YoutubeTest(TestCase):
@@ -6,6 +11,7 @@ class YoutubeTest(TestCase):
         from ytdl.youtube_api import YoutubeApi
         self.api = YoutubeApi("roosterteeth")
 
+    @unittest.skipIf(not IS_PY2, "need to rewrite YoutubeApi for Python 3")
     def test_list_videos(self):
         videos = list(self.api.videos_for_user(limit=1))
 
@@ -16,6 +22,7 @@ class YoutubeTest(TestCase):
             assert 'id' in v
             assert 'youtube.com' in v['url']
 
+    @unittest.skipIf(not IS_PY2, "need to rewrite YoutubeApi for Python 3")
     def test_icon(self):
         url = self.api.icon()
         assert url.startswith("http://") or url.startswith("https://")
@@ -23,6 +30,7 @@ class YoutubeTest(TestCase):
         # .jpg seems only option, but might as well randomly guess at other options
         assert url.endswith(".jpg") or url.endswith(".png") or url.endswith(".gif")
 
+    @unittest.skipIf(not IS_PY2, "need to rewrite YoutubeApi for Python 3")
     def test_title(self):
         title = self.api.title()
         assert title == "Rooster Teeth"
@@ -56,7 +64,10 @@ class VimeoTest(TestCase):
 
 
 class ChannelRefresh(TestCase):
+
+    @unittest.skipIf(not IS_PY2, "need to rewrite YoutubeApi for Python 3")
     def test_youtube_refresh(self):
+
         import ytdl.models
 
         chan = ytdl.models.Channel(chanid = 'roosterteeth', service=ytdl.models.YOUTUBE)
