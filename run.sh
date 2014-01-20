@@ -20,11 +20,17 @@ if [ $? -ne 0 ]; then
     tmux send-keys -t webtools "workon ${venv_name}" C-m
     tmux send-keys -t webtools "python manage.py runserver 0.0.0.0:8001" C-m
 
-    # Celery worker
+    # Celery worker for default queue
     tmux split-window -v -t webtools
     tmux send-keys -t webtools "cd '$(pwd)'" C-m
     tmux send-keys -t webtools "workon ${venv_name}" C-m
     tmux send-keys -t webtools "python manage.py celery worker" C-m
+
+    # Celery download worker
+    tmux split-window -v -t webtools
+    tmux send-keys -t webtools "cd '$(pwd)'" C-m
+    tmux send-keys -t webtools "workon ${venv_name}" C-m
+    tmux send-keys -t webtools "python manage.py celery worker -Q download" C-m
 
 	# Celery beat (cronlike thing)
     tmux split-window -v -t webtools

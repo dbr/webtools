@@ -190,6 +190,7 @@ else:
     BROKER_URL = 'redis://localhost:6379/4'
     CELERY_RESULT_BACKEND = 'redis://localhost:6379/4'
 
+# Schedule routine refresh
 from datetime import timedelta
 
 CELERYBEAT_SCHEDULE = {
@@ -200,6 +201,9 @@ CELERYBEAT_SCHEDULE = {
 }
 
 CELERY_TIMEZONE = 'UTC'
+
+# Route tasks (default tasks go into default 'celery' queue)
+CELERY_ROUTES = {'ytdl.tasks.grab_video': {'queue': 'download'}}
 
 
 
