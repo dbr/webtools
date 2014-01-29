@@ -17,3 +17,11 @@ urlpatterns = patterns(
     url(r'^refresh/(?P<chanid>\d+)', 'refresh_channel'),
     url(r'^refresh_all', 'refresh_all'),
 )
+
+urlpatterns += patterns(
+    'ytdl.api_views',
+
+    url(r'^api/1/test', 'test'),
+    url(r'^api/1/channels$', 'list_channels'),
+    url(r'^api/1/channels/(?P<chanid>\d+)$', 'channel_details'),
+)
