@@ -1,9 +1,5 @@
 <div ng-controller="ChannelList" ng-init="init()">
-  <i ng-show="loading">Loooading...</i>
   <input type="text" ng-model="filtertext" placeholder="Search">
-  <hr>
-
-
 
   <table class="table table-striped table-hover table-condensed" id="videos">
     <colgroup>
@@ -26,15 +22,22 @@
     </tr>
 
 
+    <tr ng-show="loading">
+      <td></td>
+      <td>Loading...</td>
+      <td></td>
+      <td></td>
+    </tr>
+
     <tr ng-repeat="chan in data.channels | filter: filtertext">
       <td><a href="aaaa url 'ytdl.views.refresh_channel' chan.id bbbbb" class="async"><i class="icon-refresh"></i></a></td>
       <td>
         <a href="#/channels/{! chan.id !}">
-          <img width="12px" src="/youtube/channel_icon/{! chan.id !} "> <span title="{{chan.chanid}}">{! chan.title !}</span>
+          <img width="12px" src="/youtube/channel_icon/{! chan.id !} "> <span title="{! chan.chanid !}">{! chan.title !}</span>
         </a>
       </td>
-      <td>{{chan.num_unviewed_recently}}</td>
-      <td>{{chan.num_unviewed}}</td>
+      <td>{! chan.num_unviewed_recently !}</td>
+      <td>{! chan.num_unviewed !}</td>
     </tr>
 
     <tr>

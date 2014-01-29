@@ -23,5 +23,5 @@ urlpatterns += patterns(
 
     url(r'^api/1/test', 'test'),
     url(r'^api/1/channels$', 'list_channels'),
-    url(r'^api/1/channels/(?P<chanid>\d+)$', 'channel_details'),
+    url(r'^api/1/channels/(?P<chanid>\d+|all)$', 'channel_details'),
 )

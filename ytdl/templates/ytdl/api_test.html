@@ -22,8 +22,41 @@
     </style>
   </head>
   <body>
+    <nav class="top-bar" data-topbar>
+      <ul class="title-area">
+        <li class="name">
+          <h1><a href="{% url 'ytdl.views.index' %}">YTDL</a></h1>
+        </li>
+      </ul>
+
+      <section class="top-bar-section">
+        <!-- Left Nav Section -->
+        <ul class="left">
+          <li  class="active"><a href="{% url 'ytdl.views.index' %}"><i class="icon-list icon"></i> Channels</a></li>
+          <li><a href="{% url 'ytdl.views.add_channel' %}"><i class="icon-plus icon"></i> Add</a></li>
+          <li><a href="{% url 'ytdl.views.channel_delete' %}"><i class="icon-minus icon"></i> Delete</a></li>
+
+
+          <li class="has-form">
+            <form class="navbar-search pull-right" action="#" method="GET">
+              <div class="row collapse">
+                <div class="large-8 small-9 columns">
+                  <input name="search" type="text" placeholder="Find Stuff">
+                </div>
+                <div class="large-4 small-3 columns">
+                  <!--<a href="#" class="button" onclick="form.submit();">Search</a>-->
+                  <input type="submit" class="nice blue radius button">
+                </div>
+              </div>
+            </form>
+          </li>
+        </ul>
+      </section>
+    </nav>
+
 
     <div ng-view></div>
+
 
     <script src="/static/js/jquery.js"></script>
     <script language="javascript" src="/static/js/jquery.timeago.js" type="text/javascript"></script>
