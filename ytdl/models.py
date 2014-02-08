@@ -21,8 +21,8 @@ class Channel(models.Model):
     title = models.CharField(max_length=512)
     icon_url = models.CharField(max_length=1024)
 
-    last_update_meta = models.DateTimeField()
-    last_update_content = models.DateTimeField()
+    last_update_meta = models.DateTimeField(blank=True, null=True)
+    last_update_content = models.DateTimeField(blank=True, null=True)
 
 
     # TODO: Only a duplicate if another Channel exists with same
