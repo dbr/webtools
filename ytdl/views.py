@@ -63,16 +63,6 @@ def view_channel(request, chanid):
                                "query": query})
 
 
-@cache_page(60*60)
-def channel_icon(self, chanid):
-    chan = get_object_or_404(ytdl.models.Channel, id=chanid)
-    url = chan.icon_url
-    if url is None:
-        raise Http404()
-    else:
-        return redirect(url, permanent=False)
-
-
 def grab(request, videoid):
     video = get_object_or_404(Video, id=videoid)
 

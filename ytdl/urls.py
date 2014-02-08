@@ -6,7 +6,6 @@ urlpatterns = patterns(
 
     url(r'^$', 'index'),
     url(r'^channel/(?P<chanid>.+)', 'view_channel'),
-    url(r'^channel_icon/(?P<chanid>.+)', 'channel_icon'),
     url(r'^channel_add', 'add_channel'),
     url(r'^channel_add/(?P<channame>.+)', 'add_channel'),
     url(r'^channel_delete', 'channel_delete'),
