@@ -3,7 +3,7 @@ import ytdl.tasks
 
 from django.core.cache import cache
 from django.views.decorators.cache import cache_page
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.template import RequestContext
 from django.db.models import Q
 from django.shortcuts import render_to_response, get_object_or_404, redirect
@@ -65,17 +65,12 @@ def view_channel(request, chanid):
 
 @cache_page(60*60)
 def channel_icon(self, chanid):
-    cache_key = "ytdl_channel_icon_%s" % chanid
-
-    url = cache.get(cache_key)
+    chan = get_object_or_404(ytdl.models.Channel, id=chanid)
+    url = chan.icon_url
     if url is None:
-        # Cache miss
-        chan = get_object_or_404(ytdl.models.Channel, id=chanid)
-        api = chan.get_api()
-        url = api.icon()
-        cache.set(cache_key, url)
-
-    return redirect(url, permanent=False)
+        raise Http404()
+    else:
+        return redirect(url, permanent=False)
 
 
 def grab(request, videoid):

@@ -19,6 +19,11 @@ class Channel(models.Model):
     chanid = models.CharField(max_length=256)
     service = models.CharField(max_length=256)
     title = models.CharField(max_length=512)
+    icon_url = models.CharField(max_length=1024)
+
+    last_update_meta = models.DateTimeField()
+    last_update_content = models.DateTimeField()
+
 
     # TODO: Only a duplicate if another Channel exists with same
     # chanid *and* service, which "unique=True" doesn't catch
@@ -103,8 +108,21 @@ class Channel(models.Model):
     def refresh_meta(self):
         """Get stuff like the channel title
         """
-        self.title = self.get_api().title()
-        self.save()
+        api = self.get_api()
+        import dateutil.tz
+        now = datetime.datetime.now(dateutil.tz.tzutc())
+
+        new_title = api.title
+        if self.title != new_title:
+            self.title = self.get_api().title()
+            self.last_update_meta = now
+            self.save()
+
+        new_icon = api.icon()
+        if self.icon_url != new_icon:
+            self.icon_url = new_icon
+            self.last_update_meta = now
+            self.save()
 
 
 class Video(models.Model):
