@@ -76,7 +76,7 @@
     </td>
     <td>
       {% if not channel %}
-        <a href="{% url 'ytdl.views.view_channel' v.channel.id %}"><img width="12px" src="{% url 'ytdl.views.channel_icon' v.channel.id %}"></a>
+        <a href="{% url 'ytdl.views.view_channel' v.channel.id %}"><img width="12px" src="{{ v.channel.icon_url }}"></a>
       {% endif %}
       <a href="{{ v.url }}">{{ v.title }} {% if not channel %}</a>
       <a href="{% url 'ytdl.views.view_channel' v.channel.id %}"><small style="color:grey"> [{{ v.channel.title }}]{% endif %}</small></a>
