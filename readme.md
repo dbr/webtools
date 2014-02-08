@@ -2,6 +2,8 @@ Potentially a collection of Django apps to do misc stuff
 
 [![Requirements Status](https://requires.io/github/dbr/webtools/requirements.png?branch=master)](https://requires.io/github/dbr/webtools/requirements/?branch=master)
 
+[![Build Status](https://travis-ci.org/dbr/webtools.png?branch=master)](https://travis-ci.org/dbr/webtools)
+
 # Installation
 
 *Only tested on OS X 10.7, with Python 2.7.5 (installed via Homebrew)*
