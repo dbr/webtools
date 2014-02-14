@@ -1,7 +1,6 @@
-var app = angular.module('test', ['ngResource', 'ngRoute']).
-  config(function($interpolateProvider) {
-      $interpolateProvider.startSymbol("{!");
-      $interpolateProvider.endSymbol("!}");
+var app = angular.module('test', ['ngResource', 'ngRoute', 'ngTable'])
+    .config(function($interpolateProvider) {
+      $interpolateProvider.startSymbol("{!").endSymbol("!}");
   });
 
 app.config(['$routeProvider',
@@ -86,3 +85,35 @@ app.controller(
             }[video.status] || video.status;
         }
     });
+
+
+
+app.controller('DemoCtrl', function($scope, $timeout, $resource, ngTableParams, $location) {
+    var Api = $resource('/youtube/api/1/channels');
+
+    $scope.tableParams = new ngTableParams(
+        angular.extend(
+            {
+                page: 1,
+                count: 2,
+                sorting: {
+                    name: 'asc'     // initial sorting
+                }
+            },
+            $location.search()),
+        {
+            total: 0,           // length of data
+            getData: function($defer, params) {
+                $location.search(params.url());
+                // ajax request to api
+                Api.get(params.url(), function(data) {
+                    $timeout(function() {
+                        // update table params
+                        params.total(data.total);
+                        // set new data
+                        $defer.resolve(data.channels);
+                    }, 500);
+                });
+            }
+        });
+});
