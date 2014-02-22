@@ -1,18 +1,21 @@
 <script type="text/javascript" src="/static/js/loadingContainer.js"></script>
-<div ng-controller="DemoCtrl">
+<div ng-controller="ChannelList2">
   <div loading-container="tableParams.settings().$loading">
 
     <table ng-table="tableParams" show-filter="true" class="table">
       <tbody>
         <tr ng-repeat="chan in $data">
+
           <td data-title="''" sortable="id">
             <img width="12px" src="/youtube/channel_icon/{! chan.id !} ">
           </td>
+
           <td data-title="'Title'" filter="{ 'name': 'text' }" sortable="title">
             <a href="#/channels/{! chan.id !}">
               {!chan.title!}
             </a>
           </td>
+
         </tr>
       </tbody>
     </table>

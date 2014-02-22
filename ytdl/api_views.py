@@ -60,6 +60,7 @@ def channel_details(request, chanid):
                 'title': v.channel.title,
                 'chanid': v.channel.chanid,
                 'service': v.channel.service,
+                'id': v.channel.id,
                 },
         })
 
@@ -73,3 +74,4 @@ def channel_details(request, chanid):
             }
 
     return HttpResponse(json.dumps({'channel': channel, 'videos': videos}))
+

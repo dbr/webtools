@@ -88,8 +88,11 @@ app.controller(
 
 
 
-app.controller('DemoCtrl', function($scope, $timeout, $resource, ngTableParams, $location) {
-    var Api = $resource('/youtube/api/1/channels');
+app.controller('ChannelViewListCtrl', function($scope, $timeout, $resource, ngTableParams, $location) {
+    // The list of videos, shown on the ChannelView page (access $scope.id from parent)
+
+    console.log("ChannelViewListCtrl! Has id?!", $scope.id);
+    var Api = $resource('/youtube/api/1/channels/' + $scope.id);
 
     $scope.tableParams = new ngTableParams(
         angular.extend(
@@ -111,8 +114,39 @@ app.controller('DemoCtrl', function($scope, $timeout, $resource, ngTableParams, 
                         // update table params
                         params.total(data.total);
                         // set new data
-                        $defer.resolve(data.channels);
+                        $defer.resolve(data.videos);
                     }, 500);
+                });
+            }
+        });
+});
+
+
+app.controller('ChannelList2', function($scope, $timeout, $resource, ngTableParams, $location) {
+    var Api = $resource('/youtube/api/1/channels');
+
+    $scope.tableParams = new ngTableParams(
+        angular.extend(
+            {
+                page: 1,
+                count: 20,
+                sorting: {
+                    name: 'asc'     // initial sorting
+                }
+            },
+            $location.search()),
+        {
+            total: 0,           // length of data
+            getData: function($defer, params) {
+                $location.search(params.url());
+                // ajax request to api
+                Api.get(params.url(), function(data) {
+                    $timeout(function() {
+                        // update table params
+                        params.total(data.total);
+                        // set new data
+                        $defer.resolve(data.channels);
+                    }, 100);
                 });
             }
         });
