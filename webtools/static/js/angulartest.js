@@ -93,6 +93,20 @@ app.controller(
             return {
                 NE: "new",
                 GR: "grabbed",
+                QU: "queued",
+                DL: "downloading",
+                GE: "grab error",
+                IG: "ignored",
+            }[video.status] || video.status;
+        }
+        $scope.class_for_status = function(video){
+            return {
+                NE: "new",
+                GR: "grabbed",
+                QU: "queued",
+                DL: "downloading",
+                GE: "grab_error",
+                IG: "ignored",
             }[video.status] || video.status;
         }
     });
