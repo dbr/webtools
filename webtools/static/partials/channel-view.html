@@ -17,62 +17,39 @@
 </style>
 
 
+<table width="100%" border="0">
+  <tr>
+    <td>
 
+      <div class="pagination">
+        <span class="step-links">
+          <span class="current">
+            Page {! data.pagination.current !} of {! data.pagination.total !}.
+          </span>
 
+          <br>
 
+          <a ng-if="data.pagination.has_next" ng-click="next_page()">Next.</a>
 
+          <br>
+          <a ng-if="data.pagination.has_previous" ng-click="prev_page()">Previous.</a>
 
-<div ng-controller="ChannelView">
+          <br>
+        </span>
+      </div>
 
+    </td>
+    <td>
+      <span ng-if="data.channel">
+        <h2>{! data.channel.title !} <small>({! data.channel.chanid !} on {! data.channel.service !})</small></h2>
+      </span>
+      <span ng-if="!data.channel">
+        <h2>All channels</h2>
+      </span>
 
-  <script type="text/javascript" src="/static/js/loadingContainer.js"></script>
-  <div ng-controller="ChannelViewListCtrl">
-    <div loading-container="tableParams.settings().$loading">
-
-      <table ng-table="tableParams" show-filter="true" class="table">
-        <tbody>
-
-          <tr ng-repeat="video in $data">
-            <td data-title="''" sortable="id">
-              <img width="12px" src="/youtube/channel_icon/{! video.channel.id !}">
-            </td>
-
-            <td data-title="'Action'" sortable="">
-
-              <a ng-click="download(video)"><i class="fa fa-download"></i></a>
-              <a ng-click="mark_viewed(video)"><i class="fa fa-check" title="Mark as viewed"></i></a>
-              <a ng-click="mark_ignored(video)"><i class="fa fa-square-o" title="Mark video as ignored"></i></a>
-
-            </td>
-
-            <td data-title="'Title'" filter="{ 'name': 'text' }" sortable="title">
-              <a href="#/channels/{! video.channel.id !}">
-                {!video.title!}
-              </a>
-            </td>
-
-            <td data-title="'Status'" filter="{ 'name': 'text' }" sortable="status">
-              {!video.status!}
-            </td>
-
-            <td data-title="'Status'" filter="{ 'name': 'text' }" sortable="title">
-              {!video.status!}
-            </td>
-
-          </tr>
-        </tbody>
-      </table>
-
-    </div>
-  </div>
-
-
-</div>
-
-
-
-
-
+    </td>
+  </tr>
+</table>
 
 
 
@@ -92,15 +69,16 @@
     </td>
     <td>
 
-      <a href="{% url 'ytdl.views.view_channel' v.channel.id %}"><img width="12px" src="http://placekitten.com/g/12/12"></a>
+      <a href="#/channels/{! video.channel.id !}"><img width="12px" src="http://placekitten.com/g/12/12"></a>
 
-      <a href="#fixme">{! video.title !}</a>
-      <a href="#" ng-if="!data.channel"><small style="color:grey"> [{! video.channel.title !}]</small></a>
+      <a href="">{! video.title !}</a>
+      <a ng-if="!data.channel" href="#/channels/{! video.channel.id !}"><small style="color:grey"> [{! video.channel.title !}]</small></a>
 
       <a href="#" data-dropdown="{! video.id !}"><i class="fa fa-info-circle"></i></a>
+
       <div id="{! video.id !}" class="f-dropdown content medium" data-dropdown-content>
-        <p ng-repeat="img for img in video.thumbnails">
-          <img src="{! img !}" width="64">
+        <p ng-repeat="img in video.thumbnails">
+          <img src="http://placekitten.com/g/12/12" width="64">
         </p>
 
         {! video.description !}

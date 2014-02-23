@@ -1,4 +1,4 @@
-var app = angular.module('test', ['ngResource', 'ngRoute', 'ngTable'])
+var app = angular.module('test', ['ngResource', 'ngRoute'])
     .config(function($interpolateProvider) {
       $interpolateProvider.startSymbol("{!").endSymbol("!}");
   });
@@ -55,12 +55,14 @@ app.controller(
 
 app.controller(
     "ChannelView",
-    function ($scope, $routeParams, $http){
-        // Initialisation
+    function ($scope, $routeParams, $http, $location){
+        // Store channel ID, and current page
         $scope.id = $routeParams.id;
-        console.log("Viewing channel" + $scope.id);
+        $scope.page = Math.max(1, parseInt($routeParams.page || 0));
+        console.log("Viewing channel " + $scope.id + " page " + $scope.page );
 
-        $http.get('/youtube/api/1/channels/' + $scope.id).success(function(data) {
+        // Query data
+        $http.get('/youtube/api/1/channels/' + $scope.id + "?page=" + $scope.page).success(function(data) {
             $scope.data = data;
             console.log(data);
         });
@@ -75,6 +77,15 @@ app.controller(
         }
         $scope.mark_ignored = function(video){
             console.log("Mark as ignored", video.id);
+        }
+
+        $scope.next_page = function(){
+            console.log("next page");
+            $location.search('page', $scope.page + 1);
+        }
+        $scope.prev_page = function(){
+            console.log("prev page");
+            $location.search('page', $scope.page - 1);
         }
 
         // Helper

@@ -10,6 +10,7 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from ytdl.models import Video, Channel, ALL_SERVICES
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def test(request):
@@ -18,7 +19,7 @@ def test(request):
 
 def list_channels(request):
     page = int(request.GET.get("page", "1"))
-    count = int(request.GET.get("count", "5"))
+    count = request.GET.get("count")
 
     def offset(sliceable, page, count):
         start = (page - 1) * count
@@ -26,7 +27,9 @@ def list_channels(request):
         return sliceable[start:end]
 
     query = Channel.objects.order_by('title').all()
-    query = offset(query, page, count)
+    if count is not None:
+        count = int(count)
+        query = offset(query, page, count)
 
     channels = []
     for c in query:
@@ -45,17 +48,33 @@ def channel_details(request, chanid):
         chan = Channel.objects.get(id=chanid)
         query = Video.objects.all().filter(channel = chan)
 
-    query = query.order_by('publishdate').reverse()[:25]
+    query = query.order_by('publishdate').reverse()
 
-    videos = []
-    for v in query:
-        videos.append({
+    # 25 videos per page, with no less than 5 per page
+    paginator = Paginator(query, per_page=25, orphans=5)
+
+    # Get page parameter
+    page_num = request.GET.get('page', '1')
+    if int(page_num) < 1:
+        page_num = 1
+
+    try:
+        page = paginator.page(page_num)
+    except PageNotAnInteger:
+        page = paginator.page(1)
+    except EmptyPage:
+        page = paginator.page(paginator.num_pages)
+
+    out_videos = []
+    for v in page:
+        out_videos.append({
             'id': v.id,
             'title': v.title,
             'imgs': v.img,
             'description': v.description,
             'publishdate': str(v.publishdate),
             'status': v.status,
+            # FIXME: Data duplication, only used for "all" channel view
             'channel': {
                 'title': v.channel.title,
                 'chanid': v.channel.chanid,
@@ -73,5 +92,15 @@ def channel_details(request, chanid):
             'service': v.channel.service,
             }
 
-    return HttpResponse(json.dumps({'channel': channel, 'videos': videos}))
+    page_info = {
+        'total': paginator.num_pages,
+        'current': page.number,
+        'has_next': page.has_next(),
+        'has_previous': page.has_previous(),
+        }
+
+    return HttpResponse(json.dumps(
+        {'channel': channel,
+         'videos': out_videos,
+         'pagination': page_info}))
 
