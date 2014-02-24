@@ -95,3 +95,23 @@ def channel_details(request, chanid):
          'videos': out_videos,
          'pagination': page_info}))
 
+
+
+def grab(request, videoid):
+    """For a given video ID, enqueue the task to download it
+    """
+
+    video = get_object_or_404(Video, id=videoid)
+
+    force = request.REQUEST.get("force", "false").lower() == "true"
+
+    grabbable = video.status in [Video.STATE_NEW, Video.STATE_GRAB_ERROR]
+    if not grabbable and not force:
+        ret = {"error": "Already grabbed (status %s)" % (video.status)}
+        return HttpResponse(json.dumps(ret), status=500)
+
+    video.status = Video.STATE_QUEUED
+    video.save()
+
+    ytdl.tasks.grab_video.delay(video.id, force=force)
+    return HttpResponse(json.dumps({"status": video.status}))

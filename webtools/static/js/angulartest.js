@@ -70,13 +70,35 @@ app.controller(
         // Actions
         $scope.download = function(video){
             console.log("Download", video.id);
+
+            // Show spinner
+            video.action_running = true;
+
+            $http.get("/youtube/api/1/video/" + video.id + "/grab").success(function(data){
+                console.log("Initatised grab", data);
+                video.status = data.status;
+
+                // Hide spinner
+                video.action_running = false;
+
+            }).error(function(data){
+
+                console.log("Error initating grab", data);
+                // Hide spinner
+                video.action_running = false;
+            });
+
+            video.status = 'QU';
+            // FIXME: INcomplete
         }
 
         $scope.mark_viewed = function(video){
             console.log("Mark as viewed", video.id);
+            // FIXME: INcomplete
         }
         $scope.mark_ignored = function(video){
             console.log("Mark as ignored", video.id);
+            // FIXME: INcomplete
         }
 
         $scope.next_page = function(){
