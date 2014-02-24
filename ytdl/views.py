@@ -1,3 +1,5 @@
+import json
+
 from ytdl.models import Video, Channel, ALL_SERVICES
 import ytdl.tasks
 
@@ -80,21 +82,19 @@ def grab(request, videoid):
     return HttpResponse("ok" + " (force)"*(int(force)))
 
 
-# TODO: Refactor mark_ into generic give-video-this-status
-def mark_viewed(request, videoid):
+def _set_status(videoid, status):
     video = get_object_or_404(Video, id=videoid)
-    video.status = Video.STATE_GRABBED
+    video.status = status
     video.save()
+    return HttpResponse(json.dumps({"status": video.status}))
 
-    return HttpResponse("ok")
+
+def mark_viewed(request, videoid):
+    return _set_status(videoid, Video.STATE_GRABBED)
 
 
 def mark_ignored(request, videoid):
-    video = get_object_or_404(Video, id=videoid)
-    video.status = Video.STATE_IGNORE
-    video.save()
-
-    return HttpResponse("ok")
+    return _set_status(videoid, status=Video.STATE_IGNORE)
 
 
 def refresh_all(request):
