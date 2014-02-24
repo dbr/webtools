@@ -13,6 +13,15 @@ from ytdl.models import Video, Channel, ALL_SERVICES
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
+def _channel_info_dict(c):
+    return {
+        'id': c.id,
+        'title': c.title,
+        'service': c.service,
+        'id': c.id,
+        'icon': c.icon_url,
+    }
+
 def test(request):
     return render_to_response("ytdl/api_test.html")
 
@@ -33,13 +42,7 @@ def list_channels(request):
 
     channels = []
     for c in query:
-        channels.append({
-            'id': c.id,
-            'title': c.title,
-            'service': c.service,
-            'id': c.id,
-            'icon': c.icon_url,
-        })
+        channels.append(_channel_info_dict(c))
     return HttpResponse(json.dumps({'channels': channels, 'total': Channel.objects.all().count()}))
 
 
@@ -77,25 +80,13 @@ def channel_details(request, chanid):
             'publishdate': str(v.publishdate),
             'status': v.status,
             # FIXME: Data duplication, only used for "all" channel view
-            'channel': {
-                'title': v.channel.title,
-                'chanid': v.channel.chanid,
-                'service': v.channel.service,
-                'id': v.channel.id,
-                'icon': v.channel.icon_url,
-                },
+            'channel': _channel_info_dict(v.channel),
         })
 
     if chanid == 'all':
         channel = None
     else:
-        channel = {
-            'title': v.channel.title,
-            'chanid': v.channel.chanid,
-            'service': v.channel.service,
-            'id': v.channel.id,
-            'icon': v.channel.icon_url,
-            }
+        channel = _channel_info_dict(chan)
 
     page_info = {
         'total': paginator.num_pages,
