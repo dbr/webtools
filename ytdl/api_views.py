@@ -1,16 +1,11 @@
 import json
 
-from django.http import Http404
-from django.core.cache import cache
-from django.views.decorators.cache import cache_page
 from django.http import HttpResponse
-from django.template import RequestContext
-from django.db.models import Q
-from django.shortcuts import render_to_response, get_object_or_404, redirect
+from django.shortcuts import render_to_response, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from ytdl.models import Video, Channel, ALL_SERVICES
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import ytdl.tasks
+from ytdl.models import Video, Channel
 
 
 def _channel_info_dict(c):
