@@ -115,3 +115,18 @@ def grab(request, videoid):
 
     ytdl.tasks.grab_video.delay(video.id, force=force)
     return HttpResponse(json.dumps({"status": video.status}))
+
+
+def _set_status(videoid, status):
+    video = get_object_or_404(Video, id=videoid)
+    video.status = status
+    video.save()
+    return HttpResponse(json.dumps({"status": video.status}))
+
+
+def mark_viewed(request, videoid):
+    return _set_status(videoid, Video.STATE_GRABBED)
+
+
+def mark_ignored(request, videoid):
+    return _set_status(videoid, status=Video.STATE_IGNORE)

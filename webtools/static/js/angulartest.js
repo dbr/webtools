@@ -68,37 +68,35 @@ app.controller(
         });
 
         // Actions
-        $scope.download = function(video){
-            console.log("Download", video.id);
+        function _do_video_action(video, name){
+            console.log("Doing action", name, "for id", video.id);
 
-            // Show spinner
-            video.action_running = true;
+            video.action_running = true; // Show spinner
 
-            $http.get("/youtube/api/1/video/" + video.id + "/grab").success(function(data){
+            // Call grab method of API
+            $http.get("/youtube/api/1/video/" + video.id + "/" + name).success(function(data){
                 console.log("Initatised grab", data);
-                video.status = data.status;
-
-                // Hide spinner
                 video.action_running = false;
-
+                video.status = data.status;
             }).error(function(data){
-
                 console.log("Error initating grab", data);
-                // Hide spinner
+                if(data.error){
+                    // TODO: Less annoying popup, allow force download
+                    alert(data.error);
+                }
                 video.action_running = false;
             });
+        }
 
-            video.status = 'QU';
-            // FIXME: INcomplete
+        $scope.download = function(video){
+            return _do_video_action(video, "grab");
         }
 
         $scope.mark_viewed = function(video){
-            console.log("Mark as viewed", video.id);
-            // FIXME: INcomplete
+            return _do_video_action(video, "mark_viewed");
         }
         $scope.mark_ignored = function(video){
-            console.log("Mark as ignored", video.id);
-            // FIXME: INcomplete
+            return _do_video_action(video, "mark_ignored");
         }
 
         $scope.next_page = function(){
