@@ -6,7 +6,10 @@ from ytdl import ytdl_settings
 from ytdl.models import Video, Channel
 
 
-@task
+# acks_late because this task can be usefully be re-run if the worker
+# is killed (i.e it is not removed from the queue until it is
+# completed)
+@task(acks_late=True)
 def grab_video(videoid, force=False):
     # Get video from DB
     video = Video.objects.get(id=videoid)
