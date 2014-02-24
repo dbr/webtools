@@ -67,9 +67,9 @@
       <a ng-click="mark_viewed(video)"><i class="fa fa-check" title="Mark as viewed"></i></a>
       <a ng-click="mark_ignored(video)"><i class="fa fa-square-o" title="Mark video as ignored"></i></a>
     </td>
-    <td>
 
-      <a href="#/channels/{! video.channel.id !}"><img width="12px" src="{! video.channel.icon !}"></a>
+    <td>
+      <a href="#/channels/{! video.channel.id !}"><img width="12px" ng-src="{! video.channel.icon !}"></a>
 
       <a href="">{! video.title !}</a>
       <a ng-if="!data.channel" href="#/channels/{! video.channel.id !}"><small style="color:grey"> [{! video.channel.title !}]</small></a>
@@ -78,7 +78,7 @@
 
       <div id="{! video.id !}" class="f-dropdown content medium" data-dropdown-content>
         <p ng-repeat="img in video.thumbnails">
-          <img src="http://placekitten.com/g/12/12" width="64">
+          <img ng-src="{! img !}" width="64"> <!-- fixme -->
         </p>
 
         {! video.description !}
