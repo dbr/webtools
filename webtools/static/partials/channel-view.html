@@ -39,6 +39,7 @@
       </div>
 
     </td>
+    <td><a href="#">&larr; Back</a></td>
     <td>
       <span ng-if="data.channel">
         <h2>{! data.channel.title !} <small>({! data.channel.chanid !} on {! data.channel.service !})</small></h2>
@@ -64,15 +65,15 @@
   <tr ng-repeat="video in data.videos" ng-class="class_for_status(video)">
     <td>
 
-      <div ng-if="video.action_running" style="position:relative;">
-        <div style="position: absolute; top:0; left:0; width: 100%; text-align:center; background-color: white; opacity: 0.9">
-          <img src="/static/img/spinner.gif" alt="Loading indicator">
-        </div>
-      </div>
+      <span ng-if="video.action_running">
+        <img src="/static/img/spinner.gif" alt="Loading indicator">
+      </span>
 
-      <a ng-click="download(video)"><i class="fa fa-download"></i></a>
-      <a ng-click="mark_viewed(video)"><i class="fa fa-check" title="Mark as viewed"></i></a>
-      <a ng-click="mark_ignored(video)"><i class="fa fa-square-o" title="Mark video as ignored"></i></a>
+      <span ng-if="!video.action_running">
+        <a ng-click="download(video)"><i class="fa fa-download"></i></a>
+        <a ng-click="mark_viewed(video)"><i class="fa fa-check" title="Mark as viewed"></i></a>
+        <a ng-click="mark_ignored(video)"><i class="fa fa-square-o" title="Mark video as ignored"></i></a>
+      </span>
     </td>
 
     <td>
