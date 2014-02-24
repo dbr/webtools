@@ -37,6 +37,8 @@ def list_channels(request):
             'id': c.id,
             'title': c.title,
             'service': c.service,
+            'id': c.id,
+            'icon': c.icon_url,
         })
     return HttpResponse(json.dumps({'channels': channels, 'total': Channel.objects.all().count()}))
 
@@ -80,6 +82,7 @@ def channel_details(request, chanid):
                 'chanid': v.channel.chanid,
                 'service': v.channel.service,
                 'id': v.channel.id,
+                'icon': v.channel.icon_url,
                 },
         })
 
@@ -90,6 +93,8 @@ def channel_details(request, chanid):
             'title': v.channel.title,
             'chanid': v.channel.chanid,
             'service': v.channel.service,
+            'id': v.channel.id,
+            'icon': v.channel.icon_url,
             }
 
     page_info = {
