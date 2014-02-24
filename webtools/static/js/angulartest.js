@@ -1,4 +1,4 @@
-var app = angular.module('test', ['ngResource', 'ngRoute'])
+var app = angular.module('test', ['ngResource', 'ngRoute', 'angularMoment'])
     .config(function($interpolateProvider) {
       $interpolateProvider.startSymbol("{!").endSymbol("!}");
   });
@@ -56,6 +56,17 @@ app.controller(
 app.controller(
     "ChannelView",
     function ($scope, $routeParams, $http, $location){
+        function is_loading(active){
+            if(active){
+                $(".content").mask("Loading");
+            } else {
+                $(".content").unmask();
+            }
+        }
+
+
+        is_loading(true);
+
         // Store channel ID, and current page
         $scope.id = $routeParams.id;
         $scope.page = Math.max(1, parseInt($routeParams.page || 0));
@@ -63,6 +74,8 @@ app.controller(
 
         // Query data
         $http.get('/youtube/api/1/channels/' + $scope.id + "?page=" + $scope.page).success(function(data) {
+            is_loading(false);
+
             $scope.data = data;
             console.log(data);
         });
