@@ -116,6 +116,7 @@ def grab(request, videoid):
     ytdl.tasks.grab_video.delay(video.id, force=force)
     return HttpResponse(json.dumps({"status": video.status}))
 
+# Set status
 
 def _set_status(videoid, status):
     video = get_object_or_404(Video, id=videoid)
@@ -130,3 +131,19 @@ def mark_viewed(request, videoid):
 
 def mark_ignored(request, videoid):
     return _set_status(videoid, status=Video.STATE_IGNORE)
+
+
+# Query status
+
+def video_status(request):
+    ids = request.GET.get("ids")
+    if ids is None:
+        return HttpResponse("{}")
+
+    ids = ids.split(",")
+    videos = {}
+    for cur in ids:
+        v = get_object_or_404(Video, id=cur)
+        videos[int(cur)] = v.status
+
+    return HttpResponse(json.dumps(videos))

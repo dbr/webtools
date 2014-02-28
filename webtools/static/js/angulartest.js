@@ -55,7 +55,7 @@ app.controller(
 
 app.controller(
     "ChannelView",
-    function ($scope, $routeParams, $http, $location){
+    function ($scope, $routeParams, $http, $location, $timeout){
         function is_loading(active){
             if(active){
                 $(".content").mask("Loading");
@@ -120,6 +120,33 @@ app.controller(
             console.log("prev page");
             $location.search('page', $scope.page - 1);
         }
+
+        // Refresh status regularly
+        $scope.update_statuses = function(){
+            var ids = [];
+            $scope.data.videos.forEach(function(v){
+                ids.push(v.id);
+            });
+            var status_query = $http.get("/youtube/api/1/video_status?ids=" + ids.join());
+            status_query.error(function(data){
+                console.log("Error querying status");
+            });
+
+            status_query.success(function(data){
+                $scope.data.videos.forEach(function(v, index){
+                    $scope.data.videos[index].status = data[v.id];
+                });
+            });
+        }
+
+        $scope.periodic = function(){
+            $timeout(function(){
+                //console.log("Refreshing status");
+                $scope.update_statuses();
+                $scope.periodic();
+            }, 5000);
+        }
+        $scope.periodic();
 
         // Helper
         $scope.status = function(video){
