@@ -139,14 +139,21 @@ app.controller(
             });
         }
 
-        $scope.periodic = function(){
-            $timeout(function(){
+        $scope.periodic_start = function(){
+            $scope.refresh_promise = $timeout(function(){
                 //console.log("Refreshing status");
                 $scope.update_statuses();
-                $scope.periodic();
+                $scope.periodic_start();
             }, 5000);
         }
-        $scope.periodic();
+        $scope.periodic_stop = function(){
+            $timeout.cancel($scope.refresh_promise);
+        }
+        $scope.periodic_start(); // Start initial
+        $scope.$on("$locationChangeStart", function(){
+            // Cancel timer
+            $scope.periodic_stop();
+        })
 
         // Helper
         $scope.status = function(video){
