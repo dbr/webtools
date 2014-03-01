@@ -50,6 +50,7 @@ app.controller(
                     $scope.loading="";
                 });
         }
+
     });
 
 
@@ -112,6 +113,7 @@ app.controller(
             return _do_video_action(video, "mark_ignored");
         }
 
+        // Pagination
         $scope.next_page = function(){
             console.log("next page");
             $location.search('page', $scope.page + 1);
@@ -155,8 +157,9 @@ app.controller(
             $scope.periodic_stop();
         })
 
-        // Helper
+        // Helpers
         $scope.status = function(video){
+            // Status to pretty-UI-name
             return {
                 NE: "new",
                 GR: "grabbed",
@@ -167,6 +170,7 @@ app.controller(
             }[video.status] || video.status;
         }
         $scope.class_for_status = function(video){
+            // Status to CSS class for table row
             return {
                 NE: "new",
                 GR: "grabbed",

@@ -71,6 +71,7 @@ def channel_details(request, chanid):
             'id': v.id,
             'title': v.title,
             'imgs': v.img,
+            'url': v.url,
             'description': v.description,
             'publishdate': str(v.publishdate),
             'status': v.status,
