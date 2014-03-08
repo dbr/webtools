@@ -1,9 +1,13 @@
 import os
+import logging
 import subprocess
 from celery import task
 
 from ytdl import ytdl_settings
 from ytdl.models import Video, Channel
+
+
+log = logging.getLogger(__name__)
 
 
 # acks_late because this task can be usefully be re-run if the worker
@@ -26,7 +30,7 @@ def grab_video(videoid, force=False):
         raise ValueError("Already downloading")
 
     # Grab video
-    print("Starting to grab %s" % video)
+    log.info("Starting to grab %s" % video)
     video.status = Video.STATE_DOWNLOADING
     video.save()
 
@@ -51,7 +55,7 @@ def grab_video(videoid, force=False):
     if p.returncode != 0:
         video.status = Video.STATE_GRAB_ERROR
         video.save()
-        print("Error grabbing video name %s" % video)
+        log.error("Error grabbing video name %s - non-zero return code %s" % (video, p.returncode))
         return
 
     # FIXME: Store this in DB
@@ -67,24 +71,29 @@ def grab_video(videoid, force=False):
     if p.returncode != 0:
         video.status = Video.STATE_GRAB_ERROR
         video.save()
-        print("Error grabbing %s" % video)
+        log.error("Error grabbing %s - non-zero return code %s" % (video, p.returncode))
         return
 
     else:
         video.status = Video.STATE_GRABBED
         video.save()
-        print("Done: %s" % video)
+        log.info("Grab complete %s" % video)
 
 
 @task
 def refresh_channel(id):
+    log.debug("Refreshing channel %s" % id)
     channel = Channel.objects.get(id=id)
+    log.debug("Refreshing channel metadata for %s" % (channel))
     channel.refresh_meta()
+    log.debug("Grabbing from channel %s" % (channel))
     channel.grab()
+    log.debug("Refresh complete for %s" % (channel))
 
 
 @task
 def refresh_all_channels():
+    log.debug("Refreshing all channels")
     channels = Channel.objects.all()
     for c in channels:
         refresh_channel.delay(id=c.id)
