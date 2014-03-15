@@ -11,7 +11,6 @@ class YoutubeTest(TestCase):
         from ytdl.youtube_api import YoutubeApi
         self.api = YoutubeApi("roosterteeth")
 
-    @unittest.skipIf(not IS_PY2, "need to rewrite YoutubeApi for Python 3")
     def test_list_videos(self):
         videos = list(self.api.videos_for_user(limit=1))
 
@@ -63,7 +62,6 @@ class VimeoTest(TestCase):
 
 class ChannelRefresh(TestCase):
 
-    @unittest.skipIf(not IS_PY2, "need to rewrite YoutubeApi for Python 3")
     def test_youtube_refresh(self):
 
         import ytdl.models
