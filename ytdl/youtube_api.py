@@ -1,3 +1,7 @@
+import requests
+import xml.etree.ElementTree as ET
+
+
 class YoutubeApi(object):
     def __init__(self, chanid):
         self.chanid = chanid
@@ -54,17 +58,20 @@ class YoutubeApi(object):
         return ret
 
     def icon(self):
-        import gdata.youtube.service
-        yt_service = gdata.youtube.service.YouTubeService()
-        uri = 'http://gdata.youtube.com/feeds/api/users/%s?fields=yt:username,media:thumbnail' % (
-            self.chanid)
-        user = yt_service.GetYouTubeUserEntry(uri)
-        return user.thumbnail.url
+        url = 'http://gdata.youtube.com/feeds/api/users/%s?fields=yt:username,media:thumbnail' % (self.chanid)
+
+        data = requests.get(url).text
+        t = ET.fromstring(data)
+
+        thumb = t.find("{http://search.yahoo.com/mrss/}thumbnail")
+        return thumb.attrib['url']
 
     def title(self):
-        import gdata.youtube.service
-        yt_service = gdata.youtube.service.YouTubeService()
         uri = 'http://gdata.youtube.com/feeds/api/users/%s?fields=title' % (
             self.chanid)
-        user = yt_service.GetYouTubeUserEntry(uri)
-        return user.title.text
+
+        data = requests.get(uri).text
+        t = ET.fromstring(data)
+
+        elem = t.find("{http://www.w3.org/2005/Atom}title")
+        return elem.text
