@@ -1,5 +1,18 @@
+import logging
 import requests
 import xml.etree.ElementTree as ET
+
+
+log = logging.getLogger(__name__)
+
+
+def tag_uri_and_name(elem):
+    if elem.tag[0] == "{":
+        uri, ignore, tag = elem.tag[1:].partition("}")
+    else:
+        uri = None
+        tag = elem.tag
+    return uri, tag
 
 
 class YoutubeApi(object):
@@ -20,7 +33,7 @@ class YoutubeApi(object):
                 raise StopIteration("No more videos on next page")
 
         else:
-            print("Giving up at offset %s" % offset_i)
+            log.debug("Giving up at offset %s" % offset_i)
 
     def _videos_for_user(self, offset, results=50):
         import gdata.youtube.service
