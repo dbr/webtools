@@ -40,7 +40,7 @@ class YoutubeApi(object):
             id = item['id']
             title = item['media:group']['media:title']['#text']
             url = item['media:group']['media:player']['@url']
-            descr = item['media:group']['media:description']['#text']
+            descr = item['media:group']['media:description'].get('#text')
             thumbs = [thumbnail['@url'] for thumbnail in item['media:group']['media:thumbnail']]
             published = item['published']
             import dateutil.parser
