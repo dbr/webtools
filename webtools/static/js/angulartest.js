@@ -3,6 +3,18 @@ var app = angular.module('test', ['ngResource', 'ngRoute', 'angularMoment', 'mm.
       $interpolateProvider.startSymbol("{!").endSymbol("!}");
   });
 
+
+app.service('visibilityApiService', function visibilityApiService($rootScope) {
+    function visibilitychanged() {
+        $rootScope.$broadcast('visibilityChanged', document.hidden || document.webkitHidden || document.mozHidden || document.msHidden)
+    }
+
+    document.addEventListener("visibilitychange",visibilitychanged);
+    document.addEventListener("webkitvisibilitychange", visibilitychanged);
+    document.addEventListener("msvisibilitychange", visibilitychanged);
+});
+
+
 app.config(['$routeProvider',
             function($routeProvider){
                 $routeProvider.
@@ -56,7 +68,7 @@ app.controller(
 
 app.controller(
     "ChannelView",
-    function ($scope, $routeParams, $http, $location, $timeout){
+    function ($scope, $routeParams, $http, $location, $interval, visibilityApiService){
         function is_loading(active){
             if(active){
                 $(".content").mask("Loading");
@@ -64,7 +76,6 @@ app.controller(
                 $(".content").unmask();
             }
         }
-
 
         is_loading(true);
 
@@ -141,21 +152,40 @@ app.controller(
             });
         }
 
+        var refresh_timer = undefined;
         $scope.periodic_start = function(){
-            $scope.refresh_promise = $timeout(function(){
-                //console.log("Refreshing status");
-                $scope.update_statuses();
-                $scope.periodic_start();
-            }, 5000);
+            if(angular.isDefined(refresh_timer)){
+                //console.log("Timer already exists");
+            } else {
+                console.log("Starting timer");
+                refresh_timer = $interval(function(){
+                    //console.log("Refreshing status");
+                    $scope.update_statuses();
+                    $scope.periodic_start();
+                }, 5000);
+            }
         }
         $scope.periodic_stop = function(){
-            $timeout.cancel($scope.refresh_promise);
+            $interval.cancel(refresh_timer);
+            refresh_timer = undefined;
         }
         $scope.periodic_start(); // Start initial
         $scope.$on("$locationChangeStart", function(){
-            // Cancel timer
+            // Cancel timer when navigating away
             $scope.periodic_stop();
         })
+
+        $scope.$on('visibilityChanged', function(event, isHidden) {
+            if(isHidden) {
+                console.log("Not refreshing background page");
+                $scope.periodic_stop();
+            }else{
+                console.log("Page in foreground, resuming refresh");
+                $scope.update_statuses(); // TODO: Rate-limit this, to prevent quick switching causing repeated refreshes?
+                $scope.periodic_start();
+            }
+        });
+
 
         // Helpers
         $scope.status = function(video){
