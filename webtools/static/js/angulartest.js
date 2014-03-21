@@ -1,4 +1,4 @@
-var app = angular.module('test', ['ngResource', 'ngRoute', 'angularMoment'])
+var app = angular.module('test', ['ngResource', 'ngRoute', 'angularMoment', 'mm.foundation'])
     .config(function($interpolateProvider) {
       $interpolateProvider.startSymbol("{!").endSymbol("!}");
   });
@@ -246,4 +246,55 @@ app.controller('ChannelList2', function($scope, $timeout, $resource, ngTablePara
                 });
             }
         });
+});
+
+
+
+var VideoInfoPopupCtrl = function ($scope, $modal, $log) {
+
+    $scope.items = ['item1', 'item2', 'item3'];
+
+    $scope.open = function(video){
+        console.log("Modal for video", video);
+        $scope.video = video;
+
+        var modalInstance = $modal.open({
+            templateUrl: 'videoInfoPopup.html',
+            controller: ModalInstanceCtrl,
+            resolve: {
+                video: function (){
+                    return $scope.video;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+            $scope.selected = selectedItem;
+        }, function () {
+            $log.info('Modal dismissed at: ' + new Date());
+        });
+    };
+};
+
+// Please note that $modalInstance represents a modal window (instance) dependency.
+// It is not the same as the $modal service used above.
+
+var ModalInstanceCtrl = function ($scope, $modalInstance, video) {
+  $scope.video = video;
+
+  $scope.ok = function () {
+    $modalInstance.close($scope.selected.item);
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+};
+
+
+app.filter("nl2br", function($filter, $sce) {
+ return function(data) {
+   if (!data) return data;
+   return $sce.trustAsHtml(data.replace(/\n\r?/g, '<br>'));
+ };
 });

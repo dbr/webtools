@@ -88,15 +88,10 @@
       <a href="{! video.url !}">{! video.title !}</a>
       <a ng-if="!data.channel" href="#/channels/{! video.channel.id !}"><small style="color:grey"> [{! video.channel.title !}]</small></a>
 
-      <a href="#" data-dropdown="{! video.id !}"><i class="fa fa-info-circle"></i></a>
-
-      <div id="{! video.id !}" class="f-dropdown content medium" data-dropdown-content>
-        <p ng-repeat="img in video.thumbnails">
-          <img ng-src="{! img !}" width="64"> <!-- fixme -->
-        </p>
-
-        {! video.description !}
-      </div> 
+      <!-- Video Info popup window -->
+      <span ng-controller="VideoInfoPopupCtrl">
+        <a ng-click="open(video)"><i class="fa fa-info-circle"></i></a>
+      </span>
     </td>
     <td>
       {! status(video) !}
@@ -116,3 +111,18 @@
 
 
 <a href="#">&larr; Back</a>
+
+
+<script type="text/ng-template" id="videoInfoPopup.html">
+  <h3>{! video.title !}</h3>
+  <p>
+    <span ng-repeat="url in video.imgs">
+      <img ng-src="{! url !}" width="64">
+    </span>
+  </p>
+  <p ng-bind-html="video.description | nl2br"></p>
+  <p>
+    <button class="button" ng-click="ok()">OK</button>
+    <a class="close-reveal-modal" ng-click="cancel()">&#215;</a>
+  </p>
+</script>
