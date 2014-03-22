@@ -72,4 +72,4 @@ class YoutubeApi(object):
         data = requests.get(uri).text
         t = xmltodict.parse(data)
 
-        return t['entry']['title']['#text']
+        return t['entry']['title'].get('#text')
