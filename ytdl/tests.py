@@ -92,23 +92,3 @@ class ChannelRefresh(TestCase):
         chan.grab(limit=1)
         videos = ytdl.models.Video.objects.all().filter(channel = chan)
         assert videos.count() > 0
-
-
-from django.test import LiveServerTestCase
-
-class ClickyTests(LiveServerTestCase):
-    def setUp(self):
-        from splinter import Browser
-        self.browser = Browser()
-    def tearDown(self):
-        self.browser.quit()
-    def test_basic(self):
-        b = self.browser
-        b.visit(self.live_server_url)
-        b.click_link_by_partial_text("Add")
-        b.fill("channame", "dbr")
-        b.select("service", "vimeo")
-        b.find_by_name("go").click()
-
-        assert b.is_text_present("dbr")
-        assert b.is_text_present("on vimeo")
