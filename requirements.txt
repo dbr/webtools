@@ -13,8 +13,6 @@ python-dateutil==2.2
 pytz==2014.1
 redis==2.9.1
 requests==2.2.1
-selenium==2.40.0
 six==1.6.1
-splinter==0.6.0
 sqlparse==0.1.11
 xmltodict==0.8.6
