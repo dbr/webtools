@@ -29,4 +29,5 @@ urlpatterns += patterns(
     url(r'^api/1/video/(?P<videoid>\d+)/mark_ignored$', 'mark_ignored'),
 
     url(r'^api/1/video_status$', 'video_status'),
+    url(r'^api/1/downloads$', 'list_downloads'),
 )

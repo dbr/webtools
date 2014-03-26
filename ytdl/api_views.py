@@ -1,5 +1,6 @@
 import json
 
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -148,3 +149,17 @@ def video_status(request):
         videos[int(cur)] = v.status
 
     return HttpResponse(json.dumps(videos))
+
+
+def list_downloads(request):
+    query = Video.objects.filter(Q(status=Video.STATE_DOWNLOADING) | Q(status=Video.STATE_QUEUED) | Q(status=Video.STATE_GRAB_ERROR)).reverse().all()
+
+    downloads = []
+    for dl in query:
+        downloads.append({"id": dl.id,
+                          "status": dl.status,
+                          "title": dl.title})
+
+    return HttpResponse(json.dumps(
+        {"downloads": downloads,
+    }))

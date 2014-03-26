@@ -358,3 +358,36 @@ app.filter("nl2br", function($filter, $sce) {
    return $sce.trustAsHtml(data.replace(/\n\r?/g, '<br>'));
  };
 });
+
+
+//
+app.controller(
+    "DownloadList",
+    function ($scope, $resource, $http){
+
+        $scope.init = function(){
+            console.log("Download list init");
+            $scope.refresh();
+        }
+
+
+        // TODO: Auto-refresh this
+        $scope.refresh = function(){
+            console.log("Refreshing");
+            $scope.loading = true;
+
+            $http({method: 'GET', url: '/youtube/api/1/downloads'}).
+                success(function(data, status, headers, config){
+                    console.log("Yay");
+                    console.log(data);
+
+                    $scope.downloads = data;
+
+                    $scope.loading=false;
+                }).
+                error(function(data, status, headers, config){
+                    console.log("boo");
+                });
+        }
+
+    });
