@@ -68,7 +68,7 @@
     <th width="160px">Released</th>
   </thead>
 
-  <tr ng-repeat="video in data.videos" ng-class="class_for_status(video)">
+  <tr ng-repeat="video in data.videos" ng-class="status_info.css_class(video.status)">
     <td>
 
       <span ng-if="video.action_running">
@@ -94,7 +94,7 @@
       </span>
     </td>
     <td>
-      {! status(video) !}
+      {! video.status | status_text !}
     </td>
     <td>
       <span style="font-size:0.7em" am-time-ago="video.publishdate">{! video.publishdate !}</abbr>

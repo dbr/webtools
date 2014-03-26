@@ -15,6 +15,41 @@ app.service('visibilityApiService', function visibilityApiService($rootScope) {
 });
 
 
+app.factory('status_info', function () {
+    console.log("status_info!");
+    return {
+        human_name: function (status){
+            return {
+                NE: "new",
+                GR: "grabbed",
+                QU: "queued",
+                DL: "downloading",
+                GE: "grab error",
+                IG: "ignored",
+            }[status] || status;
+        },
+        css_class: function(status){
+            return {
+                NE: "new",
+                GR: "grabbed",
+                QU: "queued",
+                DL: "downloading",
+                GE: "grab_error",
+                IG: "ignored",
+            }[status] || status;
+        }
+    }
+});
+
+
+app.filter('status_text', ['status_info', function(status_info) {
+   return function(text) {
+       return status_info.human_name(text);
+   }
+}]);
+
+
+
 app.config(['$routeProvider',
             function($routeProvider){
                 $routeProvider.
@@ -34,7 +69,8 @@ app.config(['$routeProvider',
 
 app.controller(
     "ChannelList",
-    function ChannelList($scope, $resource, $http){
+    function ChannelList($scope, $resource, $http, status_info){
+        $scope.status_info = status_info;
 
         $scope.filtertext = "";
         $scope.loading = false;
@@ -68,7 +104,9 @@ app.controller(
 
 app.controller(
     "ChannelView",
-    function ($scope, $routeParams, $http, $location, $interval, visibilityApiService){
+    function ($scope, $routeParams, $http, $location, $interval, visibilityApiService, status_info){
+        $scope.status_info = status_info;
+
         function is_loading(active){
             if(active){
                 $(".content").mask("Loading");
@@ -190,14 +228,6 @@ app.controller(
         // Helpers
         $scope.status = function(video){
             // Status to pretty-UI-name
-            return {
-                NE: "new",
-                GR: "grabbed",
-                QU: "queued",
-                DL: "downloading",
-                GE: "grab error",
-                IG: "ignored",
-            }[video.status] || video.status;
         }
         $scope.class_for_status = function(video){
             // Status to CSS class for table row
