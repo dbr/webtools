@@ -109,8 +109,7 @@ class Channel(models.Model):
         """Get stuff like the channel title
         """
         api = self.get_api()
-        import dateutil.tz
-        now = datetime.datetime.now(dateutil.tz.tzutc())
+        now = django.utils.timezone.now()
 
         new_title = api.title
         if self.title != new_title:
