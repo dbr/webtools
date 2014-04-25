@@ -92,8 +92,11 @@ def refresh_channel(id):
 
 
 @task
-def refresh_all_channels():
+def refresh_all_channels(async=True):
     log.debug("Refreshing all channels")
     channels = Channel.objects.all()
     for c in channels:
-        refresh_channel.delay(id=c.id)
+        if async:
+            refresh_channel.delay(id=c.id)
+        else:
+            refresh_channel(id=c.id)
