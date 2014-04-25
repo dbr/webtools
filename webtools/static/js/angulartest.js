@@ -34,7 +34,7 @@ app.factory('status_info', function () {
                 GR: "grabbed",
                 QU: "queued",
                 DL: "downloading",
-                GE: "grab_error",
+                GE: "error",
                 IG: "ignored",
             }[status] || status;
         }
