@@ -21,8 +21,10 @@ class Channel(models.Model):
     title = models.CharField(max_length=512)
     icon_url = models.CharField(max_length=1024)
 
+    # FIXME: Rename to last_change and last_refresh
     last_update_meta = models.DateTimeField(blank=True, null=True)
     last_update_content = models.DateTimeField(blank=True, null=True)
+    last_refresh = models.DateTimeField(blank=True, null=True)
 
 
     # TODO: Only a duplicate if another Channel exists with same
@@ -42,6 +44,9 @@ class Channel(models.Model):
         return api
 
     def grab(self, limit=1000):
+        self.last_refresh = django.utils.timezone.now()
+        self.save()
+
         chan = self.get_api()
 
         for vid in chan.videos_for_user(limit=limit):
@@ -62,6 +67,8 @@ class Channel(models.Model):
 
             # TODO: Bulk insertion, https://docs.djangoproject.com/en/dev/topics/db/optimization/#insert-in-bulk
             v.save()
+            self.last_update_content = django.utils.timezone.now()
+            self.save()
 
     def get_absolute_url(self):
         from django.core.urlresolvers import reverse

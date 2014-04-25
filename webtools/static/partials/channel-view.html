@@ -102,9 +102,11 @@
   </tr>
 </table>
 
+<p>Last refresh: {! data.channel.last_refresh !}</p>
+<p>Last new content: {! data.channel.last_content_update !}</p>
 <p>
-  <a ng-if="data.channel" href="{% url 'ytdl.views.refresh_channel' channel.id %}" class="async"><i class="icon-refresh"></i>Refresh {! data.channel.title !}</a>
-  <a ng-if="!data.channel" href="{% url 'ytdl.views.refresh_all' %}" class="async"><i class="icon-refresh"></i>Refresh all</a>
+  <a ng-if="data.channel" ng-click="refresh_channel()"><i class="icon-refresh"></i>Refresh {! data.channel.title !}</a>
+  <a ng-if="!data.channel" ng-click="refresh_channel('_all')"><i class="icon-refresh"></i>Refresh all</a>
 </p>
 
 </div><!-- end content -->

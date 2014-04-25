@@ -131,6 +131,18 @@ app.controller(
         });
 
         // Actions
+        $scope.refresh_channel = function(chanid){
+            var torefresh = chanid || $scope.id;
+
+            console.log("Refreshing channel")
+            var req = $http.get('/youtube/api/1/refresh?channel=' + $scope.id)
+            req.success(function(data){
+                console.log("Channel refresh started")
+            });
+            req.error(function(data){
+                console.log("Error refreshing channel", data);
+            })
+        }
         function _do_video_action(video, name){
             console.log("Doing action", name, "for id", video.id);
 

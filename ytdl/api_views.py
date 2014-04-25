@@ -16,10 +16,27 @@ def _channel_info_dict(c):
         'service': c.service,
         'id': c.id,
         'icon': c.icon_url,
+        'last_refresh': str(c.last_refresh),
+        'last_content_update': str(c.last_update_content),
+        'last_meta_update': str(c.last_update_meta),
     }
+
 
 def test(request):
     return render_to_response("ytdl/api_test.html")
+
+
+def refresh(request):
+    chanid = request.GET.get("channel")
+    if chanid == "_all":
+        ytdl.tasks.refresh_all_channels.delay()
+        return HttpResponse(json.dumps({"message": "refreshing all channels"}))
+    else:
+        chan = Channel.objects.get(id=chanid)
+        if chan is None:
+            return HttpResponse({"error": "so such channel"}, status_code=404)
+        ytdl.tasks.refresh_channel.delay(id=chan.id)
+        return HttpResponse(json.dumps({"message": "refreshing channel %s (%s)" % (chan.id, chan.title)}))
 
 
 def list_channels(request):
