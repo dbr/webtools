@@ -177,13 +177,17 @@ app.controller(
                 console.log("Error refreshing channel", data);
             })
         }
-        function _do_video_action(video, name){
-            console.log("Doing action", name, "for id", video.id);
+        function _do_video_action(video, name, force){
+            if(typeof(force) === 'undefined'){
+                force=false;
+            }
+
+            console.log("Doing action", name, "for id", video.id, "forcefully", force);
 
             video.action_running = true; // Show spinner
 
             // Call grab method of API
-            $http.get("/youtube/api/1/video/" + video.id + "/" + name).success(function(data){
+            $http.get("/youtube/api/1/video/" + video.id + "/" + name + "?force=" + force).success(function(data){
                 console.log("Initatised grab", data);
                 video.action_running = false;
                 video.status = data.status;
@@ -191,7 +195,9 @@ app.controller(
                 console.log("Error initating grab", data);
                 if(data.error){
                     // TODO: Less annoying popup, allow force download
-                    alert(data.error);
+                    if(confirm(data.error + "\n" + "Forcefully try again?")){
+                        _do_video_action(video, name, true); // force
+                    }
                 }
                 video.action_running = false;
             });
