@@ -4,6 +4,8 @@ venv_name="webtools" # virtualenv name (e.g "workon webtools")
 tmux has-session -t ${session} 2>/dev/null
 
 if [ $? -ne 0 ]; then
+    set -o errexit
+
     # Make new session, with cwd set to home
     pushd .
     cd ~
@@ -14,11 +16,15 @@ if [ $? -ne 0 ]; then
     tmux send-keys -t webtools "cd '$(pwd)'" C-m
     tmux send-keys -t webtools "workon ${venv_name}" C-m
 
+    tmux select-layout tiled
+
     # HTTP server
     tmux split-window -v -t webtools
     tmux send-keys -t webtools "cd '$(pwd)'" C-m
     tmux send-keys -t webtools "workon ${venv_name}" C-m
     tmux send-keys -t webtools "python manage.py runserver 0.0.0.0:8001" C-m
+
+    tmux select-layout tiled
 
     # Celery worker for default queue
     tmux split-window -v -t webtools
@@ -26,11 +32,15 @@ if [ $? -ne 0 ]; then
     tmux send-keys -t webtools "workon ${venv_name}" C-m
     tmux send-keys -t webtools "python manage.py celery worker" C-m
 
+    tmux select-layout tiled
+
     # Celery download worker
     tmux split-window -v -t webtools
     tmux send-keys -t webtools "cd '$(pwd)'" C-m
     tmux send-keys -t webtools "workon ${venv_name}" C-m
     tmux send-keys -t webtools "python manage.py celery worker -Q download" C-m
+
+    tmux select-layout tiled
 
 	# Celery beat (cronlike thing)
     tmux split-window -v -t webtools
@@ -38,6 +48,7 @@ if [ $? -ne 0 ]; then
     tmux send-keys -t webtools "workon ${venv_name}" C-m
     tmux send-keys -t webtools "python manage.py celery beat" C-m
 
+    tmux select-layout even-vertical
     tmux select-pane -t webtools:1.0
 fi
 
