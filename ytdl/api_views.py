@@ -124,7 +124,7 @@ def grab(request, videoid):
 
     force = request.REQUEST.get("force", "false").lower() == "true"
 
-    grabbable = video.status in [Video.STATE_NEW, Video.STATE_GRAB_ERROR]
+    grabbable = video.status in [Video.STATE_NEW, Video.STATE_GRAB_ERROR, Video.STATE_IGNORE]
     if not grabbable and not force:
         ret = {"error": "Already grabbed (status %s)" % (video.status)}
         return HttpResponse(json.dumps(ret), status=500)
