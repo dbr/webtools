@@ -68,6 +68,19 @@ def channel_details(request, chanid):
 
     query = query.order_by('publishdate').reverse()
 
+    search = request.GET.get('search', "")
+    if len(search) > 0:
+        query = query.filter(title__icontains=search)
+
+    # Query based on status
+    status = request.GET.get('status', "")
+    if len(status) > 0:
+        status = status.strip().split(",")
+        x = Q(status =  status[0])
+        for st in status[1:]:
+            x = x | Q(status = st) # 1a
+        print x
+        query = query.filter(x)
     # 25 videos per page, with no less than 5 per page
     paginator = Paginator(query, per_page=25, orphans=5)
 

@@ -16,17 +16,20 @@ app.service('visibilityApiService', function visibilityApiService($rootScope) {
 
 
 app.factory('status_info', function () {
-    console.log("status_info!");
+    var named = {
+        NE: "new",
+        GR: "grabbed",
+        QU: "queued",
+        DL: "downloading",
+        GE: "grab error",
+        IG: "ignored",
+    }
+
     return {
+        key_to_name: named,
+
         human_name: function (status){
-            return {
-                NE: "new",
-                GR: "grabbed",
-                QU: "queued",
-                DL: "downloading",
-                GE: "grab error",
-                IG: "ignored",
-            }[status] || status;
+            return named[status] || status;
         },
         css_class: function(status){
             return {
@@ -72,7 +75,7 @@ app.controller(
     function ChannelList($scope, $resource, $http, status_info){
         $scope.status_info = status_info;
 
-        $scope.filtertext = "";
+        $scope.search_text = "";
         $scope.loading = false;
 
         $scope.init = function(){
@@ -122,8 +125,34 @@ app.controller(
         $scope.page = Math.max(1, parseInt($routeParams.page || 0));
         console.log("Viewing channel " + $scope.id + " page " + $scope.page );
 
+        $scope.search_text = $routeParams.search || "";
+
+        function filterstatus_parse(blah){
+            var statuses = {}
+            angular.forEach(status_info.key_to_name, function(_name, key){
+                statuses[key] = false;
+            });
+            angular.forEach(blah.split(","), function(x){
+                if(x.length > 0 && x in statuses){
+                    statuses[x] = true;
+                }
+            });
+            return statuses;
+        }
+        function filterstatus_format(blah){
+            var thing = []
+            angular.forEach(blah, function(v, k){
+                if(v){
+                    thing.push(k)
+                }
+            })
+            return thing.join(",")
+        }
+        $scope.search_status = filterstatus_parse($routeParams.status || "");
+
+
         // Query data
-        $http.get('/youtube/api/1/channels/' + $scope.id + "?page=" + $scope.page).success(function(data) {
+        $http.get('/youtube/api/1/channels/' + $scope.id + "?page=" + $scope.page + "&search=" + encodeURIComponent($scope.search_text) + "&status=" + filterstatus_format($scope.search_status)).success(function(data) {
             is_loading(false);
 
             $scope.data = data;
@@ -131,6 +160,11 @@ app.controller(
         });
 
         // Actions
+        $scope.search_update = function(){
+            $location.search('search', $scope.search_text);
+            $location.search('status', filterstatus_format($scope.search_status));
+        }
+
         $scope.refresh_channel = function(chanid){
             var torefresh = chanid || $scope.id;
 
