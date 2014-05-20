@@ -60,7 +60,7 @@ def list_channels(request):
 
 
 def channel_details(request, chanid):
-    if chanid == "all":
+    if chanid == "_all":
         query = Video.objects.all()
     else:
         chan = Channel.objects.get(id=chanid)
@@ -110,7 +110,7 @@ def channel_details(request, chanid):
             'channel': _channel_info_dict(v.channel),
         })
 
-    if chanid == 'all':
+    if chanid == '_all':
         channel = None
     else:
         channel = _channel_info_dict(chan)
