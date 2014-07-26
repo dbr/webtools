@@ -142,10 +142,11 @@ def grab(request, videoid):
         ret = {"error": "Already grabbed (status %s)" % (video.status)}
         return HttpResponse(json.dumps(ret), status=500)
 
+    ytdl.tasks.grab_video.delay(video.id, force=force)
+
     video.status = Video.STATE_QUEUED
     video.save()
 
-    ytdl.tasks.grab_video.delay(video.id, force=force)
     return HttpResponse(json.dumps({"status": video.status}))
 
 # Set status
