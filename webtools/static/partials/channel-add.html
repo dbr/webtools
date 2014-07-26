@@ -1,0 +1,18 @@
+<div style="padding: 20px"></div>
+
+<div class="well">
+<h2>Add channel</h2>
+
+<div ng-controller="ChannelAdd" ng-init="init()">
+<form method="POST" ng-submit="submit_add()">
+  <label for="channame_input">Channel ID</label>
+  <input type="text" id="channame_input" name="channame" ng-model="channel" placeholder="Channel ID">
+
+  <label for="service_input">Service</label>
+  <select name="service" ng-model="service" ng-options="service.name for service in available_services">
+  </select>
+  <br>
+  <input type="submit" name="go" value="Go" />
+</form>
+</div>
+</div>

@@ -1,6 +1,9 @@
 var app = angular.module('test', ['ngResource', 'ngRoute', 'angularMoment', 'mm.foundation'])
-    .config(function($interpolateProvider) {
+    .config(function($interpolateProvider, $httpProvider) {
       $interpolateProvider.startSymbol("{!").endSymbol("!}");
+
+    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
   });
 
 
@@ -64,11 +67,29 @@ app.config(['$routeProvider',
                         'templateUrl': '/static/partials/channel-view.html',
                         controller: 'ChannelView'
                     }).
+                    when('/add/', {
+                        'templateUrl': '/static/partials/channel-add.html',
+                        controller: 'ChannelAdd'
+                    }).
                     otherwise({
                         redirectTo: '/channels'
                     });
             }]);
 
+
+app.controller(
+    "ChannelAdd",
+    function ($scope, $routeParams, $http, $location, $interval, visibilityApiService, status_info){
+        $scope.status_info = status_info;
+
+        $scope.available_services = [{'name': "YouTube"}, {'name': "Vimeo"}];
+        $scope.service = $scope.available_services[0];
+        $scope.channel = "";
+
+        $scope.submit_add = function(){
+            console.log("Hi", $scope.channel, $scope.service.name);
+        }
+    });
 
 app.controller(
     "ChannelList",
