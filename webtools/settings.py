@@ -125,8 +125,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 
-    'djcelery',
-    'kombu.transport.django',
+    "django_rq",
 
     'ytdl',
 
@@ -180,31 +179,18 @@ if 'test' in sys.argv:
     CACHES['default'] = {'BACKEND': 'django.core.cache.backends.dummy.DummyCache',}
 
 
-# Celery task thingy
-import djcelery
-djcelery.setup_loader()
-
-if False:
-    BROKER_URL = 'django://'
-else:
-    BROKER_URL = 'redis://localhost:6379/4'
-    CELERY_RESULT_BACKEND = 'redis://localhost:6379/4'
-
-# Schedule routine refresh
-from datetime import timedelta
-
-CELERYBEAT_SCHEDULE = {
-    'refresh-all-channels': {
-        'task': 'ytdl.tasks.refresh_all_channels',
-        'schedule': timedelta(minutes=20),
-    },
+# Task queue
+_redis_host = {
+    'HOST': 'localhost',
+    'PORT': 6379,
+    'DB': 5,
+    'PASSWORD': None,
+    'DEFAULT_TIMEOUT': 360,
 }
-
-CELERY_TIMEZONE = 'UTC'
-
-# Route tasks (default tasks go into default 'celery' queue)
-CELERY_ROUTES = {'ytdl.tasks.grab_video': {'queue': 'download'}}
-
+RQ_QUEUES = {
+    'ytdl-default': _redis_host,
+    'ytdl-download': _redis_host,
+}
 
 
 # Debug toolbar

@@ -30,7 +30,7 @@ if [ $? -ne 0 ]; then
     tmux split-window -v -t webtools
     tmux send-keys -t webtools "cd '$(pwd)'" C-m
     tmux send-keys -t webtools "workon ${venv_name}" C-m
-    tmux send-keys -t webtools "python manage.py celery worker" C-m
+    tmux send-keys -t webtools "python manage.py rqworker ytdl-default" C-m
 
     tmux select-layout tiled
 
@@ -38,15 +38,15 @@ if [ $? -ne 0 ]; then
     tmux split-window -v -t webtools
     tmux send-keys -t webtools "cd '$(pwd)'" C-m
     tmux send-keys -t webtools "workon ${venv_name}" C-m
-    tmux send-keys -t webtools "python manage.py celery worker -Q download" C-m
+    tmux send-keys -t webtools "python manage.py rqworker ytdl-download" C-m
 
     tmux select-layout tiled
 
-	# Celery beat (cronlike thing)
+	# Periodic refresh
     tmux split-window -v -t webtools
     tmux send-keys -t webtools "cd '$(pwd)'" C-m
     tmux send-keys -t webtools "workon ${venv_name}" C-m
-    tmux send-keys -t webtools "python manage.py celery beat" C-m
+    tmux send-keys -t webtools "python manage.py ytdl_scheduler" C-m
 
     tmux select-layout even-vertical
     tmux select-pane -t webtools:1.0

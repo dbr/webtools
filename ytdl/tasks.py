@@ -1,7 +1,8 @@
 import os
 import logging
 import subprocess
-from celery import task
+from django_rq import job as task
+
 
 from ytdl import ytdl_settings
 from ytdl.models import Video, Channel
@@ -9,11 +10,11 @@ from ytdl.models import Video, Channel
 
 log = logging.getLogger(__name__)
 
+QUEUE_DEFAULT = "ytdl-default"
+QUEUE_DOWNLOAD = "ytdl-download"
 
-# acks_late because this task can be usefully be re-run if the worker
-# is killed (i.e it is not removed from the queue until it is
-# completed)
-@task(acks_late=True)
+
+@task(QUEUE_DOWNLOAD)
 def grab_video(videoid, force=False):
     # Get video from DB
     video = Video.objects.get(id=videoid)
@@ -80,7 +81,7 @@ def grab_video(videoid, force=False):
         log.info("Grab complete %s" % video)
 
 
-@task
+@task(QUEUE_DEFAULT)
 def refresh_channel(id):
     log.debug("Refreshing channel %s" % id)
     channel = Channel.objects.get(id=id)
@@ -91,7 +92,7 @@ def refresh_channel(id):
     log.debug("Refresh complete for %s" % (channel))
 
 
-@task
+@task(QUEUE_DEFAULT)
 def refresh_all_channels(async=True):
     log.debug("Refreshing all channels")
     channels = Channel.objects.all()

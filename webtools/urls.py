@@ -18,6 +18,8 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 
+    url(r'^django-rq/', include('django_rq.urls')),
+
     url(r'^$', RedirectView.as_view(url='youtube/')),
     url(r'^youtube/', include(ytdl.urls)),
 )
