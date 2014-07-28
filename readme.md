@@ -52,7 +52,7 @@ Potentially a collection of Django apps to do misc stuff
 You can add a bunch of Youtube or Vimeo channels, then click a button
 to download them (using [`youtube-dl`][youtube-dl]).
 
-Multiple downloads will be queued up (using the [celery][celery] task
+Multiple downloads will be queued up (using the [python-rq][python-rq] task
 queue), and it keeps track of the state of videos (new, downloaded,
 ignored)
 
@@ -87,5 +87,5 @@ Random notes:
 
 
 [youtube-dl]: http://rg3.github.io/youtube-dl/
-[celery]: http://www.celeryproject.org/
+[python-rq]: http://python-rq.org/
 [homebrew]: http://brew.sh/
