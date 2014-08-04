@@ -1,4 +1,4 @@
-Potentially a collection of Django apps to do misc stuff
+Potentially a collection of web-applications to do misc stuff
 
 [![Requirements Status](https://requires.io/github/dbr/webtools/requirements.png?branch=master)](https://requires.io/github/dbr/webtools/requirements/?branch=master)
 

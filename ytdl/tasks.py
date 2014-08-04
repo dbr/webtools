@@ -14,8 +14,7 @@ QUEUE_DEFAULT = "ytdl-default"
 QUEUE_DOWNLOAD = "ytdl-download"
 
 
-HOUR = 60*60
-@task(QUEUE_DOWNLOAD)# FIXME: timeout=2*HOUR
+@task(QUEUE_DOWNLOAD)
 def grab_video(videoid, force=False):
     # Get video from DB
     video = Video.get(id=videoid)
@@ -93,7 +92,6 @@ def refresh_channel(id):
     log.debug("Refresh complete for %s" % (channel))
 
 
-@task(QUEUE_DEFAULT)
 def refresh_all_channels(async=True):
     log.debug("Refreshing all channels")
     channels = Channel.select()

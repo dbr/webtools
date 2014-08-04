@@ -1,7 +1,8 @@
-from ytdl.paginator import Paginator, PageNotAnInteger, EmptyPage
+import json
 from flask import Flask
 from flask import abort, redirect, url_for
 import ytdl.tasks
+from ytdl.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from flask.ext.rq import RQ
 from rq_dashboard import RQDashboard
@@ -10,10 +11,10 @@ app = Flask(__name__)
 RQ(app)
 RQDashboard(app)
 
-import rq
-import redis
-redcon = redis.Redis("localhost", 6789, db=5)
-rq.use_connection(redcon)
+#import rq
+#import redis
+#redcon = redis.Redis("localhost", 6789, db=5)
+#rq.use_connection(redcon)
 
 
 @app.route("/")
@@ -25,7 +26,6 @@ def page():
     return redirect(url_for('static', filename='ytdl.html'), code=302)
 
 
-import json
 
 #from django.db.models import Q
 #from django.http import HttpResponse
@@ -34,10 +34,6 @@ import json
 
 #import ytdl.tasks
 from ytdl.models import Video, Channel
-
-
-def redis_connection():
-    return redis.Redis("localhost", 6789, db=5)
 
 
 def _channel_info_dict(c):
@@ -53,13 +49,14 @@ def _channel_info_dict(c):
     }
 
 
-def refresh(request):
+@app.route("/youtube/api/1/refresh")
+def refresh():
     chanid = request.args.get("channel")
     if chanid == "_all":
-        ytdl.tasks.refresh_all_channels.delay(connection=redis_connection())
+        ytdl.tasks.refresh_all_channels()
         return json.dumps({"message": "refreshing all channels"})
     else:
-        chan = Channel.objects.get(id=chanid)
+        chan = Channel.get(id=chanid)
         if chan is None:
             return json.dumps({"error": "so such channel"}), 404
         ytdl.tasks.refresh_channel.delay(id=chan.id)
@@ -173,7 +170,8 @@ def grab(videoid):
         ret = {"error": "Already grabbed (status %s)" % (video.status)}
         return json.dumps(ret), 500
 
-    ytdl.tasks.grab_video.delay(video.id, force=force)
+    HOUR=60*60
+    ytdl.tasks.grab_video.delay(video.id, force=force, timeout=2*HOUR)
 
     video.status = Video.STATE_QUEUED
     video.save()

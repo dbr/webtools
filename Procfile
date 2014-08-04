@@ -1,6 +1,5 @@
-web: python manage.py runserver 0.0.0.0:8001
+web: python main.py
 
-task: python -u manage.py rqworker ytdl-default
-taskdl: python -u manage.py rqworker ytdl-download
+task: env PYTHONUNBUFFERED=1 rqworker ytdl-default
+taskdl: env PYTHONUNBUFFERED=1 rqworker ytdl-download
 
-scheduler: python manage.py ytdl_scheduler
