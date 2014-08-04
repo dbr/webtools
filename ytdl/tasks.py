@@ -1,10 +1,10 @@
 import os
 import logging
 import subprocess
-from django_rq import job as task
+from flask.ext.rq import job as task
 
 
-from ytdl import ytdl_settings
+import ytdl.settings
 from ytdl.models import Video, Channel
 
 
@@ -14,10 +14,11 @@ QUEUE_DEFAULT = "ytdl-default"
 QUEUE_DOWNLOAD = "ytdl-download"
 
 
-@task(QUEUE_DOWNLOAD)
+HOUR = 60*60
+@task(QUEUE_DOWNLOAD)# FIXME: timeout=2*HOUR
 def grab_video(videoid, force=False):
     # Get video from DB
-    video = Video.objects.get(id=videoid)
+    video = Video.get(id=videoid)
 
     # Validation
     grabbable = video.status in [Video.STATE_NEW, Video.STATE_GRAB_ERROR, Video.STATE_QUEUED]
@@ -35,7 +36,7 @@ def grab_video(videoid, force=False):
     video.status = Video.STATE_DOWNLOADING
     video.save()
 
-    cwd = ytdl_settings.OUTPUT_DIR
+    cwd = ytdl.settings.OUTPUT_DIR
 
     try:
         os.makedirs(cwd)
@@ -48,7 +49,7 @@ def grab_video(videoid, force=False):
 
     # Get output filename
     p = subprocess.Popen(
-        ["youtube-dl", "--restrict-filenames", "--output", ytdl_settings.OUTPUT_FORMAT, video.url, "--get-filename"],
+        ["youtube-dl", "--restrict-filenames", "--output", ytdl.settings.OUTPUT_FORMAT, video.url, "--get-filename"],
         cwd = cwd,
         stdout = subprocess.PIPE)
     so, _se = p.communicate()
@@ -63,8 +64,8 @@ def grab_video(videoid, force=False):
     filename = os.path.join(cwd, so.strip())
 
     # Grab video
-    cmd = ["youtube-dl", "--restrict-filenames", "--output", ytdl_settings.OUTPUT_FORMAT, video.url]
-    cmd.extend(ytdl_settings.YOUTUBE_DL_FLAGS)
+    cmd = ["youtube-dl", "--restrict-filenames", "--output", ytdl.settings.OUTPUT_FORMAT, video.url]
+    cmd.extend(ytdl.settings.YOUTUBE_DL_FLAGS)
     p = subprocess.Popen(cmd, cwd = cwd)
 
     p.communicate()
@@ -84,7 +85,7 @@ def grab_video(videoid, force=False):
 @task(QUEUE_DEFAULT)
 def refresh_channel(id):
     log.debug("Refreshing channel %s" % id)
-    channel = Channel.objects.get(id=id)
+    channel = Channel.get(id=id)
     log.debug("Refreshing channel metadata for %s" % (channel))
     channel.refresh_meta()
     log.debug("Grabbing from channel %s" % (channel))
@@ -95,7 +96,7 @@ def refresh_channel(id):
 @task(QUEUE_DEFAULT)
 def refresh_all_channels(async=True):
     log.debug("Refreshing all channels")
-    channels = Channel.objects.all()
+    channels = Channel.select()
     for c in channels:
         if async:
             refresh_channel.delay(id=c.id)
