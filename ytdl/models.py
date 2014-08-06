@@ -68,32 +68,37 @@ class Channel(BaseModel):
             self.last_update_meta = now
             self.save()
 
-    def grab(chan, limit=1000):
+    def grab(chan, limit=1000, stop_on_existing=True):
         chan.last_refresh = getnow()
         chan.save()
 
         api = chan.get_api()
 
-        for vid in api.videos_for_user(limit=limit):
-            exists = Video.select().where(Video.videoid == vid['id']).count() > 0
-            if exists:
-                print("%s exists, stopping" % (vid['id']))
-                return # Skip
+        with database.transaction():
+            for vid in api.videos_for_user(limit=limit):
+                exists = Video.select().where(Video.videoid == vid['id']).count() > 0
+                if exists:
+                    if stop_on_existing:
+                        print("%s exists, stopping" % (vid['id']))
+                        return
+                    else:
+                        print("%s exists. Onwards!" % (vid['id']))
+                else:
+                    # Save it
+                    v = Video(
+                        title = vid['title'],
+                        url = vid['url'],
+                        videoid = vid['id'],
+                        description = vid['descr'],
+                        channel = chan,
+                        _thumbnails = "  ".join(vid['thumbs']),
+                        publishdate = vid['published'],
+                        )
 
-            v = Video(
-                title = vid['title'],
-                url = vid['url'],
-                videoid = vid['id'],
-                description = vid['descr'],
-                channel = chan,
-                _thumbnails = "  ".join(vid['thumbs']),
-                publishdate = vid['published'],
-                )
-
-            # TODO: Less queries?
-            v.save()
-            chan.last_update_content = datetime.datetime.now(dateutil.tz.tzlocal())
-            chan.save()
+                    # TODO: Less queries?
+                    v.save()
+                    chan.last_update_content = datetime.datetime.now(dateutil.tz.tzlocal())
+                    chan.save()
 
 
 class Video(BaseModel):
