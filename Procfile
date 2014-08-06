@@ -1,4 +1,4 @@
-web: python main.py
+web: python main.py server
 
 task: env PYTHONUNBUFFERED=1 rqworker ytdl-default
 taskdl: env PYTHONUNBUFFERED=1 rqworker ytdl-download
