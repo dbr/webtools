@@ -7,7 +7,7 @@ from .youtube_api import YoutubeApi
 from .vimeo_api import VimeoApi
 
 
-database = p.SqliteDatabase('/Users/dbr/code/webtools/dev.sqlite3', threadlocals=True) # FIXME
+database = p.SqliteDatabase(None, threadlocals=True)
 
 
 YOUTUBE = 'youtube'

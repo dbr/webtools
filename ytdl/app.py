@@ -233,5 +233,6 @@ def list_downloads():
 
 
 if __name__ == "__main__":
+    ytdl.models.database.connect('/Users/dbr/code/webtools/dev.sqlite3') # FIXME
     app.debug=True
     app.run()
