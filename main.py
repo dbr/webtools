@@ -5,20 +5,24 @@ import json
 import datetime
 
 
-def _scheduler_run():
+def _scheduler_run(on_start):
     import ytdl.tasks
     minutes = 20
+
+    first_run = True
     while True:
-        print "%s Sleeping %s minutes" % (datetime.datetime.now(), minutes)
-        time.sleep(60*minutes)
+        if not on_start or not first_run:
+            print "%s Sleeping %s minutes" % (datetime.datetime.now(), minutes)
+            time.sleep(60*minutes)
+        first_run = False
 
         print "%s Refreshing!" % datetime.datetime.now()
-        ytdl.tasks.refresh_all_channels.delay()
+        ytdl.tasks.refresh_all_channels()
 
 
-def scheduler():
+def scheduler(on_start):
     try:
-        return _scheduler_run()
+        return _scheduler_run(on_start=on_start)
     except KeyboardInterrupt:
         return
 
@@ -148,6 +152,7 @@ if __name__ == '__main__':
 
     p_scheduler = subparsers.add_parser('scheduler')
     p_scheduler.set_defaults(func=scheduler)
+    p_scheduler.add_argument('--on-start', action="store_true", help="perform refresh immediately (instead of after delay)")
 
     p_backup = subparsers.add_parser('backup')
     p_backup.set_defaults(func=backup)
