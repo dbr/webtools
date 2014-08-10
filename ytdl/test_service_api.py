@@ -7,7 +7,6 @@ IS_PY2 = sys.version_info[0] == 2
 
 class YtdlBaseTest(TestCase):
     def setUp(self):
-        print "Creating in-memory DB"
         import ytdl.models
         ytdl.models.database.init(":memory:")
 
