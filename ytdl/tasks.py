@@ -1,7 +1,30 @@
 import os
 import logging
 import subprocess
-from flask.ext.rq import job as task
+#from flask.ext.rq import job as task
+
+
+from redis import Redis
+from rq import Queue
+
+
+def get_queue(queue):
+    redis_conn = Redis()
+    q = Queue(queue, connection=redis_conn)
+    return q
+
+
+def task(queue_name, *queue_args, **queue_kwargs):
+    def decorator_creation(func):
+        def delay(*func_args, **func_kwargs):
+            q = get_queue(queue_name)
+            t = q.enqueue_call(func, args=func_args, kwargs=func_kwargs,
+                               *queue_args, **queue_kwargs)
+            return t
+        func.delay = delay
+        return func
+
+    return decorator_creation
 
 
 import ytdl.settings
@@ -14,7 +37,8 @@ QUEUE_DEFAULT = "ytdl-default"
 QUEUE_DOWNLOAD = "ytdl-download"
 
 
-@task(QUEUE_DOWNLOAD)
+HOUR = 60*60
+@task(QUEUE_DOWNLOAD, timeout=2*HOUR)
 def grab_video(videoid, force=False):
     # Get video from DB
     video = Video.get(id=videoid)

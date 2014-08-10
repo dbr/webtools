@@ -1,40 +1,34 @@
 import json
 from flask import Flask
-from flask import abort, redirect, url_for
-import ytdl.tasks
+from flask import abort, redirect, url_for, send_file
 from ytdl.paginator import Paginator, PageNotAnInteger, EmptyPage
 
-from flask.ext.rq import RQ
+import ytdl.tasks
+from ytdl.models import Video, Channel
+
 from rq_dashboard import RQDashboard
 
+
 app = Flask(__name__)
-RQ(app)
+
+# Setup rq dashboard
 RQDashboard(app)
 
-#import rq
-#import redis
-#redcon = redis.Redis("localhost", 6789, db=5)
-#rq.use_connection(redcon)
 
-
+# Serving of single-page app
 @app.route("/")
 def index():
     return redirect("/youtube/", code=302)
 
+
 @app.route("/youtube/")
 def page():
-    return redirect(url_for('static', filename='ytdl.html'), code=302)
+    return send_file("static/ytdl.html")
 
 
 
-#from django.db.models import Q
-#from django.http import HttpResponse
-#from django.shortcuts import render_to_response, get_object_or_404
-#from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-#import ytdl.tasks
-from ytdl.models import Video, Channel
-
+# API
 
 def _channel_info_dict(c):
     return {
@@ -170,13 +164,13 @@ def grab(videoid):
         ret = {"error": "Already grabbed (status %s)" % (video.status)}
         return json.dumps(ret), 500
 
-    HOUR=60*60
-    ytdl.tasks.grab_video.delay(video.id, force=force, timeout=2*HOUR)
+    ytdl.tasks.grab_video.delay(video.id, force=force)
 
     video.status = Video.STATE_QUEUED
     video.save()
 
     return json.dumps({"status": video.status})
+
 
 # Set status
 
