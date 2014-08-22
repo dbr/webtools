@@ -3,6 +3,7 @@ from flask import Flask
 from flask import abort, redirect, url_for, send_file
 from ytdl.paginator import Paginator, PageNotAnInteger, EmptyPage
 
+import ytdl.settings
 import ytdl.tasks
 from ytdl.models import Video, Channel
 
@@ -90,7 +91,7 @@ def channel_details(chanid):
 
     search = request.args.get('search', "")
     if len(search) > 0:
-        query = query.filter(title__icontains=search)
+        query = query.where(Video.title.contains(search))
 
     # Query based on status
     status = request.args.get('status', "")
@@ -100,6 +101,9 @@ def channel_details(chanid):
         for st in status[1:]:
             x = x | (Video.status == st)
         query = query.where(x)
+    query = query.execute()
+
+    query = list(query)
     # 25 videos per page, with no less than 5 per page
     paginator = Paginator(query, per_page=25, orphans=5)
 
@@ -232,7 +236,11 @@ def list_downloads():
      })
 
 
+@app.before_request
+def before_request():
+    ytdl.models.database.init(ytdl.settings.DB_PATH)
+
+
 if __name__ == "__main__":
-    ytdl.models.database.connect('/Users/dbr/code/webtools/dev.sqlite3') # FIXME
     app.debug=True
     app.run()
