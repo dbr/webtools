@@ -17,6 +17,11 @@
   table tr.error{
     background: rgb(250, 200, 180);
   }
+
+  input[type="checkbox"]+label, input[type="text"]{
+    margin: 0 !important;
+    padding: 0 !important;
+  }
 </style>
 
 <link href="/static/css/jquery.loadmask.css" rel="stylesheet" type="text/css">
@@ -58,35 +63,35 @@
       </span>
 
     </td>
+
+    <td>
+      <form ng-submit="search_update()" style="padding: 0; width: 400px;">
+
+        <div class="rows">
+          <div class="columns">
+            <input name="search" type="text" ng-model="search_text" placeholder="Search" ng-change="">
+          </div>
+        </div>
+
+        <div class="rows">
+          <div class="columns">
+            <span ng-repeat="(status_key, enabled) in search_status">
+              <input ng-model="search_status[status_key]" type="checkbox" id="search_{!status_key!}">
+              <label for="search_{!status_key!}">
+                {! status_info.human_name(status_key) !}
+              </label>
+            </span>
+            <span>
+              <input type="submit" value="search">
+            </span>
+          </div>
+        </div>
+      </form>
+
+    </td>
   </tr>
 </table>
 
-
-<form ng-submit="search_update()">
-
-  <div class="rows">
-    <div class="columns">
-      <input name="search" type="text" ng-model="search_text" placeholder="Search" ng-change="">
-    </div>
-  </div>
-
-  <div class="rows">
-    <div class="columns">
-      <span ng-repeat="(status_key, enabled) in search_status">
-        <input ng-model="search_status[status_key]" type="checkbox" id="search_{!status_key!}">
-        <label for="search_{!status_key!}">
-          {! status_info.human_name(status_key) !}
-        </label>
-      </span>
-    </div>
-  </div>
-
-  <div class="rows">
-    <div class="columns">
-      <input type="submit" value="search">
-    </div>
-  </div>
-</form>
 
 <table class="table table-striped table-hover table-condensed" id="videos">
   <thead>
