@@ -5,7 +5,7 @@ from unittest import TestCase
 IS_PY2 = sys.version_info[0] == 2
 
 import peewee
-test_db = peewee.SqliteDatabase(':memory:')
+_test_db = peewee.SqliteDatabase(':memory:')
 
 
 def test_db():
@@ -15,7 +15,7 @@ def test_db():
               if hasattr(obj, "__bases__") and ytdl.models.BaseModel in obj.__bases__]
     print(models)
     import playhouse.test_utils
-    return playhouse.test_utils.test_database(test_db, models)
+    return playhouse.test_utils.test_database(_test_db, models)
 
 
 class YoutubeTest(TestCase):
