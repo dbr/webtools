@@ -194,7 +194,7 @@ def mark_viewed(videoid):
 
 
 @app.route('/youtube/api/1/video/<videoid>/mark_ignored')
-def mark_ignored(request, videoid):
+def mark_ignored(videoid):
     return _set_status(videoid, status=Video.STATE_IGNORE)
 
 
