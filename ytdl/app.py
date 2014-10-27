@@ -101,9 +101,7 @@ def channel_details(chanid):
         for st in status[1:]:
             x = x | (Video.status == st)
         query = query.where(x)
-    query = query.execute()
 
-    query = list(query)
     # 25 videos per page, with no less than 5 per page
     paginator = Paginator(query, per_page=25, orphans=5)
 
