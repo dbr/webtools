@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <title>YTDL</title>
+    <link rel="stylesheet" href="/static/css/foundation.min.css" />
+
+    <style type="text/css" media="screen">
+      table tr td,
+      table tfoot tr td
+      {
+        padding:     0.3em;
+        line-height: 1em;
+      }
+      table tr.downloading{
+        background: rgb();
+      }
+      table tr.new{
+        background: rgb(145, 177, 199);
+      }
+      table tr.grabbed{
+        background: rgb(200, 250, 180);
+      }
+      table tr.error{
+        background: rgb(250, 200, 180);
+      }
+    
+      input[type="checkbox"]+label, input[type="text"]{
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+    </style>
+
+  </head>
+  <body>
+    <div id="content"></div>
+    <script src="/static/react.min.js"></script>
+    <script src="/static/JSXTransformer-0.12.0.js"></script>
+    <script src="/static/jquery-1.10.0.min.js"></script>
+    <script src="/static/mousetrap.min.js"></script>
+    <script src="/static/director.min.js"></script>
+
+    <script type="text/jsx" src="/static/ytdl.jsx"></script>
+  </body>
+</html>

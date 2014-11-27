@@ -27,6 +27,11 @@ def page():
     return send_file("static/ytdl.html")
 
 
+@app.route("/youtube2/")
+def page2():
+    return send_file("static/ytdl2.html")
+
+
 
 
 # API
