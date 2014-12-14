@@ -229,6 +229,46 @@ var ChannelList = React.createClass({
     },
 });
 
+var ChannelAdd = React.createClass({
+    getInitialState: function(){
+        return {channame: "", service: "youtube"};
+    },
+    handleChangeID: function(event){
+        this.setState({chanid: event.target.value});
+    },
+
+    handleChangeService: function(event){
+        this.setState({service: event.target.value});
+    },
+
+    submit: function(event){
+        console.log("Go");
+        var thing = $.ajax({
+            url: "/youtube/api/1/channel_add",
+            type: "POST",
+            data: {"service": this.state.service,
+                   "chanid": this.state.chanid}});
+        thing.error(function(data){
+            console.log("Error adding channel!");
+        });
+        thing.success(function(data){
+            console.log("Done!");
+        });
+    },
+
+    render: function(){
+        return (<form onSubmit={this.submit}>
+                <input value={this.state.chanid} type="text" onChange={this.handleChangeID} />
+                <select value={this.state.service} onChange={this.handleChangeService}>
+                  <option value="youtube">YouTube</option>
+                  <option value="vimeo">Vimeo</option>
+                </select>
+                <span>{this.state.chanid}</span>
+                <span>{this.state.service}</span>
+                </form>);
+    },
+});
+
 var PageNotFound = React.createClass({
     render: function(){
         return (
@@ -247,6 +287,7 @@ var App = React.createClass({
         var routes = {
             '/': function(){ self.setState({component: <ChannelList />}); },
             '/channels/:id': function(chanid){ self.setState({component: <VideoList key={chanid} channel={chanid} />}) },
+            '/add': function(){ self.setState({component: <ChannelAdd />}); },
         };
 
         var router = Router(routes);
