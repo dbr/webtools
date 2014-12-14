@@ -239,6 +239,40 @@ def list_downloads():
      })
 
 
+# Add channel
+
+@app.route("/youtube/api/1/channel_add", methods=["POST"])
+def add_channel():
+    service = request.form.get("service")
+    chanid = request.form.get("chanid")
+
+    if service is None or chanid is None:
+        ret = {"error": "Both 'chanid' (%r) and 'service' (%r) must be specified" % (service, chanid)}
+        return json.dumps(ret), 500
+
+    if service not in ytdl.models.ALL_SERVICES:
+        ret = {"error": "service must be one of %s" % ", ".join(ytdl.models.ALL_SERVICES)}
+        return json.dumps(ret), 500
+
+    try:
+        existing_chan = Channel.get(chanid=chanid)
+    except Channel.ChannelDoesNotExist:
+        pass # Good
+    else:
+        # Exists
+        ret = {"error": "channel %r already exists (on service %s)" % (existing_chan.chanid, existing_chan.service)}
+        return json.dumps(ret), 500
+
+    # Create!
+    c = Channel(
+        chanid=chanid,
+        service=service)
+    id = c.save()
+
+    return json.dumps({"status": "ok", "id": id})
+
+
+
 @app.before_request
 def before_request():
     ytdl.models.database.init(ytdl.settings.DB_PATH)
