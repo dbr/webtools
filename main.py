@@ -125,10 +125,10 @@ def restore(filename):
 
 
 
-def server(port):
+def server(port, host):
     from ytdl.app import app
     app.debug=True
-    app.run(port=port)
+    app.run(host=host, port=port)
 
 
 if __name__ == '__main__':
@@ -137,6 +137,7 @@ if __name__ == '__main__':
     subparsers = p_main.add_subparsers()
 
     p_server = subparsers.add_parser('server')
+    p_server.add_argument('-o', '--host', default='0.0.0.0')
     p_server.add_argument('-p', '--port', default=8008, type=int)
     p_server.set_defaults(func=server)
 
