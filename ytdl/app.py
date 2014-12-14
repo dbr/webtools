@@ -206,7 +206,7 @@ def mark_ignored(videoid):
 @app.route('/youtube/api/1/video_status')
 def video_status():
     ids = request.args.get("ids")
-    if ids is None:
+    if ids is None or len(ids) == 0:
         return "{}"
 
     ids = ids.split(",")
