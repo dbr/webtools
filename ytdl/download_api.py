@@ -1,3 +1,5 @@
+import traceback
+
 import redis
 import youtube_dl
 
@@ -5,8 +7,9 @@ HOUR = 60*60 # 60 seconds in minute, 60 minutes in hour
 
 
 class YDL(object):
-    def __init__(self, id):
+    def __init__(self, id, url):
         self.id = id
+        self.url = url
         self.r = redis.Redis()
 
     def debug(self, msg):
@@ -65,14 +68,24 @@ class YDL(object):
 
         # Add to active-download set
         self.r.sadd("dl", self.id)
+
         # Clean up stale data
         self.r.delete("dl:{id}:info".format(id=self.id))
         self.r.delete("dl:{id}:log".format(id=self.id))
 
+        self._set_progress(status="new")
+
         with youtube_dl.YoutubeDL(opts) as ydl:
-            ydl.download(['http://www.youtube.com/watch?v=BaW_jenozKc'])
+            try:
+                ydl.download([self.url])
+            except youtube_dl.DownloadError, e:
+                self._set_progress(status="error", msg='%s' % e)
+                for line in traceback.format_exc():
+                    self._append_log(line=line)
 
 
 if __name__ == '__main__':
-    d = YDL(id=1234)
+    import random
+    d = YDL(id=random.randint(1, 100),
+            url='http://www.youtube.com/watch?v=BaW_jenozKc')
     d.go()
