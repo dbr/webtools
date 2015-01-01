@@ -244,12 +244,16 @@ var ChannelList = React.createClass({
                     </tr>);
         });
         return (
-                <div>
+            <div>
+              <table>
                 <tr>
-                  <td><a href="#/channels/_all">All channels</a></td>
+                <td><a href="#/channels/_all">All channels</a></td>
                 </tr>
                 {things}
-                </div>
+              </table>
+              <h2>Download list</h2>
+              <DownloadList />
+            </div>
         );
     },
 });
@@ -292,6 +296,57 @@ var ChannelAdd = React.createClass({
                   <span>{this.state.chanid}</span>
                   <span>{this.state.service}</span>
                 </form>);
+    },
+});
+
+var DownloadList = React.createClass({
+    getInitialState: function(){
+        return {active: []};
+    },
+    componentDidMount: function(){
+        this.refresh();
+        this.timer = setInterval(this.refresh, 500);
+    },
+    componentWillUnmount: function() {
+        clearInterval(this.timer);
+    },
+    refresh: function(){
+        var that = this;
+
+        var thing = $.ajax({
+            url: "/youtube/api/1/downloads",
+            type: "GET",
+            dataType: 'json',
+        });
+
+        thing.success(function(data){
+            that.setState({active: data});
+        });
+    },
+    render: function(){
+        var items = [];
+        for (var property in this.state.active) {
+            if (this.state.active.hasOwnProperty(property)) {
+                var cur = this.state.active[property];
+
+                items.push(
+                    <tr>
+                        <td>
+                        {cur.status}
+                        </td>
+                    <td>
+                        {cur.message}
+                    </td>
+                    </tr>
+                );
+            }
+        }
+
+        return (
+            <table width="600">
+              {items}
+            </table>
+        );
     },
 });
 
