@@ -220,6 +220,30 @@ def video_status():
     return json.dumps(videos)
 
 
+@app.route('/youtube/api/1/downloads')
+def downloads():
+    import redis
+    r = redis.Redis()
+
+    ids = r.smembers("dl") or []
+
+    all_info = {}
+    for cur in ids:
+        key = "dl:{id}:info".format(id=cur)
+
+        status = r.hget(key, "status") or ""
+        message = r.hget(key, "message") or ""
+        progress = float(r.hget(key, "progress") or 0.0)
+
+        all_info[cur] = {
+            'status': status,
+            'message': message,
+            'progress': progress,
+        }
+
+    return json.dumps(all_info)
+
+
 @app.route("/youtube/api/1/downloads")
 def list_downloads():
     query = Video.select().where(
