@@ -237,7 +237,7 @@ var ChannelList = React.createClass({
         var things = this.state.data.channels.map(function(f){
             return (<tr key={f.id}>
                       <td>
-                        <img src={f.icon} width="16" height="16" /> <a href={"#/channels/"+f.id}>{f.title}</a>
+                        <img src={f.icon} width="16" height="16" /> <a href={"#/channels/"+f.id}>{f.title || "Untitled channel (refreshing?)"}</a>
                       </td>
                       <td>
                       </td>
