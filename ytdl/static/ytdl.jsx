@@ -279,9 +279,12 @@ var ChannelAdd = React.createClass({
                    "chanid": this.state.chanid}});
         thing.error(function(data){
             console.log("Error adding channel!");
+            alert("Error adding channel! Check Developer Console for more information");
+            // TODO: Better error message
         });
         thing.success(function(data){
-            console.log("Done!");
+            alert("Done!");
+            // TODO: Redirect to new channel
         });
     },
 
