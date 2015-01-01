@@ -280,7 +280,7 @@ def add_channel():
 
     try:
         existing_chan = Channel.get(chanid=chanid)
-    except Channel.ChannelDoesNotExist:
+    except Channel.DoesNotExist:
         pass # Good
     else:
         # Exists
@@ -292,6 +292,9 @@ def add_channel():
         chanid=chanid,
         service=service)
     id = c.save()
+
+    # Queue refresh
+    ytdl.tasks.refresh_channel.delay(id=id)
 
     return json.dumps({"status": "ok", "id": id})
 
