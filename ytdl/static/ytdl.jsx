@@ -332,6 +332,9 @@ var DownloadList = React.createClass({
                 items.push(
                     <tr>
                         <td>
+                        {cur.title}
+                        </td>
+                        <td>
                         {cur.status}
                         </td>
                     <td>

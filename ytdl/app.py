@@ -235,7 +235,15 @@ def downloads():
         message = r.hget(key, "message") or ""
         progress = float(r.hget(key, "progress") or 0.0)
 
+        try:
+            v = Video.get(id=cur)
+        except Video.DoesNotExist:
+            title = "Unknown"
+        else:
+            title = v.title
+
         all_info[cur] = {
+            'title': title,
             'status': status,
             'message': message,
             'progress': progress,
