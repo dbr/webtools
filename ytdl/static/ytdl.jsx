@@ -29,14 +29,21 @@ var VideoActions = React.createClass({
         console.log("Download " + this.props.videoid);
         _do_video_action(this.props.videoid, 'grab');
     },
+    ignore: function(e){
+        e.preventDefault();
+        _do_video_action(this.props.videoid, 'mark_ignored');
+    },
     render: function(){
-        return (<span><a href="#" onClick={this.download}>DL</a></span>);
+        return (<span>
+                <a href="#" onClick={this.download}>DL</a>
+                <a href="#" onClick={this.ignore}>IG</a>
+                </span>);
     },
 });
 
 var VideoInfo = React.createClass({
     getInitialState: function(){
-        return {status: "?"};
+        return {};
     },
     humanName: function(status){
         return {
@@ -61,8 +68,10 @@ var VideoInfo = React.createClass({
     render: function(){
         return (
             <tr className={this.cssClass(this.props.data.status)}>
-                <td><VideoActions videoid={this.props.data.id}/></td>
-                <td>Title: {this.props.data.title}</td>
+                <td><VideoActions videoid={this.props.data.id} video={this} /></td>
+                <td>
+                  <img width="16" height="16" src={this.props.data.channel.icon} /> {this.props.data.title}
+                </td>
                 <td><img width="16" height="16" src={this.props.data.channel.icon} /> {this.props.data.channel.title}</td>
                 <td>{this.humanName(this.props.data.status)}</td>
             </tr>
@@ -138,18 +147,31 @@ var VideoList = React.createClass({
         // Query statues
         var status_query = $.ajax(
             {url:"/youtube/api/1/video_status?ids=" + ids.join(),
-             dataType: 'json'})
-            .error(function(data){
-                console.log("Error querying status");
-            })
-            .success(function(data){
-                self.state.data.videos.forEach(function(v, index){
-                    if(data[v.id]){
-                        self.state.data.videos[index].status = data[v.id];
-                    }
-                });
-                self.setState(self.state);
+             dataType: 'json'}
+        );
+
+        status_query.error(function(data){
+            console.log("Error querying status");
+        });
+
+        status_query.success(function(data){
+            // TODO: Make this simpler/tidier
+            var newvideos = self.state.data.videos.map(function(v, index){
+
+                if(data[v.id]){
+                    return React.addons.update(v, {status: {$set: data[v.id]}});
+                }
             });
+            var newdata = React.addons.update(self.state.data, {videos: {$set: newvideos}});
+            self.setState({data: newdata});
+            /*
+              self.state.data.videos.forEach(function(v, index){
+              if(data[v.id]){
+              self.state.data.videos[index].status = data[v.id];
+              }
+              });
+            */
+        });
     },
 
     loadPage: function(pagenum){
@@ -223,6 +245,9 @@ var ChannelList = React.createClass({
         });
         return (
                 <div>
+                <tr>
+                  <td><a href="#/channels/_all">All channels</a></td>
+                </tr>
                 {things}
                 </div>
         );
@@ -258,13 +283,14 @@ var ChannelAdd = React.createClass({
 
     render: function(){
         return (<form onSubmit={this.submit}>
-                <input value={this.state.chanid} type="text" onChange={this.handleChangeID} />
-                <select value={this.state.service} onChange={this.handleChangeService}>
-                  <option value="youtube">YouTube</option>
-                  <option value="vimeo">Vimeo</option>
-                </select>
-                <span>{this.state.chanid}</span>
-                <span>{this.state.service}</span>
+                  <input value={this.state.chanid} type="text" onChange={this.handleChangeID} />
+                  <select value={this.state.service} onChange={this.handleChangeService}>
+                    <option value="youtube">YouTube</option>
+                    <option value="vimeo">Vimeo</option>
+                  </select>
+                  <input type="submit" />
+                  <span>{this.state.chanid}</span>
+                  <span>{this.state.service}</span>
                 </form>);
     },
 });
