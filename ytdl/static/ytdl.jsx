@@ -15,12 +15,27 @@ function _do_video_action(video_id, name, force){
             if(data.error){
                 // TODO: Less annoying popup, allow force download
                 if(confirm(data.error + "\n" + "Forcefully try again?")){
-                    _do_video_action(video, name, true); // force
+                    _do_video_action(video_id, name, true); // force
                 }
             }
         });
 }
 
+
+var TimeAgo = React.createClass({
+    render: function() {
+        return <span title={this.props.time}>{moment(this.props.time).fromNow()}</span>;
+    },
+    tick: function(){
+        this.forceUpdate();
+    },
+    componentDidMount: function() {
+        this.timer = setInterval(this.tick, 1000);
+    },
+    componentWillUnmount: function(){
+        clearInterval(this.timer);
+    },
+});
 
 
 var VideoActions = React.createClass({
@@ -35,8 +50,9 @@ var VideoActions = React.createClass({
     },
     render: function(){
         return (<span>
-                <a href="#" onClick={this.download}>DL</a>
-                <a href="#" onClick={this.ignore}>IG</a>
+                <a href="#" onClick={this.download} title="Download video"><i className="fa fa-download" style={{color: "black"}}></i></a>
+                &nbsp;
+                <a href="#" onClick={this.ignore} title="Mark video as ignored"><i className="fa fa-square-o" style={{color: "black"}}></i></a>
                 </span>);
     },
 });
@@ -70,10 +86,22 @@ var VideoInfo = React.createClass({
             <tr className={this.cssClass(this.props.data.status)}>
                 <td><VideoActions videoid={this.props.data.id} video={this} /></td>
                 <td>
-                  <img width="16" height="16" src={this.props.data.channel.icon} /> {this.props.data.title}
+                  <img width="16" height="16" src={this.props.data.channel.icon} />
+                  &nbsp;
+                  <a href={this.props.data.url}>{this.props.data.title}</a>
+                  &nbsp;
+                  <small>
+                    <a href={"#/channels/"+this.props.data.channel.id} style={{color: "grey"}}>
+                      [{this.props.data.channel.title}]
+                    </a>
+                  </small>
                 </td>
-                <td><img width="16" height="16" src={this.props.data.channel.icon} /> {this.props.data.channel.title}</td>
-                <td>{this.humanName(this.props.data.status)}</td>
+                <td>
+                  {this.humanName(this.props.data.status)}
+                </td>
+                <td>
+                  <TimeAgo time={this.props.data.publishdate} />
+                </td>
             </tr>
         );
     }
@@ -195,9 +223,17 @@ var VideoList = React.createClass({
         return (
             <div>
                 <NavigationLinks data={this.state.data.pagination} cbPageChanged={this.loadPage}/>
+
                 <table>
-                {items}
+                  <thead>
+                    <th width="42px"></th>
+                    <th>              Title</th>
+                    <th width="75px"> Status</th>
+                    <th width="160px">Released</th>
+                  </thead>
+                  {items}
                 </table>
+
                 <NavigationLinks data={this.state.data.pagination} cbPageChanged={this.loadPage}/>
                 {JSON.stringify(this.state.data.pagination)}
             </div>
@@ -333,7 +369,7 @@ var DownloadList = React.createClass({
                 var cur = this.state.active[property];
 
                 items.push(
-                    <tr>
+                    <tr key={cur.id}>
                         <td>
                         {cur.title}
                         </td>

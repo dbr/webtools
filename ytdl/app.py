@@ -243,6 +243,7 @@ def downloads():
             title = v.title
 
         all_info[cur] = {
+            'id': cur,
             'title': title,
             'status': status,
             'message': message,
@@ -250,25 +251,6 @@ def downloads():
         }
 
     return json.dumps(all_info)
-
-
-@app.route("/youtube/api/1/downloads")
-def list_downloads():
-    query = Video.select().where(
-        (Video.status==Video.STATE_DOWNLOADING)
-        | (Video.status == Video.STATE_QUEUED)
-        | (Video.status == Video.STATE_GRAB_ERROR)
-    )
-
-    downloads = []
-    for dl in query:
-        downloads.append({"id": dl.id,
-                          "status": dl.status,
-                          "title": dl.title})
-
-    return json.dumps(
-        {"downloads": downloads,
-     })
 
 
 # Add channel

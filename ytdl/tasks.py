@@ -1,11 +1,11 @@
 import os
 import logging
-import subprocess
-#from flask.ext.rq import job as task
-
 
 from redis import Redis
 from rq import Queue
+
+import ytdl.settings
+import ytdl.download_api
 
 
 def get_queue(queue):
@@ -60,7 +60,6 @@ def grab_video(videoid, force=False):
     video.save()
 
     cwd = ytdl.settings.OUTPUT_DIR
-
     try:
         os.makedirs(cwd)
     except OSError as e:
@@ -70,35 +69,16 @@ def grab_video(videoid, force=False):
         else:
             raise
 
-    # Get output filename
-    p = subprocess.Popen(
-        ["youtube-dl", "--restrict-filenames", "--output", ytdl.settings.OUTPUT_FORMAT, video.url, "--get-filename"],
-        cwd = cwd,
-        stdout = subprocess.PIPE)
-    so, _se = p.communicate()
-
-    if p.returncode != 0:
-        video.status = Video.STATE_GRAB_ERROR
-        video.save()
-        log.error("Error grabbing video name %s - non-zero return code %s" % (video, p.returncode))
-        return
-
-    # FIXME: Store this in DB
-    filename = os.path.join(cwd, so.strip())
-
     # Grab video
-    cmd = ["youtube-dl", "--restrict-filenames", "--output", ytdl.settings.OUTPUT_FORMAT, video.url]
-    cmd.extend(ytdl.settings.YOUTUBE_DL_FLAGS)
-    p = subprocess.Popen(cmd, cwd = cwd)
-
-    p.communicate()
-
-    if p.returncode != 0:
+    outtmpl = os.path.join(ytdl.settings.OUTPUT_DIR, ytdl.settings.OUTPUT_FORMAT)
+    x = ytdl.download_api.YDL(id=videoid, url=video.url, outtmpl=outtmpl)
+    try:
+        x.go()
+    except Exception, e: # ?
         video.status = Video.STATE_GRAB_ERROR
         video.save()
-        log.error("Error grabbing %s - non-zero return code %s" % (video, p.returncode))
+        log.error("Error grabbing %s: %s" % (video, e), exc_info=True)
         return
-
     else:
         video.status = Video.STATE_GRABBED
         video.save()

@@ -3,6 +3,7 @@
   <head>
     <title>YTDL</title>
     <link rel="stylesheet" href="/static/css/foundation.min.css" />
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css" />
 
     <style type="text/css" media="screen">
       table tr td,
@@ -28,16 +29,26 @@
         margin: 0 !important;
         padding: 0 !important;
       }
+
+      td.title
+      {
+        max-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     </style>
 
   </head>
   <body>
     <div id="content"></div>
+
     <script src="/static/react-with-addons-0.12.1.js"></script>
     <script src="/static/JSXTransformer-0.12.0.js"></script>
     <script src="/static/jquery-1.10.0.min.js"></script>
     <script src="/static/mousetrap.min.js"></script>
     <script src="/static/director.min.js"></script>
+    <script src="/static/js/moment.min.js"></script>
 
     <script type="text/jsx" src="/static/ytdl.jsx"></script>
   </body>

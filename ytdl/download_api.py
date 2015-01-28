@@ -1,24 +1,34 @@
+import logging
 import traceback
 
 import redis
 import youtube_dl
 
+
 HOUR = 60*60 # 60 seconds in minute, 60 minutes in hour
 
 
+log = logging.getLogger(__name__)
+
+
+
 class YDL(object):
-    def __init__(self, id, url):
+    def __init__(self, id, url, outtmpl):
         self.id = id
         self.url = url
         self.r = redis.Redis()
+        self.outtmpl = outtmpl
 
     def debug(self, msg):
+        log.debug("YTDL DEBUG: %s" % msg)
         self._append_log("[debug] %s" % msg)
 
     def warning(self, msg):
+        log.debug("YTDL WARNING: %s" % msg)
         self._append_log("[warning] %s" % msg)
 
     def error(self, msg):
+        log.debug("YTDL ERROR: %s" % msg)
         self._append_log("[error] %s" % msg)
 
     def _set_progress(self, percent=None, status=None, msg=None):
@@ -66,6 +76,9 @@ class YDL(object):
         opts['logger'] = self
         opts['progress_hooks'] = [self.progress_hook]
 
+        opts['continuedl'] = True
+        opts['outtmpl'] = self.outtmpl
+
         # Add to active-download set
         self.r.sadd("dl", self.id)
 
@@ -76,15 +89,18 @@ class YDL(object):
         self._set_progress(status="new")
 
         with youtube_dl.YoutubeDL(opts) as ydl:
+            log.info("Beginning downloading %s" % (self.url))
             try:
                 ydl.download([self.url])
             except youtube_dl.DownloadError, e:
                 self._set_progress(status="error", msg='%s' % e)
                 for line in traceback.format_exc():
                     self._append_log(line=line)
+                raise
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
     import random
     d = YDL(id=random.randint(1, 100),
             url='http://www.youtube.com/watch?v=BaW_jenozKc')
