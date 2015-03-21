@@ -414,7 +414,7 @@ var App = React.createClass({
         };
 
         var router = Router(routes);
-        router.init();
+        router.init("/");
     },
     render: function(){
         console.log("App rendering", this.state.component);
