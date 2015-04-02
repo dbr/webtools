@@ -76,6 +76,7 @@ class YDL(object):
         opts['logger'] = self
         opts['progress_hooks'] = [self.progress_hook]
 
+        opts['restrictfilenames'] = True
         opts['continuedl'] = True
         opts['outtmpl'] = self.outtmpl
 
