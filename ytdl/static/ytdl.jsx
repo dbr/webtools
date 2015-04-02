@@ -107,6 +107,15 @@ var VideoInfo = React.createClass({
     }
 });
 
+var SearchBox = React.createClass({
+    render: function(){
+        return <input onChange={this.changed} />
+    },
+    changed: function(event){
+        this.props.cbFilterChange({text: event.target.value});
+    },
+});
+
 var NavigationLinks = React.createClass({
     getInitialState: function() {
         return {
@@ -152,7 +161,8 @@ var NavigationLinks = React.createClass({
 
 var VideoList = React.createClass({
     getInitialState: function(){
-        return {data: {videos: []}};
+        return {data: {videos: []},
+               filter: ""};
     },
     componentDidMount: function(){
         this.loadPage(1);
@@ -204,7 +214,7 @@ var VideoList = React.createClass({
 
     loadPage: function(pagenum){
         $.ajax({
-            url: "/youtube/api/1/channels/"+this.props.channel+"?page="+pagenum,
+            url: "/youtube/api/1/channels/"+this.props.channel+"?page="+pagenum + "&search=" + this.state.filter,
             dataType: "json",
             success: function(data) {
                 console.log("Got data!", data)
@@ -215,6 +225,10 @@ var VideoList = React.createClass({
             }
         });
     },
+    setFilter: function(info){
+        this.setState({filter: info.text});
+        this.loadPage(0);
+    },
 
     render: function(){
         var items = this.state.data.videos.map(function(f){
@@ -223,6 +237,7 @@ var VideoList = React.createClass({
         return (
             <div>
                 <NavigationLinks data={this.state.data.pagination} cbPageChanged={this.loadPage}/>
+                <SearchBox cbFilterChange={this.setFilter}/>
 
                 <table>
                   <thead>
@@ -332,8 +347,6 @@ var ChannelAdd = React.createClass({
                     <option value="vimeo">Vimeo</option>
                   </select>
                   <input type="submit" />
-                  <span>{this.state.chanid}</span>
-                  <span>{this.state.service}</span>
                 </form>);
     },
 });
