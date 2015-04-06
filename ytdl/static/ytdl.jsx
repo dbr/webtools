@@ -136,10 +136,17 @@ var NavigationLinks = React.createClass({
         }
     },
     render: function(){
+        if(!this.props.data){
+            return <div>Loading</div>;
+        }
+
+        var style_next = this.props.data.has_next ? {} : {pointerEvents: "none", color: "grey"};
+        var style_back = this.props.data.has_previous ? {} : {pointerEvents: "none", color: "grey"};
+
         return (
             <div>
-                Page {this.props.data && this.props.data.current} of {this.props.data && this.props.data.total}<br />
-                <a href="#" onClick={this.prev}>Back</a> <a href="#" onClick={this.next}>Next</a>
+                Page {this.props.data.current} of {this.props.data && this.props.data.total}<br />
+                <a style={style_back} href="#" onClick={this.prev}>Back</a> <a style={style_next} href="#" onClick={this.next}>Next</a>
             </div>
             );
     },
@@ -250,7 +257,6 @@ var VideoList = React.createClass({
                 </table>
 
                 <NavigationLinks data={this.state.data.pagination} cbPageChanged={this.loadPage}/>
-                {JSON.stringify(this.state.data.pagination)}
             </div>
             );
     }
