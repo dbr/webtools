@@ -10,4 +10,4 @@ install:
   - pip install pytest
 
 
-script: py.test
+script: py.test --tb=native
