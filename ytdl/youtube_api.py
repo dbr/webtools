@@ -1,75 +1,90 @@
 import logging
 import requests
-import xmltodict
 
 
 log = logging.getLogger(__name__)
 
 
 class YoutubeApi(object):
+    API_KEY = "AIzaSyBBUxzImakMKKW3B6Qu47lR9xMpb6DNqQE" # ytdl public API browser key (for Youtube API v3)
+
     def __init__(self, chanid):
         self.chanid = chanid
 
     def videos_for_user(self, limit=10):
-        results = 50
+        url = "https://www.googleapis.com/youtube/v3/channels?key={apikey}&forUsername={chanid}&part=contentDetails".format(
+            apikey = self.API_KEY,
+            chanid = self.chanid)
+        resp = requests.get(url)
+        upload_playlist = resp.json()['items'][0]['contentDetails']['relatedPlaylists']['uploads']
 
-        for offset_i in range(limit):
-            offset = 1 + offset_i*results
-            new = self._videos_for_user(offset=offset, results=results)
+        next_page = None
+        for x in range(limit):
+            cur, next_page = self._videos_for_playlist(playlist_id=upload_playlist, page_token=next_page)
+            for x in cur:
+                yield x
+            if next_page is None:
+                break # Signifies no more pages
 
-            for cur in new:
-                yield cur
-
-            if len(new) < results:
-                raise StopIteration("No more videos on next page")
-
+    def _videos_for_playlist(self, playlist_id, page_token=None):
+        if page_token is None:
+            pt = ""
         else:
-            log.debug("Giving up at offset %s" % offset_i)
+            pt = "&pageToken={p}".format(p=page_token)
 
-    def _videos_for_user(self, offset, results=50):
-        uri = 'http://gdata.youtube.com/feeds/api/users/%s/uploads?start-inde=%d&max-results=%d' % (
-            self.chanid,
-            offset,
-            results)
-        data = requests.get(uri).text
+        url = "https://www.googleapis.com/youtube/v3/playlistItems?key={apikey}&part=snippet&maxResults={num}&playlistId={playlist}{page}".format(
+            apikey = self.API_KEY,
+            num=50,
+            playlist = playlist_id,
+            page=pt
+        )
 
-        t = xmltodict.parse(data)
+        resp = requests.get(url)
+        data = resp.json()
 
         ret = []
-        for item in t['feed']['entry']:
-            id = item['id']
-            title = item['media:group']['media:title']['#text']
-            url = item['media:group']['media:player']['@url']
-            descr = item['media:group']['media:description'].get('#text')
-            thumbs = [thumbnail['@url'] for thumbnail in item['media:group']['media:thumbnail']]
-            published = item['published']
+        for v in data['items']:
+            s = v['snippet']
+
             import dateutil.parser
-            dt = dateutil.parser.parse(published)
+            dt = dateutil.parser.parse(s['publishedAt'])
+
+            thumbs = [s['thumbnails']['default']['url'], ]
 
             info = {
-                'id': id,
-                'title': title or "Untitled",
-                'url': url,
+                'id': "http://gdata.youtube.com/feeds/api/videos/%s" % s['resourceId']['videoId'], # TODO: Migrate form silly gdata ID in database
+                'title': s['title'],
+                'url': 'http://youtube.com/watch?v={id}'.format(id=s['resourceId']['videoId']),
                 'thumbs': thumbs,
-                'descr': descr,
+                'descr': s['description'],
                 'published': dt,
                 }
+
             ret.append(info)
 
-        return ret
+        return ret, data.get('nextPageToken')
+
+    def _chan_snippet(self):
+        url = "https://www.googleapis.com/youtube/v3/channels?key={apikey}&forUsername={chanid}&part=snippet".format(
+            apikey = self.API_KEY,
+            chanid = self.chanid,
+            )
+
+        data = requests.get(url).json()['items'][0]['snippet']
+        return data
 
     def icon(self):
-        url = 'http://gdata.youtube.com/feeds/api/users/%s?fields=yt:username,media:thumbnail' % (self.chanid)
-
-        data = requests.get(url).text
-        t = xmltodict.parse(data)
-        return t['entry']['media:thumbnail']['@url']
+        snippet = self._chan_snippet()
+        return snippet['thumbnails']['default']['url']
 
     def title(self):
-        uri = 'http://gdata.youtube.com/feeds/api/users/%s?fields=title' % (
-            self.chanid)
+        snippet = self._chan_snippet()
+        return snippet['title']
 
-        data = requests.get(uri).text
-        t = xmltodict.parse(data)
 
-        return t['entry']['title'].get('#text')
+if __name__ == '__main__':
+    y = YoutubeApi("roosterteeth")
+    print y.icon()
+    print y.title()
+    for v in y.videos_for_user():
+        print v['title']
