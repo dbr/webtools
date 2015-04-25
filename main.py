@@ -27,10 +27,12 @@ def scheduler(on_start):
         return
 
 
-def refresh(limit, all):
+def refresh(limit, all, filter):
     import ytdl.models
     channels = ytdl.models.Channel.select()
     for c in channels:
+        if filter is not None and filter not in c.title.lower():
+            continue
         print "Force-refreshing %s" % c
         if all:
             c.grab(limit=limit, stop_on_existing=False)
@@ -145,6 +147,7 @@ if __name__ == '__main__':
     p_refresh.set_defaults(func=refresh)
     p_refresh.add_argument("-a", "--all", action="store_true", help="don't stop because a video exists (check for older videos)")
     p_refresh.add_argument("--limit", type=int, default=1000, help="maximum number of videos to try and grab (default %(default)s)")
+    p_refresh.add_argument("-f", "--filter", default=None, help="only refresh channels matching this (simple case-insensetive string-matching on channel title)")
 
 
     p_dedupe = subparsers.add_parser('dedupe')
