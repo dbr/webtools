@@ -73,7 +73,7 @@ def list_channels():
         end = page * count
         return sliceable[start:end]
 
-    query = Channel.select().order_by('title')
+    query = Channel.select().order_by(Channel.title.asc())
     if count is not None:
         count = int(count)
         query = offset(query, page, count)
