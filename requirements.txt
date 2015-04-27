@@ -15,4 +15,4 @@ simplejson==3.6.0
 six==1.7.3
 times==0.6.2
 wsgiref==0.1.2
-youtube-dl==2014.12.16.2
+youtube-dl==2015.04.17
