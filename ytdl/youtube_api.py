@@ -16,6 +16,10 @@ class YoutubeApi(object):
             apikey = self.API_KEY,
             chanid = self.chanid)
         resp = requests.get(url)
+        if len(resp.json()['items']) == 0:
+            log.warning("No items found at %s" % url)
+            return
+
         upload_playlist = resp.json()['items'][0]['contentDetails']['relatedPlaylists']['uploads']
 
         next_page = None
@@ -70,15 +74,23 @@ class YoutubeApi(object):
             chanid = self.chanid,
             )
 
-        data = requests.get(url).json()['items'][0]['snippet']
-        return data
+        items = requests.get(url).json()['items']
+        if len(items) > 0:
+            return items[0]['snippet']
+        else:
+            log.warning("No items found at %s" % (url))
+            return None
 
     def icon(self):
         snippet = self._chan_snippet()
+        if snippet is None:
+            return "" # FIXME?
         return snippet['thumbnails']['default']['url']
 
     def title(self):
         snippet = self._chan_snippet()
+        if snippet is None:
+            return "(no title)"
         return snippet['title']
 
 

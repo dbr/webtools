@@ -437,7 +437,10 @@ var App = React.createClass({
     },
     render: function(){
         console.log("App rendering", this.state.component);
-        return this.state.component;
+        return <div>
+            <p><a href="#/">Channel list</a> | <a href="#/add">Add channel</a></p>
+            {this.state.component}
+        </div>;
     },
 });
 
