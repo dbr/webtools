@@ -41,7 +41,7 @@ def _channel_info_dict(c):
         'id': c.id,
         'title': c.title,
         'service': c.service,
-        'id': c.id,
+        'chanid': c.chanid,
         'icon': c.icon_url,
         'last_refresh': str(c.last_refresh),
         'last_content_update': str(c.last_update_content),
