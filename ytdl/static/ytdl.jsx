@@ -438,7 +438,7 @@ var App = React.createClass({
     render: function(){
         console.log("App rendering", this.state.component);
         return <div>
-            <p><a href="#/">Channel list</a> | <a href="#/add">Add channel</a></p>
+            <p><a href="#/">Channel list</a> | <a href="#/add">Add channel</a> | <a href="/youtube/api/1/refresh?channel=_all">Refresh all</a></p>
             {this.state.component}
         </div>;
     },
