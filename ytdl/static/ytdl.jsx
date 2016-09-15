@@ -166,6 +166,29 @@ var NavigationLinks = React.createClass({
     },
 })
 
+var VisibilityWatcher = React.createClass({
+    getInitialState: function(){
+        return {"visible": true};
+    },
+    _changed: function(){
+        var vis = document.hidden || document.webkitHidden || document.mozHidden || document.msHidden || false;
+        this.setState({visible: vis});
+    },
+    componentDidMount: function(){
+        document.addEventListener("visibilitychange", this._changed);
+        document.addEventListener("webkitvisibilitychange", this._changed);
+        document.addEventListener("msvisibilitychange", this._changed);
+    },
+    componentWillUnmount: function(){
+        document.removeEventListener("visibilitychange", this._changed);
+        document.removeEventListener("webkitvisibilitychange", this._changed);
+        document.removeEventListener("msvisibilitychange", this._changed);
+    },
+    render: function(){
+        return <span>Visible? {JSON.stringify(this.state)}</span>;
+    },
+});
+
 var VideoList = React.createClass({
     getInitialState: function(){
         return {data: {videos: []},
@@ -234,15 +257,20 @@ var VideoList = React.createClass({
     },
     setFilter: function(info){
         this.setState({filter: info.text});
+        console.log("Filter status", info);
         this.loadPage(0);
     },
 
     render: function(){
+        var vis = <VisibilityWatcher />;
+
         var items = this.state.data.videos.map(function(f){
             return (<VideoInfo key={f.id} data={f} />);
         });
+
         return (
             <div>
+                {vis}
                 <NavigationLinks data={this.state.data.pagination} cbPageChanged={this.loadPage}/>
                 <SearchBox cbFilterChange={this.setFilter}/>
 
