@@ -1,5 +1,11 @@
+/*global React */
+/*global moment */
+/*global $ */
+/*global Mousetrap */
+/*eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
+
 function _do_video_action(video_id, name, force){
-    if(typeof(force) === 'undefined'){
+    if(typeof(force) === "undefined"){
         force=false;
     }
 
@@ -42,11 +48,11 @@ var VideoActions = React.createClass({
     download: function(e){
         e.preventDefault();
         console.log("Download " + this.props.videoid);
-        _do_video_action(this.props.videoid, 'grab');
+        _do_video_action(this.props.videoid, "grab");
     },
     ignore: function(e){
         e.preventDefault();
-        _do_video_action(this.props.videoid, 'mark_ignored');
+        _do_video_action(this.props.videoid, "mark_ignored");
     },
     render: function(){
         return (<span>
@@ -108,11 +114,55 @@ var VideoInfo = React.createClass({
 });
 
 var SearchBox = React.createClass({
-    render: function(){
-        return <input onChange={this.changed} />
+    filterstatus_parse: function(blah){
+        var key_to_name = {
+            NE: "new",
+            GR: "grabbed",
+            QU: "queued",
+            DL: "downloading",
+            GE: "grab error",
+            IG: "ignored",
+        };
+
+        var statuses = {};
+        key_to_name.forEach(function(v, k){
+            status[k] = false;
+        });
+
+        var chunks = blah.split(",");
+        chunks.forEach(function(x){
+            if(x.length > 0 && x in statuses){
+                statuses[x] = true;
+            }
+        });
+        return statuses;
     },
+
+    filterstatus_format: function(blah){
+        var thing = [];
+        blah.forEach(function(v, k){
+            if(v){
+                thing.push(k);
+            }
+        });
+        return thing.join(",");
+    },
+
+    render: function(){
+        return <div>
+            <input onChange={this.changed} />
+            Status:
+            <input type="checkbox" id="status_new" name="status[new]" />
+            <label            htmlFor="status_new">New</label>
+            <input type="checkbox" id="status_grabbed" />
+            <label            htmlFor="status_grabbed">Grabbed</label>
+        </div>;
+    },
+
     changed: function(event){
-        this.props.cbFilterChange({text: event.target.value});
+        this.props.cbFilterChange({
+            text: event.target.value,
+            status: this.filterstatus_format(this.status)});
     },
 });
 
@@ -123,13 +173,13 @@ var NavigationLinks = React.createClass({
         };
     },
     componentDidMount: function() {
-        that=this;
-        Mousetrap.bind('n', function() { that.next(); });
-        Mousetrap.bind('p', function() { that.prev(); });
+        var that=this;
+        Mousetrap.bind("n", function() { that.next(); });
+        Mousetrap.bind("p", function() { that.prev(); });
     },
     setPage: function(pagenum){
         pagenum = Math.max(1, pagenum); // Clamp to positive
-        console.log("Naviging to page " + pagenum)
+        console.log("Naviging to page " + pagenum);
         this.setState({page: pagenum});
         if(this.props.cbPageChanged){
             this.props.cbPageChanged(pagenum);
@@ -151,20 +201,20 @@ var NavigationLinks = React.createClass({
             );
     },
     prev: function(e){
-        console.log("Previous!")
+        console.log("Previous!");
         this.setPage(this.state.page-1);
         if(e){
             e.preventDefault();
         }
     },
     next: function(e){
-        console.log("Next!")
+        console.log("Next!");
         this.setPage(this.state.page+1);
         if(e){
             e.preventDefault();
         }
     },
-})
+});
 
 var VideoList = React.createClass({
     getInitialState: function(){
@@ -187,12 +237,12 @@ var VideoList = React.createClass({
             ids.push(v.id);
         });
 
-        self = this;
+        var self = this;
 
         // Query statues
         var status_query = $.ajax(
             {url:"/youtube/api/1/video_status?ids=" + ids.join(),
-             dataType: 'json'}
+             dataType: "json"}
         );
 
         status_query.error(function(data){
@@ -224,7 +274,7 @@ var VideoList = React.createClass({
             url: "/youtube/api/1/channels/"+this.props.channel+"?page="+pagenum + "&search=" + this.state.filter,
             dataType: "json",
             success: function(data) {
-                console.log("Got data!", data)
+                console.log("Got data!", data);
                 this.setState({data: data});
             }.bind(this),
             error: function(xhr, textStatus){
@@ -278,7 +328,7 @@ var ChannelList = React.createClass({
             url: "/youtube/api/1/channels",
             dataType: "json",
             success: function(data) {
-                console.log("Got data!", data)
+                console.log("Got data!", data);
                 if(this.isMounted()){
                     this.setState({data: data, is_loaded: true});
                 }
@@ -291,7 +341,7 @@ var ChannelList = React.createClass({
 
     render: function(){
         if(!this.state.is_loaded){
-            return(<div>Loading!</div>)
+            return(<div>Loading!</div>);
         }
         var things = this.state.data.channels.map(function(f){
             return (<tr key={f.id}>
@@ -376,7 +426,7 @@ var DownloadList = React.createClass({
         var thing = $.ajax({
             url: "/youtube/api/1/downloads",
             type: "GET",
-            dataType: 'json',
+            dataType: "json",
         });
 
         thing.success(function(data){
@@ -429,9 +479,9 @@ var App = React.createClass({
         var self=this;
 
         var routes = {
-            '/': function(){ self.setState({component: <ChannelList />}); },
-            '/channels/:id': function(chanid){ self.setState({component: <VideoList key={chanid} channel={chanid} />}) },
-            '/add': function(){ self.setState({component: <ChannelAdd />}); },
+            "/": function(){ self.setState({component: <ChannelList />}); },
+            "/channels/:id": function(chanid){ self.setState({component: <VideoList key={chanid} channel={chanid} />}); },
+            "/add": function(){ self.setState({component: <ChannelAdd />}); },
         };
 
         var router = Router(routes);
