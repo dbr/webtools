@@ -4,7 +4,7 @@ MarkupSafe==0.23
 Werkzeug==0.11.11
 honcho==0.7.1
 itsdangerous==0.24
-peewee==2.8.4
+peewee==2.8.5
 python-dateutil==2.5.3
 pytz==2016.7
 redis==2.10.5
