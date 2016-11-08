@@ -5,7 +5,7 @@ Werkzeug==0.11.11
 honcho==0.7.1
 itsdangerous==0.24
 peewee==2.8.5
-python-dateutil==2.5.3
+python-dateutil==2.6.0
 pytz==2016.7
 redis==2.10.5
 requests==2.11.1
@@ -15,4 +15,4 @@ simplejson==3.10.0
 six==1.10.0
 times==0.7
 wsgiref==0.1.2
-youtube-dl==2016.11.8
+youtube-dl==2016.11.8.1
