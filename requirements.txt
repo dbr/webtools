@@ -8,7 +8,7 @@ peewee==2.8.5
 python-dateutil==2.6.0
 pytz==2016.7
 redis==2.10.5
-requests==2.11.1
+requests==2.12.0
 rq-dashboard==0.3.7
 rq==0.6.0
 simplejson==3.10.0
