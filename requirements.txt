@@ -6,7 +6,7 @@ honcho==0.7.1
 itsdangerous==0.24
 peewee==2.8.5
 python-dateutil==2.6.0
-pytz==2016.7
+pytz==2016.10
 redis==2.10.5
 requests==2.12.3
 rq-dashboard==0.3.7
