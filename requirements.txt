@@ -10,7 +10,7 @@ pytz==2016.10
 redis==2.10.5
 requests==2.12.4
 rq-dashboard==0.3.7
-rq==0.7.0
+rq==0.7.1
 simplejson==3.10.0
 six==1.10.0
 times==0.7
