@@ -65,9 +65,7 @@ class VimeoTest(TestCase):
     def test_icon(self):
         url = self.api.icon()
         assert url.startswith("http://") or url.startswith("https://")
-
-        # .jpg seems only option, but might as well randomly guess at other options
-        assert url.endswith(".jpg") or url.endswith(".png") or url.endswith(".gif")
+        # Vimeo icons don't have file extension
 
     def test_title(self):
         title = self.api.title()
