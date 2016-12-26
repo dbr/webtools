@@ -257,6 +257,11 @@ var VideoList = React.createClass({
             ids.push(v.id);
         });
 
+        if(ids.length == 0){
+            // No query if no videos
+            return;
+        }
+
         var self = this;
 
         // Query statues
