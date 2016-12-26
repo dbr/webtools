@@ -96,7 +96,7 @@ class YoutubeApi(object):
 
 if __name__ == '__main__':
     y = YoutubeApi("roosterteeth")
-    print y.icon()
-    print y.title()
+    print(y.icon())
+    print(y.title())
     for v in y.videos_for_user():
-        print v['title']
+        print(v['title'])
