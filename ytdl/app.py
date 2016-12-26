@@ -16,22 +16,15 @@ app = Flask(__name__)
 RQDashboard(app)
 
 
-# Serving of single-page app
+# Web page
 @app.route("/")
 def index():
     return redirect("/youtube/", code=302)
 
 
 @app.route("/youtube/")
-def page():
-    return send_file("static/ytdl.html")
-
-
-@app.route("/youtube2/")
 def page2():
     return send_file("static/ytdl2.html")
-
-
 
 
 # API
