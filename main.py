@@ -59,6 +59,17 @@ def dedupe(kill):
         else:
             seen.add(url)
 
+def cleanup():
+    """Deletes videos where the associated channel no longer exists
+    """
+    import ytdl.models
+    for v in ytdl.models.Video.select():
+        try:
+            assert v.channel
+        except ytdl.models.Channel.DoesNotExist:
+            print "Deleting orphaned video '%s'" % v.title
+            v.delete_instance()
+
 def backup(filename):
     if filename is None:
         f = sys.stdout
@@ -166,6 +177,8 @@ if __name__ == '__main__':
     p_restore.set_defaults(func=restore)
     p_restore.add_argument("-f", "--filename", default=None)
 
+    p_cleanup = subparsers.add_parser('cleanup')
+    p_cleanup.set_defaults(func=cleanup)
 
     args = p_main.parse_args()
     func = args.func
