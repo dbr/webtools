@@ -10,4 +10,6 @@ install:
   - pip install pytest
 
 
+env:
+  YTDL_DB_PATH: ":memory:"
 script: py.test --tb=native

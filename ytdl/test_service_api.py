@@ -15,7 +15,7 @@ def test_db():
               if hasattr(obj, "__bases__") and ytdl.models.BaseModel in obj.__bases__]
     print(models)
     import playhouse.test_utils
-    return playhouse.test_utils.test_database(_test_db, models)
+    return playhouse.test_utils.test_database(_test_db, models, create_tables=True)
 
 
 class YoutubeTest(TestCase):
