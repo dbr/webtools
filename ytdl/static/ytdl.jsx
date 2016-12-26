@@ -161,6 +161,7 @@ var SearchBox = React.createClass({
             <Checkbox label="NE" handleCheckboxChange={this.checked} />
             <Checkbox label="QU" handleCheckboxChange={this.checked} />
             <Checkbox label="GE" handleCheckboxChange={this.checked} />
+            <Checkbox label="DL" handleCheckboxChange={this.checked} />
         </div>;
     },
     checked: function(label, checked){
