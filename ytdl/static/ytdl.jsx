@@ -1,7 +1,4 @@
-/*global React */
-/*global moment */
-/*global $ */
-/*global Mousetrap */
+/*global $ React moment Mousetrap Router */
 /*eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 
 function _do_video_action(video_id, name, force){
