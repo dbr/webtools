@@ -113,56 +113,76 @@ var VideoInfo = React.createClass({
     }
 });
 
-var SearchBox = React.createClass({
-    filterstatus_parse: function(blah){
-        var key_to_name = {
-            NE: "new",
-            GR: "grabbed",
-            QU: "queued",
-            DL: "downloading",
-            GE: "grab error",
-            IG: "ignored",
+let Checkbox = React.createClass({
+    getInitialState: function () {
+        return {
+            isChecked: false
         };
-
-        var statuses = {};
-        key_to_name.forEach(function(v, k){
-            status[k] = false;
-        });
-
-        var chunks = blah.split(",");
-        chunks.forEach(function(x){
-            if(x.length > 0 && x in statuses){
-                statuses[x] = true;
-            }
-        });
-        return statuses;
     },
 
-    filterstatus_format: function(blah){
-        var thing = [];
-        blah.forEach(function(v, k){
-            if(v){
-                thing.push(k);
-            }
+    toggleCheckbox: function () {
+        this.setState({
+            isChecked: ! this.state.isChecked
         });
-        return thing.join(",");
+
+        this.props.handleCheckboxChange(this.props.label, !this.state.isChecked);
     },
 
+    render: function () {
+        return (
+        <label style={{"display": "inline"}}>
+            <input type="checkbox"
+                value={this.props.label}
+                checked={this.state.isChecked}
+                onChange={this.toggleCheckbox} />
+                {this.props.label}
+        </label>
+        );
+    }
+});
+
+function filterstatus_format(status){
+    var out = [];
+    for(var key in status){
+        var v = status[key];
+        if(v){
+            out.push(key);
+        }
+    }
+    return out.join(",");
+}
+
+var SearchBox = React.createClass({
+    getInitialState: function() {
+        return {"status": {"NE": false},
+                "text": ""};
+    },
     render: function(){
         return <div>
-            <input onChange={this.changed} />
+            <input onChange={this.text_changed} />
             Status:
-            <input type="checkbox" id="status_new" name="status[new]" />
-            <label            htmlFor="status_new">New</label>
-            <input type="checkbox" id="status_grabbed" />
-            <label            htmlFor="status_grabbed">Grabbed</label>
+            <Checkbox label="NE" handleCheckboxChange={this.checked} />
+            <Checkbox label="QU" handleCheckboxChange={this.checked} />
+            <Checkbox label="GE" handleCheckboxChange={this.checked} />
         </div>;
     },
-
-    changed: function(event){
+    checked: function(label, checked){
+        console.log("Changed", label, checked);
+        var newst = this.state.status;
+        newst[label] = checked;
+        this.setState({
+            "status": newst});
+        this.changed();
+    },
+    text_changed: function(event){
+        console.log("Text changed");
+        this.setState({"text": event.target.value});
+        this.changed();
+    },
+    changed: function(){
         this.props.cbFilterChange({
-            text: event.target.value,
-            status: this.filterstatus_format(this.status)});
+            text: this.state.text,
+            status: this.state.status});
     },
 });
 
@@ -259,19 +279,17 @@ var VideoList = React.createClass({
             });
             var newdata = React.addons.update(self.state.data, {videos: {$set: newvideos}});
             self.setState({data: newdata});
-            /*
-              self.state.data.videos.forEach(function(v, index){
-              if(data[v.id]){
-              self.state.data.videos[index].status = data[v.id];
-              }
-              });
-            */
         });
     },
 
     loadPage: function(pagenum){
+        console.log("Loading page", pagenum, this.state);
+        var status_string = "";
+        if(this.state.filterStatus){
+            status_string = "&status=" + filterstatus_format(this.state.filterStatus);
+        }
         $.ajax({
-            url: "/youtube/api/1/channels/"+this.props.channel+"?page="+pagenum + "&search=" + this.state.filter,
+            url: "/youtube/api/1/channels/"+this.props.channel+"?page="+pagenum + "&search=" + this.state.filter + status_string,
             dataType: "json",
             success: function(data) {
                 console.log("Got data!", data);
@@ -283,9 +301,12 @@ var VideoList = React.createClass({
         });
     },
     setFilter: function(info){
-        this.setState({filter: info.text});
-        console.log("Filter status", info);
-        this.loadPage(0);
+        self = this;
+        console.log("Filter info:", info);
+        this.setState({filter: info.text, filterStatus: info.status},
+          function(){
+            self.loadPage(0);
+          });
     },
 
     render: function(){
