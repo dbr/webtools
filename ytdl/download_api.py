@@ -93,7 +93,7 @@ class YDL(object):
             log.info("Beginning downloading %s" % (self.url))
             try:
                 ydl.download([self.url])
-            except youtube_dl.DownloadError, e:
+            except youtube_dl.DownloadError as e:
                 self._set_progress(status="error", msg='%s' % e)
                 for line in traceback.format_exc():
                     self._append_log(line=line)

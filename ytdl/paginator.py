@@ -116,6 +116,10 @@ class Page(collections.Sequence):
         return len(self.object_list)
 
     def __getitem__(self, index):
+        try:
+            long
+        except NameError:
+            long = int
         if not isinstance(index, (slice, int, long)):
             raise TypeError
         # The object_list is converted to a list so that if it was a QuerySet

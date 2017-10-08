@@ -74,7 +74,7 @@ def grab_video(videoid, force=False):
     x = ytdl.download_api.YDL(id=videoid, url=video.url, outtmpl=outtmpl)
     try:
         x.go()
-    except Exception, e: # ?
+    except Exception as e: # ?
         video.status = Video.STATE_GRAB_ERROR
         video.save()
         log.error("Error grabbing %s: %s" % (video, e), exc_info=True)

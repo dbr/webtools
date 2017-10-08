@@ -12,11 +12,11 @@ def _scheduler_run(on_start):
     first_run = True
     while True:
         if not on_start or not first_run:
-            print "%s Sleeping %s minutes" % (datetime.datetime.now(), minutes)
+            print("%s Sleeping %s minutes" % (datetime.datetime.now(), minutes))
             time.sleep(60*minutes)
         first_run = False
 
-        print "%s Refreshing!" % datetime.datetime.now()
+        print("%s Refreshing!" % datetime.datetime.now())
         ytdl.tasks.refresh_all_channels()
 
 
@@ -33,7 +33,7 @@ def refresh(limit, all, filter):
     for c in channels:
         if filter is not None and filter not in c.title.lower():
             continue
-        print "Force-refreshing %s" % c
+        print("Force-refreshing %s" % c)
         if all:
             c.grab(limit=limit, stop_on_existing=False)
         else:
@@ -67,7 +67,7 @@ def cleanup():
         try:
             assert v.channel
         except ytdl.models.Channel.DoesNotExist:
-            print "Deleting orphaned video '%s'" % v.title
+            print("Deleting orphaned video '%s'" % v.title)
             v.delete_instance()
 
 def backup(filename):
