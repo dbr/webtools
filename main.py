@@ -144,6 +144,13 @@ def server(port, host):
     app.run(host=host, port=port)
 
 
+def dbinit():
+    import ytdl.models
+    ytdl.models.database.connect()
+    ytdl.models.Channel.create_table()
+    ytdl.models.Video.create_table()
+
+
 if __name__ == '__main__':
     import argparse
     p_main = argparse.ArgumentParser()
@@ -153,6 +160,9 @@ if __name__ == '__main__':
     p_server.add_argument('-o', '--host', default='0.0.0.0')
     p_server.add_argument('-p', '--port', default=8008, type=int)
     p_server.set_defaults(func=server)
+
+    p_server = subparsers.add_parser('dbinit')
+    p_server.set_defaults(func=dbinit)
 
     p_refresh = subparsers.add_parser('refresh')
     p_refresh.set_defaults(func=refresh)
