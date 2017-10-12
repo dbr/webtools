@@ -230,10 +230,11 @@ def downloads():
 
     all_info = {}
     for cur in ids:
+        cur = cur.decode("utf-8")
         key = "dl:{id}:info".format(id=cur)
 
-        status = r.hget(key, "status") or ""
-        message = r.hget(key, "message") or ""
+        status = (r.hget(key, "status") or "").decode("utf-8")
+        message = (r.hget(key, "message") or "").decode("utf-8")
         progress = float(r.hget(key, "progress") or 0.0)
 
         try:
