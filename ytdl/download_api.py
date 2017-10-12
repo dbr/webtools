@@ -3,6 +3,7 @@ import traceback
 
 import redis
 import youtube_dl
+import ytdl.settings
 
 
 HOUR = 60*60 # 60 seconds in minute, 60 minutes in hour
@@ -16,7 +17,7 @@ class YDL(object):
     def __init__(self, id, url, outtmpl):
         self.id = id
         self.url = url
-        self.r = redis.Redis()
+        self.r = redis.Redis(host=ytdl.settings.REDIS_HOST, port=ytdl.settings.REDIS_PORT)
         self.outtmpl = outtmpl
 
     def debug(self, msg):

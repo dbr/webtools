@@ -12,6 +12,14 @@ from rq_dashboard import RQDashboard
 
 app = Flask(__name__)
 
+app.config['RQ_DEFAULT_HOST'] = ytdl.settings.REDIS_HOST
+app.config['RQ_DEFAULT_PORT'] = ytdl.settings.REDIS_PORT
+app.config['RQ_DEFAULT_DB'] = 1
+
+app.config['REDIS_HOST'] = ytdl.settings.REDIS_HOST
+app.config['REDIS_PORT'] = ytdl.settings.REDIS_PORT
+
+
 # Setup rq dashboard
 RQDashboard(app)
 
@@ -216,7 +224,7 @@ def video_status():
 @app.route('/youtube/api/1/downloads')
 def downloads():
     import redis
-    r = redis.Redis()
+    r = redis.Redis(host=ytdl.settings.REDIS_HOST, port=ytdl.settings.REDIS_PORT)
 
     ids = r.smembers("dl") or []
 

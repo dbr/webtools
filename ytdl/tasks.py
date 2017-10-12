@@ -9,7 +9,7 @@ import ytdl.download_api
 
 
 def get_queue(queue):
-    redis_conn = Redis()
+    redis_conn = Redis(host=ytdl.settings.REDIS_HOST, port=ytdl.settings.REDIS_PORT)
     q = Queue(queue, connection=redis_conn)
     return q
 
