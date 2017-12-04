@@ -19,6 +19,7 @@ class YoutubeApi(object):
         if len(resp.json()['items']) == 0:
             log.warning("No items found at %s - trying as ID" % url)
 
+            # FIXME: Store consistent data - either channel ID or username
             url = "https://www.googleapis.com/youtube/v3/channels?key={apikey}&id={chanid}&part=contentDetails".format(
                 apikey = self.API_KEY,
                 chanid = self.chanid)
