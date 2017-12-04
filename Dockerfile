@@ -9,4 +9,4 @@ RUN pip install --no-cache-dir pytest
 COPY . /app
 
 EXPOSE 8008
-CMD ["honcho", "start", "-c", "taskdl=4"]
+CMD ["env", "PYTHONUNBUFFERED=1", "honcho", "start", "-c", "taskdl=4"]
