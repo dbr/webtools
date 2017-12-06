@@ -56,10 +56,12 @@ class YDL(object):
         def human_seconds(sec):
             return "%02d:%02d" % (sec//60, sec%60)
         if d['status'] == 'downloading':
-            percent = 100*(float(d['downloaded_bytes']) / float(d['total_bytes']))
+            downloaded = float(d.get("downloaded_bytes", 0))
+            total = float(d.get("total_bytes", 0))
+            percent = 100*(float(downloaded) / float(total))
             msg = "%3.01f%% of %s at %.02fKiB/s ETA %s" % (
                 percent,
-                human(d['total_bytes']),
+                human(total),
                 d.get('speed', 0)/1024.0,
                 human_seconds(d.get('eta', 0)))
 
