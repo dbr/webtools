@@ -62,7 +62,7 @@ class YDL(object):
             msg = "%3.01f%% of %s at %.02fKiB/s ETA %s" % (
                 percent,
                 human(total),
-                (d.get('speed') or 0))/1024.0,
+                (d.get('speed') or 0)/1024.0,
                 human_seconds(d.get('eta', 0)))
 
             self._set_progress(status=d['status'], percent=percent, msg=msg)
