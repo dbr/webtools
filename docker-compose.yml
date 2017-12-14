@@ -4,9 +4,7 @@ services:
 
   app:
     env_file: .env
-
-    build:
-      context: ./
+    build: .
     depends_on:
       - redis
     ports:
@@ -19,12 +17,6 @@ services:
     image: redis:3.2-alpine
     volumes:
       - ./redisdata:/data
-
-  test:
-    env_file: .env
-    build: .
-    depends_on:
-      - app
 
 volumes:
   redis_data:

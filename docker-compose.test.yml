@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+
+  app:
+    env_file: .env.test
+    build: .
+    depends_on:
+      - redis
+
+  test:
+    env_file: .env.test
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    links:
+      - app
+
+  redis:
+    image: redis:3.2-alpine
