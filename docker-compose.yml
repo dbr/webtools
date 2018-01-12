@@ -3,6 +3,7 @@ version: '3'
 services:
 
   app:
+    restart: unless-stopped
     env_file: .env
     build: .
     depends_on:
@@ -14,6 +15,7 @@ services:
       - .:/app
 
   redis:
+    restart: unless-stopped
     image: redis:3.2-alpine
     volumes:
       - ./redisdata:/data
