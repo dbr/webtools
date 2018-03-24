@@ -12,13 +12,14 @@ services:
     ports:
       - "8008:8008"
     volumes:
-      - ./localdata:/data
+      - /opt/ytdl/localdata:/data
       - .:/app
+    restart: always
 
   redis:
     image: redis:3.2-alpine
     volumes:
-      - ./redisdata:/data
+      - /opt/ytdl/redisdata:/data
 
   test:
     env_file: .env

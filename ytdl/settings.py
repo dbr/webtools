@@ -1,5 +1,6 @@
 import os
-OUTPUT_DIR = os.path.expanduser("/data/ytdl_downloads")
+OUTPUT_DIR = os.getenv("YTDL_DOWNLOAD_PATH",
+                       os.path.expanduser("/data/ytdl_downloads"))
 OUTPUT_FORMAT = "%(uploader)s/%(upload_date)s_%(title)s__%(uploader)s_%(id)s.%(ext)s"
 YOUTUBE_DL_FLAGS = ['--max-quality=22',]
 
