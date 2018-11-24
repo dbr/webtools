@@ -6,7 +6,7 @@ honcho==1.0.1
 itsdangerous==1.1.0
 peewee==3.7.1
 py==1.7.0
-pytest==4.0.0
+pytest==4.0.1
 python-dateutil==2.7.5
 pytz==2018.7
 redis==3.0.1
