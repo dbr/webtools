@@ -14,6 +14,6 @@ requests==2.20.1
 rq-dashboard==0.3.12
 rq==0.12.0
 simplejson==3.16.0
-six==1.11.0
+six==1.12.0
 times==0.7
 youtube-dl==2018.12.9
