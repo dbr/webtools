@@ -8,7 +8,7 @@ peewee==3.8.0
 py==1.7.0
 pytest==4.1.0
 python-dateutil==2.7.5
-pytz==2018.7
+pytz==2018.9
 redis==3.0.1
 requests==2.21.0
 rq-dashboard==0.3.12
