@@ -63,7 +63,7 @@ class YDL(object):
                 percent,
                 human(total),
                 (d.get('speed') or 0)/1024.0,
-                human_seconds(d.get('eta', 0)))
+                human_seconds(d.get('eta') or 0))
 
             self._set_progress(status=d['status'], percent=percent, msg=msg)
 
