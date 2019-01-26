@@ -6,6 +6,8 @@ COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir pytest
 
+USER 1000
+
 COPY . /app
 
 EXPOSE 8008
