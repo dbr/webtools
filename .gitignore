@@ -2,3 +2,4 @@
 *.pyc
 *.sqlite3
 celeryev.pid
+node_modules/*

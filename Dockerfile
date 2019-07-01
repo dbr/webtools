@@ -6,7 +6,8 @@ COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir pytest
 
-USER 1000
+RUN addgroup -g 1000 -S app && adduser -S -G app app -u 1000
+USER app
 
 COPY . /app
 
