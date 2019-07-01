@@ -3,10 +3,9 @@ version: '3'
 services:
 
   app:
+    restart: unless-stopped
     env_file: .env
-
-    build:
-      context: ./
+    build: .
     depends_on:
       - redis
     ports:
@@ -15,17 +14,15 @@ services:
       - /opt/ytdl/localdata:/data
       - .:/app
     restart: always
+    logging:
+      options:
+        max-size: 50m
 
   redis:
+    restart: unless-stopped
     image: redis:3.2-alpine
     volumes:
       - /opt/ytdl/redisdata:/data
-
-  test:
-    env_file: .env
-    build: .
-    depends_on:
-      - app
 
 volumes:
   redis_data:

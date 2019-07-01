@@ -454,9 +454,7 @@ var DownloadList = React.createClass({
         });
 
         thing.success(function(data){
-            if(that.componentIsMounted){
-                that.setState({active: data});
-            }
+            that.setState({active: data});
         });
     },
     render: function(){

@@ -1,17 +1,22 @@
-language: python
-python:
-  - "2.7"
-  - "3.3"
-  - "3.5"
-  - "3.6"
-  - "pypy"
+sudo: required
+services:
+  - docker
 
+script:
+  - docker-compose -f docker-compose.test.yml -p ci up -d --build
+  - docker logs -f ci_test_1
+  - docker wait ci_test_1
 
-install:
-  - pip install -r requirements.txt
-  - pip install pytest
-
-
-env:
-  YTDL_DB_PATH: ":memory:"
-script: py.test --tb=native
+#language: python
+#python:
+#  - "2.7"
+#  - "3.3"
+#  - "3.5"
+#  - "3.6"
+#  - "pypy"
+#install:
+#  - pip install -r requirements.txt
+#  - pip install pytest
+#env:
+#  YTDL_DB_PATH: ":memory:"
+#script: py.test --tb=native
