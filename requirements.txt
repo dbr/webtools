@@ -16,4 +16,4 @@ rq==1.1.0
 simplejson==3.16.0
 six==1.12.0
 times==0.7
-youtube-dl==2019.7.27
+youtube-dl==2019.7.30
