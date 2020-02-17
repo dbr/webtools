@@ -1,11 +1,14 @@
 import datetime
 import dateutil.tz
+from typing import Union
 
 import peewee as p
 
 from .youtube_api import YoutubeApi
 from .vimeo_api import VimeoApi
 from .settings import DB_PATH
+from .vimeo_api import VimeoApi
+from .youtube_api import YoutubeApi
 
 database = p.SqliteDatabase(DB_PATH)
 
@@ -17,6 +20,7 @@ ALL_SERVICES = [YOUTUBE, VIMEO]
 
 
 def getnow():
+    # type: () -> datetime.datetime
     return datetime.datetime.now(dateutil.tz.tzlocal())
 
 
@@ -41,16 +45,16 @@ class Channel(BaseModel):
         return "%s (%s on %s)" % (self.title, self.chanid, self.service)
 
     def get_api(self):
+        # type: () -> Union[VimeoApi, YoutubeApi]
         if self.service == YOUTUBE:
-            api = YoutubeApi(str(self.chanid))
+            return YoutubeApi(str(self.chanid))
         elif self.service == VIMEO:
-            api = VimeoApi(str(self.chanid))
+            return VimeoApi(str(self.chanid))
         else:
             raise ValueError("Unknown service %r" % self.service)
 
-        return api
-
     def refresh_meta(self):
+        # type: () -> None
         """Get stuff like the channel title
         """
         api = self.get_api()

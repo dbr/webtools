@@ -1,5 +1,13 @@
 import logging
 import requests
+from typing import Any
+from typing import Dict
+from typing import Iterator
+from typing import Union
+from typing import List
+from typing import Optional
+from typing import Tuple
+from typing import Generator
 
 
 log = logging.getLogger(__name__)
@@ -9,9 +17,11 @@ class YoutubeApi(object):
     API_KEY = "AIzaSyBBUxzImakMKKW3B6Qu47lR9xMpb6DNqQE" # ytdl public API browser key (for Youtube API v3)
 
     def __init__(self, chanid):
+        # type: (str) -> None
         self.chanid = chanid
 
     def videos_for_user(self, limit=10):
+        # type: (int) -> Generator[Dict[str, Any], None, None]
         url = "https://www.googleapis.com/youtube/v3/channels?key={apikey}&forUsername={chanid}&part=contentDetails".format(
             apikey = self.API_KEY,
             chanid = self.chanid)
@@ -32,12 +42,13 @@ class YoutubeApi(object):
         next_page = None
         for x in range(limit):
             cur, next_page = self._videos_for_playlist(playlist_id=upload_playlist, page_token=next_page)
-            for x in cur:
-                yield x
+            for c in cur:
+                yield c
             if next_page is None:
                 break # Signifies no more pages
 
     def _videos_for_playlist(self, playlist_id, page_token=None):
+        # type: (str, Optional[Any]) -> Tuple[List[Dict[str, Any]], str]
         if page_token is None:
             pt = ""
         else:
@@ -76,6 +87,7 @@ class YoutubeApi(object):
         return ret, data.get('nextPageToken')
 
     def _chan_snippet(self):
+        # type: () -> Optional[Dict[str, Any]]
         url = "https://www.googleapis.com/youtube/v3/channels?key={apikey}&forUsername={chanid}&part=snippet".format(
             apikey = self.API_KEY,
             chanid = self.chanid,
@@ -99,12 +111,14 @@ class YoutubeApi(object):
 
 
     def icon(self):
+        # type: () -> str
         snippet = self._chan_snippet()
         if snippet is None:
             return "" # FIXME?
         return snippet['thumbnails']['default']['url']
 
     def title(self):
+        # type: () -> str
         snippet = self._chan_snippet()
         if snippet is None:
             return "(no title)"

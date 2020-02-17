@@ -17,3 +17,4 @@ simplejson==3.17.0
 six==1.14.0
 times==0.7
 youtube-dl==2020.02.16
+mypy_extensions==0.4.3
