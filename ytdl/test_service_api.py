@@ -6,17 +6,6 @@ from mypy_extensions import NoReturn
 IS_PY2 = sys.version_info[0] == 2
 
 import peewee
-_test_db = peewee.SqliteDatabase(':memory:')
-
-
-def test_db():
-    import ytdl.models
-    import inspect
-    models = [obj for name, obj in inspect.getmembers(ytdl.models)
-              if hasattr(obj, "__bases__") and ytdl.models.BaseModel in obj.__bases__]
-    print(models)
-    import playhouse.test_utils
-    return playhouse.test_utils.test_database(_test_db, models, create_tables=True)
 
 
 class YoutubeTest(TestCase):
@@ -81,33 +70,33 @@ class VimeoTest(TestCase):
 class ChannelRefresh(TestCase):
 
     def test_youtube_refresh(self):
-        with test_db():
-            import ytdl.models
+        # type: () -> None
+        import ytdl.models
 
-            chan = ytdl.models.Channel(chanid = 'roosterteeth', service=ytdl.models.YOUTUBE)
-            chan.save()
+        chan = ytdl.models.Channel(chanid = 'roosterteeth', service=ytdl.models.YOUTUBE)
+        chan.save()
 
-            # Check title is updated
-            chan.refresh_meta()
-            assert chan.title == "Rooster Teeth" # TODO: Maybe assert != roosterteeth, since it could change?
+        # Check title is updated
+        chan.refresh_meta()
+        assert chan.title == "Rooster Teeth" # TODO: Maybe assert != roosterteeth, since it could change?
 
-            # Videos
-            chan.grab(limit=1)
-            videos = ytdl.models.Video.select().where(ytdl.models.Video.channel == chan)
-            assert videos.count() > 0
+        # Videos
+        chan.grab(limit=1)
+        videos = ytdl.models.Video.select().where(ytdl.models.Video.channel == chan)
+        assert videos.count() > 0
 
     def test_vimeo_refresh(self):
-        with test_db():
-            import ytdl.models
+        # type: () -> None
+        import ytdl.models
 
-            chan = ytdl.models.Channel(chanid = 'dbr', service=ytdl.models.VIMEO)
-            chan.save()
+        chan = ytdl.models.Channel(chanid = 'dbr', service=ytdl.models.VIMEO)
+        chan.save()
 
-            # Check title is updated
-            chan.refresh_meta()
-            assert chan.title == "dbr"
+        # Check title is updated
+        chan.refresh_meta()
+        assert chan.title == "dbr"
 
-            # Videos
-            chan.grab(limit=1)
-            videos = ytdl.models.Video.select().where(ytdl.models.Video.channel == chan)
-            assert videos.count() > 0
+        # Videos
+        chan.grab(limit=1)
+        videos = ytdl.models.Video.select().where(ytdl.models.Video.channel == chan)
+        assert videos.count() > 0

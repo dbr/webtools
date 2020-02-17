@@ -39,7 +39,7 @@ class Channel(BaseModel):
     title = p.CharField(max_length=512, null=True)
 
     class Meta:
-        db_table = 'ytdl_channel'
+        table_name = 'ytdl_channel'
 
     def __unicode__(self):
         return "%s (%s on %s)" % (self.title, self.chanid, self.service)
@@ -133,7 +133,7 @@ class Video(BaseModel):
     videoid = p.CharField(max_length=256)
 
     class Meta:
-        db_table = 'ytdl_video'
+        table_name = 'ytdl_video'
 
     def __unicode__(self):
         return "%s (on %s) [%s]" % (self.title, self.channel.chanid, self.status)
