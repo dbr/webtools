@@ -3,9 +3,7 @@ services:
   - docker
 
 script:
-  - docker-compose -f docker-compose.test.yml -p ci up -d --build
-  - docker logs -f ci_test_1
-  - docker wait ci_test_1
+  - docker-compose -f docker-compose.test.yml -p ci up --build
 
 #language: python
 #python:
