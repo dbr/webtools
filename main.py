@@ -7,7 +7,7 @@ import datetime
 
 def _scheduler_run(on_start):
     import ytdl.tasks
-    minutes = 20
+    minutes = 60
 
     first_run = True
     while True:
