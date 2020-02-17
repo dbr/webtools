@@ -7,7 +7,7 @@ import ytdl.settings
 import ytdl.tasks
 from ytdl.models import Video, Channel
 
-from rq_dashboard import RQDashboard
+import rq_dashboard
 
 
 app = Flask(__name__)
@@ -21,7 +21,8 @@ app.config['REDIS_PORT'] = ytdl.settings.REDIS_PORT
 
 
 # Setup rq dashboard
-RQDashboard(app)
+app.config.from_object(rq_dashboard.default_settings)
+app.register_blueprint(rq_dashboard.blueprint, url_prefix="/rq")
 
 
 # Web page

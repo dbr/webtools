@@ -7,7 +7,7 @@ from .youtube_api import YoutubeApi
 from .vimeo_api import VimeoApi
 from .settings import DB_PATH
 
-database = p.SqliteDatabase(DB_PATH, threadlocals=True)
+database = p.SqliteDatabase(DB_PATH)
 
 
 YOUTUBE = 'youtube'
