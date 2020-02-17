@@ -192,5 +192,5 @@ if __name__ == '__main__':
 
     args = p_main.parse_args()
     func = args.func
-    args = {k:v for k, v in vars(args).items() if k != 'func'}
-    func(**args)
+    funcargs = {k:v for k, v in vars(args).items() if k != 'func'}
+    func(**funcargs)

@@ -3,3 +3,4 @@
 *.sqlite3
 celeryev.pid
 node_modules/*
+/.mypy_cache

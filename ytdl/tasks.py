@@ -87,6 +87,7 @@ def grab_video(videoid, force=False):
 
 @task(QUEUE_DEFAULT)
 def refresh_channel(id):
+    # type: (str) -> None
     log.debug("Refreshing channel %s" % id)
     channel = Channel.get(id=id)
     log.debug("Refreshing channel metadata for %s" % (channel))
@@ -96,11 +97,12 @@ def refresh_channel(id):
     log.debug("Refresh complete for %s" % (channel))
 
 
-def refresh_all_channels(async=True):
+def refresh_all_channels(asyncr=True):
+    # type: (bool) -> None
     log.debug("Refreshing all channels")
     channels = Channel.select()
     for c in channels:
-        if async:
+        if asyncr:
             refresh_channel.delay(id=c.id)
         else:
             refresh_channel(id=c.id)

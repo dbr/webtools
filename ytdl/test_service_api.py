@@ -1,5 +1,6 @@
 import sys
 from unittest import TestCase
+from mypy_extensions import NoReturn
 
 
 IS_PY2 = sys.version_info[0] == 2
@@ -20,11 +21,13 @@ def test_db():
 
 class YoutubeTest(TestCase):
     def setUp(self):
+        # type: () -> None
         super(YoutubeTest, self).setUp()
         from ytdl.youtube_api import YoutubeApi
         self.api = YoutubeApi("roosterteeth")
 
     def test_list_videos(self):
+        # type: () -> None
         videos = list(self.api.videos_for_user(limit=1))
 
         assert len(videos) > 0
@@ -35,21 +38,25 @@ class YoutubeTest(TestCase):
             assert 'youtube.com' in v['url']
 
     def test_icon(self):
+        # type: () -> None
         url = self.api.icon()
         assert url.startswith("http://") or url.startswith("https://")
 
     def test_title(self):
+        # type: () -> None
         title = self.api.title()
         assert title == "Rooster Teeth"
 
 
 class VimeoTest(TestCase):
     def setUp(self):
+        # type: () -> None
         super(VimeoTest, self).setUp()
         from ytdl.vimeo_api import VimeoApi
         self.api = VimeoApi("dbr")
 
     def test_list_videos(self):
+        # type: () -> None
         videos = list(self.api.videos_for_user(limit=1))
 
         assert len(videos) > 0
@@ -60,11 +67,13 @@ class VimeoTest(TestCase):
             assert 'vimeo.com' in v['url'], v['url']
 
     def test_icon(self):
+        # type: () -> None
         url = self.api.icon()
         assert url.startswith("http://") or url.startswith("https://")
         # Vimeo icons don't have file extension
 
     def test_title(self):
+        # type: () -> None
         title = self.api.title()
         assert title == "dbr", title
 
