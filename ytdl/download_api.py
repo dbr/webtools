@@ -107,5 +107,6 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     import random
     d = YDL(id=random.randint(1, 100),
-            url='http://www.youtube.com/watch?v=BaW_jenozKc')
+            url='http://www.youtube.com/watch?v=BaW_jenozKc',
+            outtmpl="/tmp/test_%(id)s.%(ext)s")
     d.go()
