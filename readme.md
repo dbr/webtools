@@ -1,77 +1,49 @@
-Potentially a collection of web-applications to do misc stuff
+# `ytdl`
 
-[![Requirements Status](https://requires.io/github/dbr/webtools/requirements.png?branch=master)](https://requires.io/github/dbr/webtools/requirements/?branch=master)
+[![Build Status](https://travis-ci.org/dbr/webtools.png?branch=master)](https://travis-ci.org/dbr/webtools) [![Requirements Status](https://requires.io/github/dbr/webtools/requirements.png?branch=master)](https://requires.io/github/dbr/webtools/requirements/?branch=master)
 
-[![Build Status](https://travis-ci.org/dbr/webtools.png?branch=master)](https://travis-ci.org/dbr/webtools)
+A web interface where you can add any number of Youtube or Vimeo channels. Videos from these channels are then cleanly listed, and can be downloaded with a single click (using [`youtube-dl`][youtube-dl]).
 
-# Installation
+Multiple downloads will be queued up (using the [python-rq][python-rq] task queue), and it keeps track of the state of videos (new, downloaded, ignored)
 
-*Only tested on OS X 10.7, with Python 2.7.5 (installed via Homebrew)*
+So you can quickly see what new videos have been released on various channels, click the "download" button on the interesting ones, and end up with a folder of `.mp4` files to watch later (or, transfer onto an iPad to something like AVPlayerHD etc etc).
 
-1. Setup python requirements
-
- Using virtualenvwrapper:
-
-        mkvirutalenv webtools
-        workon webtools
-        pip install -r requirements.txt
-
-
-2. Install required commands
-
- The `ytdl` application requires `youtube-dl`, which is easily
- installed via [Homebrew][homebrew] on OS X:
-
-        brew install youtube-dl
-
- Simlarly the `run.sh` script uses `tmux` to run the server and task
- queue in the background:
-
-        brew install tmux
-
-3. Check the settings in `webtools/settings.py`
-
-4. Initialise the database.
-
-   The default configuration uses sqlite3 - which while not terribly
-   fast with around 10,000 videos over 35 channels, it's usable and
-   simple to maintain.
-
-        workon webtools
-        python manage.py syncdb
-
-5. To launch:
-
-        ./run.sh
-
-
-# Applications
-
-## `ytdl`
-
-You can add a bunch of Youtube or Vimeo channels, then click a button
-to download them (using [`youtube-dl`][youtube-dl]).
-
-Multiple downloads will be queued up (using the [python-rq][python-rq] task
-queue), and it keeps track of the state of videos (new, downloaded,
-ignored)
-
-So you can quickly see what new videos have been released on various
-channels, click the "download" button on the interesting ones, and end
-up with a folder of `.mp4` files to watch later (or, transfer onto an
-iPad to something like AVPlayerHD etc etc).
-
-Very little noise (no Youtube comments, no annotations, no pre-roll
-and overlayed-banner ads), no buffering.
-
+Very little noise (no Youtube comments, no annotations, no pre-roll and overlayed-banner ads), no buffering.
 
 Some probably-outdated screenshots:
 
 * [List of all channels](http://i.imgur.com/1v5WVW8.png)
 * [Viewing a channel](http://i.imgur.com/1RPHbuM.png)
 
+## Installation
 
-Random notes:
+Docker is the preferred means of installation.
+
+1. Adjust paths in `docker-compose.yml` as necessary.
+
+    In the `app` container, `/data` contains the SQLite database and downloaded files. `/app` contains the code. In the `redis` container, there is a `/data` container used for the download queue data.
+
+2. Start via `docker-compose`:
+
+       docker-compose up --build --detatch
+
+   This will run in the background (because `--detatch`)
+
+3. Initialize database (only necessary on first run)
+
+       docker-compose exec app python3 main.py dbinit
+
+4. To stop:
+
+      docker-compose down
+
+## Running tests
+
+Tests are run via docker-compose similarly to the main application.
+
+    docker-compose -f docker-compose.test.yml up --build --exit-code-from test
+
+## Random notes:
 
 * Currently will always download the highest quality video possible,
   and the files are potentially quite large (some 30-40 minute videos
@@ -88,4 +60,3 @@ Random notes:
 
 [youtube-dl]: http://rg3.github.io/youtube-dl/
 [python-rq]: http://python-rq.org/
-[homebrew]: http://brew.sh/
