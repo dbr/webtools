@@ -95,8 +95,8 @@ def channel_details(chanid):
         query = Video.select().filter(channel = chan)
 
     query = query.order_by(Video.publishdate.desc())
-
     search = request.args.get('search', "")
+
     if len(search) > 0:
         query = query.where(Video.title.contains(search))
 
