@@ -20,15 +20,17 @@ class YoutubeApi(object):
             chanid = self.chanid)
         resp = requests.get(url)
         if len(resp.json()['items']) == 0:
+            # If nothing found for username, try as a channel ID
+            # FIXME: Store consistent data - either channel ID or username
             log.warning("No items found at %s - trying as ID" % url)
 
-            # FIXME: Store consistent data - either channel ID or username
             url = "https://www.googleapis.com/youtube/v3/channels?key={apikey}&id={chanid}&part=contentDetails".format(
                 apikey = self.API_KEY,
                 chanid = self.chanid)
             resp = requests.get(url)
             if len(resp.json()['items']) == 0:
                 log.warning("No items found at %s either" % url)
+                return # Nothing found, give up
 
         upload_playlist = resp.json()['items'][0]['contentDetails']['relatedPlaylists']['uploads']
 
