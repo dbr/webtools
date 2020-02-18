@@ -3,8 +3,5 @@ sudo: required
 services:
   - docker
 
-install: pip install mypy
-
 script:
   - docker-compose -f docker-compose.test.yml -p ci up --build --exit-code-from test
-  - mypy ytdl/

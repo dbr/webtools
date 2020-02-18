@@ -5,8 +5,9 @@ WORKDIR /app
 COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir pytest
+RUN pip install --no-cache-dir mypy
 
 COPY . /app
 
 RUN mkdir /data
-CMD ["sh", "-c", "python main.py dbinit && pytest"]
+CMD ["sh", "-c", "python main.py dbinit && mypy ytdl/ && pytest"]
