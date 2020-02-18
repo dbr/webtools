@@ -1,8 +1,5 @@
 import requests
-from typing import Any
-from typing import Dict
-from typing import Iterator
-# For some reason, Vimeo ignores the "?page=2" parameter when requested by urllib/urllib2, but is okay with requests
+from typing import (Any, Dict, Iterator)
 
 
 class VimeoApi(object):

@@ -1,13 +1,6 @@
 import logging
 import requests
-from typing import Any
-from typing import Dict
-from typing import Iterator
-from typing import Union
-from typing import List
-from typing import Optional
-from typing import Tuple
-from typing import Generator
+from typing import Any, Dict, Iterator, Union, List, Optional, Tuple, Generator
 
 
 log = logging.getLogger(__name__)
