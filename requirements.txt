@@ -10,7 +10,7 @@ pytest==6.2.1
 python-dateutil==2.8.1
 pytz==2020.4
 redis==3.5.3
-requests==2.25.0
+requests==2.25.1
 rq-dashboard==0.6.1
 rq==1.7.0
 simplejson==3.17.2
