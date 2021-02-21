@@ -16,5 +16,5 @@ rq==1.7.0
 simplejson==3.17.2
 six==1.15.0
 times==0.7
-youtube-dl==2021.2.10
+youtube-dl==2021.2.22
 mypy_extensions==0.4.3
