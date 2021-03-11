@@ -4,7 +4,7 @@ MarkupSafe==1.1.1
 Werkzeug==1.0.1
 honcho==1.0.1
 itsdangerous==1.1.0
-peewee==3.14.2
+peewee==3.14.3
 py==1.10.0
 pytest==6.2.2
 python-dateutil==2.8.1
