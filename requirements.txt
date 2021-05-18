@@ -3,7 +3,7 @@ Jinja2==3.0.0
 MarkupSafe==2.0.0
 Werkzeug==2.0.1
 honcho==1.0.1
-itsdangerous==2.0.0
+itsdangerous==2.0.1
 peewee==3.14.4
 py==1.10.0
 pytest==6.2.4
